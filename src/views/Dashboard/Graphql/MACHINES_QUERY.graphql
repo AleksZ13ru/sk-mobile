@@ -1,0 +1,22 @@
+query{
+    locations{
+        id
+        name
+        machines{
+            category {
+                name
+            }
+            id
+            name
+            kmv
+            machineValue{
+                day{
+                    day
+                }
+                value
+                kmv
+
+            }
+        }
+    }
+}

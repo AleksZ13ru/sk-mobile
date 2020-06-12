@@ -1,0 +1,16 @@
+#test variables = {"pk": 2}
+query  {
+    days{
+        day
+        stopTimeListInDayStart{
+            id
+            machine{
+                name
+            }
+            text
+            deltaTime
+
+        }
+    }
+}
+

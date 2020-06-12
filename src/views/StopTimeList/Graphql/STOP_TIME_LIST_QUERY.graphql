@@ -1,0 +1,12 @@
+#test variables = {"pk": 26}
+query stopTimeList($pk:Int!){
+    stopTimeList(pk:$pk){
+        machine{name}
+        services{name}
+        text
+        dayStart{day}
+        timeStart
+        dayStop{day}
+        timeStop
+    }
+}

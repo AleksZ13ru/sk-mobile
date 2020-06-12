@@ -1,0 +1,15 @@
+#test variables = {"pk": 2}
+query Machine($pk:Int!){
+    machine(pk:$pk){
+        id
+        name
+        machineValue{
+            day{
+                day
+            }
+            value
+            kmv
+            totalLength
+        }
+    }
+}

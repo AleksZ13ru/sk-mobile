@@ -1,0 +1,178 @@
+# This file was generated based on ".graphqlconfig". Do not edit manually.
+
+schema {
+    query: Query
+    mutation: Mutation
+}
+
+type CategoryType {
+    id: ID!
+    machines: [MachineType!]!
+    name: String!
+}
+
+type CreateUser {
+    user: UserType
+}
+
+type DayType {
+    day: Date!
+    id: ID!
+    stopTimeListInDayStart: [StopTimeListType!]!
+    stopTimeListsInMachine(pk: Int): [StopTimeListType]
+    stoptimelistSet: [StopTimeListType!]!
+    todoInMachine(pk: Int): [StopTimeListType]
+    todoListInDayStart: [ToDoListType!]!
+    todolistSet: [ToDoListType!]!
+    totalStopTimeListInMachine(pk: Int): Float
+    valuesInDay: [ValueType!]!
+    valuesInMachine(pk: Int): [ValueType]
+}
+
+type LocationType {
+    id: ID!
+    machines: [MachineType!]!
+    name: String!
+}
+
+type MachineType {
+    category: CategoryType!
+    comment: String!
+    days: [DayType]
+    id: ID!
+    kmv: Float
+    location: LocationType!
+    machineStopTimeList: [StopTimeListType!]!
+    machineTodoList: [ToDoListType!]!
+    machineValue: [ValueType!]!
+    name: String!
+}
+
+type Mutation {
+    createUser(email: String!, password: String!, username: String!): CreateUser
+    refreshToken(token: String): Refresh
+    "Obtain JSON Web Token mutation"
+    tokenAuth(password: String!, username: String!): ObtainJSONWebToken
+    verifyToken(token: String): Verify
+}
+
+"Obtain JSON Web Token mutation"
+type ObtainJSONWebToken {
+    payload: GenericScalar!
+    refreshExpiresIn: Int!
+    token: String!
+}
+
+type Query {
+    category: [CategoryType]
+    days: [DayType]
+    locations: [LocationType]
+    machine(pk: Int): MachineType
+    machines: [MachineType]
+    me: UserType
+    stopTimeList(pk: Int): StopTimeListType
+    users: [UserType]
+    values: [ValueType]
+}
+
+type Refresh {
+    payload: GenericScalar!
+    refreshExpiresIn: Int!
+    token: String!
+}
+
+type ServiceNameType {
+    id: ID!
+    name: String!
+    servicesStopTimeList: [StopTimeListType!]!
+    servicesTodoList: [ToDoListType!]!
+}
+
+type StopTimeListType {
+    comment: String!
+    dayStart: DayType!
+    dayStop: DayType
+    deltaTime: Float
+    id: ID!
+    machine: MachineType!
+    services: [ServiceNameType!]!
+    status: String!
+    text: String!
+    timeStart: Time!
+    timeStop: Time
+}
+
+type ToDoListType {
+    comment: String!
+    dayStart: DayType!
+    dayStop: DayType
+    id: ID!
+    machine: MachineType!
+    services: [ServiceNameType!]!
+    status: String!
+    text: String!
+    timeStart: Time!
+    timeStop: Time
+}
+
+type UserType {
+    dateJoined: DateTime!
+    email: String!
+    firstName: String!
+    id: ID!
+    "Отметьте, если пользователь должен считаться активным. Уберите эту отметку вместо удаления учётной записи."
+    isActive: Boolean!
+    "Отметьте, если пользователь может входить в административную часть сайта."
+    isStaff: Boolean!
+    "Указывает, что пользователь имеет все права без явного их назначения."
+    isSuperuser: Boolean!
+    lastLogin: DateTime
+    lastName: String!
+    password: String!
+    "Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_."
+    username: String!
+}
+
+type ValueType {
+    day: DayType!
+    id: ID!
+    kmv: Float
+    machine: MachineType!
+    speed: Int
+    status: String!
+    totalLength: Float
+    value: String!
+}
+
+type Verify {
+    payload: GenericScalar!
+}
+
+
+"""
+The `Date` scalar type represents a Date
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar Date
+
+"""
+The `Time` scalar type represents a Time value as
+specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar Time
+
+"""
+The `DateTime` scalar type represents a DateTime
+value as specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar DateTime
+
+"""
+The `GenericScalar` scalar type represents a generic
+GraphQL scalar value that could be:
+String, Boolean, Int, Float, List or Object.
+"""
+scalar GenericScalar

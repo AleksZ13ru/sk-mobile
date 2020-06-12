@@ -1,0 +1,16 @@
+query{
+    days{
+        day
+        todoListInDayStart{
+            services{
+                id
+                name
+            }
+            id
+            text
+            machine{
+                name
+            }
+        }
+    }
+}

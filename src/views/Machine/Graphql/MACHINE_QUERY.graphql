@@ -1,0 +1,41 @@
+#test variables = {"pk": 2}
+#query oldMachine($pk:Int!){
+#    machine(pk:$pk){
+#        id
+#        name
+#        machineValue{
+#            day{
+#                day
+#            }
+#            value
+#            kmv
+#            totalLength
+#        }
+#    }
+#}
+
+query Machine($pk:Int!){
+    machine(pk:$pk){
+        id
+        name
+        days {
+            id
+            day
+            totalStopTimeListInMachine(pk:$pk)
+            valuesInMachine(pk:$pk){
+                id
+                kmv
+                totalLength
+            }
+            stopTimeListsInMachine(pk:$pk){
+                text
+                services{name}
+                deltaTime
+            }
+            todoInMachine(pk:$pk){
+                text
+            }
+
+        }
+    }
+}
