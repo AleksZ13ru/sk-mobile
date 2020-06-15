@@ -175,6 +175,7 @@ function getSteps() {
 // ];
 
 function ComboBox() {
+
     const classes = useStyles();
     const [age, setAge] = React.useState('');
 
@@ -279,7 +280,8 @@ function getStepContent(step) {
     }
 }
 
-function RepairsAdd() {
+function RepairsAdd(props) {
+    const {id} = props.match.params;
     const classes = useStyles();
     const [activeStep, setActiveStep] = React.useState(0);
     const steps = getSteps();

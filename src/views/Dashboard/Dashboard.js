@@ -159,14 +159,13 @@ export default function Dashboard() {
         // console.log(store.getState().searchMachine);
         setSearchFilter(store.getState().searchMachine);
     }
-
+    store.subscribe(handleChange);
     return (
         <div className={classes.root}>
             <div className={classes.row}>
                 {/*<SearchInput value={searchFilter}*/}
                 {/*             handleSetSearchFilter={handleSetSearchFilter}*/}
                 {/*             handleClearSearchFilter={handleClearSearchFilter}/>*/}
-                {store.subscribe(handleChange)}
                 <SearchInput value={searchFilter}
                              handleSetSearchFilter={handleSetSearchFilter}
                              handleClearSearchFilter={handleClearSearchFilter}/>
@@ -199,6 +198,6 @@ export default function Dashboard() {
 }
 
 Dashboard.propTypes = {
-    searchFilter: PropTypes.string,
-    handleSetSearchFilter: PropTypes.func.isRequired
+    // searchFilter: PropTypes.string,
+    // handleSetSearchFilter: PropTypes.func.isRequired
 };

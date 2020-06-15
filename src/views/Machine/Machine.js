@@ -22,9 +22,9 @@ import {loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {store} from "../../store";
-
+import SpeedDialogs from   "./components/SpeedDialogs"
 import DetailsStopTimeList from "./components/DetailsStopTimeList";
-// import PropTypes from "prop-types";
+
 
 const MACHINE_QUERY = loader('./Graphql/MACHINE_QUERY.graphql');
 
@@ -224,11 +224,7 @@ function Machine(props) {
     };
 
     return (
-        // <h1>{row.name}</h1>
         <div className={classes.root}>
-            {/*<div className={classes.row}>*/}
-            {/*    <SearchInput/>*/}
-            {/*</div>*/}
             <div className={classes.content}>
                 {/*<Card className={classes.alert}>*/}
                 {/*    <CardContent>*/}
@@ -291,47 +287,14 @@ function Machine(props) {
                                                 ))
                                             }
                                         </Fragment>
-
                                     );
-
-                                    // return data.machine.days
-                                    //     .sort((a, b) => {
-                                    //         if (a.day > b.day) return -1;
-                                    //         if (a.day < b.day) return 1;
-                                    //         return 0;
-                                    //     })
-                                    //     .map((day) => (
-                                    //         <Fragment key={day.id}>
-                                    //             <ListDay day={day.day}/>
-                                    //             {day.valuesInMachine.length > 0 &&
-                                    //
-                                    //             <ListDayInfoKMV id={id}
-                                    //                             kmv={day.valuesInMachine[0].kmv}
-                                    //                             totalLength={day.valuesInMachine[0].totalLength}/>
-                                    //             }
-                                    //
-                                    //             {day.stopTimeListsInMachine.length > 0 &&
-                                    //             <ListDayInfoStopList id={id}
-                                    //                                  counter={day.stopTimeListsInMachine.length}
-                                    //                                  totalLength={day.totalStopTimeListInMachine}/>
-                                    //             }
-                                    //             {day.todoInMachine.length > 0 &&
-                                    //             <ListDayInfoToDoList id={id}
-                                    //                                  counter={day.todoInMachine.length}
-                                    //                                  />
-                                    //             }
-                                    //
-                                    //         </Fragment>
-                                    //
-                                    //     ))
-
-
                                 }}
                             </Query>
                         </List>
                     </CardContent>
                 </Card>
             </div>
+            <SpeedDialogs idMachine={id} nameMachine={'Machine Name'}/>
         </div>
     )
 }

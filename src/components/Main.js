@@ -49,13 +49,12 @@ export default function Main(props) {
         // console.log(store.getState().title);
         setTitle(store.getState().title);
     }
-
+    store.subscribe(handleChange);
     // const unsubscribe = store.subscribe(handleChange);
-
 
     return (
         <div className={classes.root} style={{backgroundColor: grey[200]}}>
-            {store.subscribe(handleChange)}
+            {/*{store.subscribe(handleChange)}*/}
             <Topbar title={title} onSidebarOpen={handleSidebarOpen}/>
             <Sidebar
                 onClose={handleSidebarClose}
@@ -69,7 +68,7 @@ export default function Main(props) {
             </div>
 
             {/*<SpeedDials/>*/}
-            <SpeedDialogs/>
+            {/*<SpeedDialogs/>*/}
         </div>
     )
 };
