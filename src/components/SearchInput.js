@@ -36,7 +36,8 @@ export default function SearchInput(props) {
 
 
     return (
-        <Paper component="form" className={classes.root}>
+        // <Paper component="form" className={classes.root}>
+            <Paper  className={classes.root}>
             {/*<IconButton className={classes.iconButton} aria-label="menu">*/}
             {/*    <MenuIcon />*/}
             {/*</IconButton>*/}

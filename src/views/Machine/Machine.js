@@ -1,27 +1,29 @@
 import React, {Fragment, useEffect} from 'react';
 // import SearchInput from "../../components/SearchInput";
-import Card from "@material-ui/core/Card";
-import CardContent from "@material-ui/core/CardContent";
-import List from "@material-ui/core/List";
-import ListSubheader from "@material-ui/core/ListSubheader";
-import ListItem from "@material-ui/core/ListItem";
 // import {Link} from "react-router-dom";
-import Grid from "@material-ui/core/Grid";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import InfoIcon from "@material-ui/icons/Info";
-import ListItemText from "@material-ui/core/ListItemText";
-import {makeStyles} from "@material-ui/core/styles";
 // import Alert from "@material-ui/lab/Alert";
 // import AlertTitle from "@material-ui/lab/AlertTitle";
 // import FlagIcon from "@material-ui/icons/Flag";
 // import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 // import BuildIcon from "@material-ui/icons/Build";
 // import Typography from "@material-ui/core/Typography";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import List from "@material-ui/core/List";
+import ListSubheader from "@material-ui/core/ListSubheader";
+import ListItem from "@material-ui/core/ListItem";
+import Grid from "@material-ui/core/Grid";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import InfoIcon from "@material-ui/icons/Info";
+import ListItemText from "@material-ui/core/ListItemText";
+import {makeStyles} from "@material-ui/core/styles";
 import {Query} from "react-apollo";
 import {loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {store} from "../../store";
+
+import DetailsStopTimeList from "./components/DetailsStopTimeList";
 // import PropTypes from "prop-types";
 
 const MACHINE_QUERY = loader('./Graphql/MACHINE_QUERY.graphql');
@@ -81,26 +83,48 @@ function ListDayInfoStopList(props) {
     const {id, counter, totalLength} = props;
     const classes = useStyles();
 
-    return (
-        <ListItem key={id} button className={classes.list} component={Link}
-                  to={`#`}>
-            <Grid container
-                  spacing={2}
-                  direction="row"
-                  justify="space-between"
-                  alignItems="center">
-                <Grid item xs={1}>
+    const [open, setOpen] = React.useState(false);
 
+    // const handleClickOpen = () => {
+    //     setOpen(true);
+    // };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleClickOpen = () => {
+        setOpen(true);
+        console.log('click')
+    };
+
+    return (
+        <Fragment>
+            <DetailsStopTimeList open={open} handleClose={handleClose}/>
+            <ListItem key={id} button className={classes.list}
+                // component={Link}
+                // to={`#`}
+                      onClick={handleClickOpen}
+            >
+                <Grid container
+                      spacing={2}
+                      direction="row"
+                      justify="space-between"
+                      alignItems="center">
+                    <Grid item xs={1}>
+
+                    </Grid>
+                    <Grid item xs={8}>
+                        <ListItemText primary={`Простои: ${counter}`} secondary="шт."/>
+                    </Grid>
+                    <Grid item xs={3}>
+                        {/*<ListItemText primary={`На ${totalLength} ч.`} secondary=""/>*/}
+                        <ListItemText primary={totalLength} secondary="час."/>
+                    </Grid>
                 </Grid>
-                <Grid item xs={8}>
-                    <ListItemText primary={`Простои: ${counter}`} secondary="шт."/>
-                </Grid>
-                <Grid item xs={3}>
-                    {/*<ListItemText primary={`На ${totalLength} ч.`} secondary=""/>*/}
-                    <ListItemText primary={totalLength} secondary="час."/>
-                </Grid>
-            </Grid>
-        </ListItem>
+            </ListItem>
+        </Fragment>
+
     )
 }
 
@@ -114,9 +138,15 @@ function ListDayInfoToDoList(props) {
     const {id, counter} = props;
     const classes = useStyles();
 
+    const handleClick = () => {
+        console.log('click')
+    };
+
     return (
         <ListItem key={id} button className={classes.list} component={Link}
-                  to={`#`}>
+            // to={`#`}
+                  onClick={handleClick}
+        >
             <Grid container
                   spacing={2}
                   direction="row"
@@ -167,7 +197,7 @@ function ListDayInfoKMV(props) {
                     <ListItemText primary={`Выпуск: ${totalLength}`} secondary="м."/>
                 </Grid>
                 <Grid item xs={3}>
-                    <ListItemText primary={`${kmv*100}`} secondary="КМВ, %"/>
+                    <ListItemText primary={`${kmv * 100}`} secondary="КМВ, %"/>
                 </Grid>
             </Grid>
         </ListItem>
@@ -190,7 +220,7 @@ function Machine(props) {
     });
 
     const handleSetTitle = (text) => {
-        store.dispatch({type:'SET_TITLE', text:text})
+        store.dispatch({type: 'SET_TITLE', text: text})
     };
 
     return (
@@ -240,7 +270,6 @@ function Machine(props) {
                                                     <Fragment key={day.id}>
                                                         <ListDay day={day.day}/>
                                                         {day.valuesInMachine.length > 0 &&
-
                                                         <ListDayInfoKMV id={id}
                                                                         kmv={day.valuesInMachine[0].kmv}
                                                                         totalLength={day.valuesInMachine[0].totalLength}/>

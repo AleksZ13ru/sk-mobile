@@ -146,7 +146,7 @@ function ToDo(props) {
             {/*    <SearchInput/>*/}
             {/*</div>*/}
             <div className={classes.content}>
-                <h2>Журнал передачи смен</h2>
+                {/*<h2>Журнал передачи смен</h2>*/}
                 {/*<Card className={classes.alert}>*/}
                 {/*<CardContent>*/}
                 {/*    <List component="nav" aria-label="main mailbox folders">*/}

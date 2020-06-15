@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useLayoutEffect } from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {loader} from "graphql.macro";
 import {Query} from "react-apollo";
@@ -17,6 +17,7 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {store, setTitle} from "../../store";
+import Loading from "./components/Loading";
 
 const MACHINES_QUERY = loader('./Graphql/MACHINES_QUERY.graphql');
 
@@ -140,12 +141,12 @@ export default function Dashboard() {
 
     const handleSetSearchFilter = (event) => {
         // setSearchFilter(event.target.value);
-        store.dispatch({type:'SET_SEARCH_MACHINE', text:event.target.value})
+        store.dispatch({type: 'SET_SEARCH_MACHINE', text: event.target.value})
     };
 
     const handleClearSearchFilter = () => {
         // setSearchFilter('');
-        store.dispatch({type:'CLEAR_SEARCH_MACHINE'})
+        store.dispatch({type: 'CLEAR_SEARCH_MACHINE'})
     };
 
     useEffect(() => {
@@ -160,7 +161,6 @@ export default function Dashboard() {
     }
 
     return (
-
         <div className={classes.root}>
             <div className={classes.row}>
                 {/*<SearchInput value={searchFilter}*/}
@@ -171,61 +171,29 @@ export default function Dashboard() {
                              handleSetSearchFilter={handleSetSearchFilter}
                              handleClearSearchFilter={handleClearSearchFilter}/>
             </div>
-            <div className={classes.content}>
-                <Card>
-                    <CardContent>
-                        <List component="nav" aria-label="main mailbox folders">
 
-                            {/*<ListSubheader component="div" id="nested-list-subheader">*/}
-                            {/*    Участок №1*/}
-                            {/*</ListSubheader>*/}
-                            <Query query={MACHINES_QUERY}>
-                                {({loading, error, data}) => {
-                                    if (loading) return <div>Fetching</div>;
-                                    if (error) return <div>Error</div>;
-                                    return data.locations
-                                        // .filter((location) => (location.id === "1"))
-                                        .map((location) => (
-                                            <Fragment key={location.id}>
-                                                <ListSubheader component="div" id="nested-list-subheader">
-                                                    {location.name}
-                                                </ListSubheader>
-                                                <ListMachines machines={location.machines} searchFilter={searchFilter}/>
-                                            </Fragment>
-
-                                        ))
-                                }}
-                            </Query>
-
-                            {/*<ListSubheader component="div" id="nested-list-subheader">*/}
-                            {/*    Участок №2*/}
-                            {/*</ListSubheader>*/}
-                            {/*{rows2.map((row) => (*/}
-                            {/*    <ListItem key={row.id} button className={classes.list} component={Link}*/}
-                            {/*              to={`/machine/${row.id}`}>*/}
-                            {/*        <Grid container*/}
-                            {/*              spacing={2}*/}
-                            {/*              direction="row"*/}
-                            {/*              justify="space-between"*/}
-                            {/*              alignItems="center">*/}
-                            {/*            <Grid item xs={1}>*/}
-                            {/*                /!*<ListItemIcon>*!/*/}
-                            {/*                /!*    <InfoIcon color={"secondary"}/>*!/*/}
-                            {/*                /!*</ListItemIcon>*!/*/}
-                            {/*            </Grid>*/}
-                            {/*            <Grid item xs={9}>*/}
-                            {/*                <ListItemText primary={row.name} secondary={row.type}/>*/}
-                            {/*            </Grid>*/}
-                            {/*            <Grid item xs={2}>*/}
-                            {/*                <ListItemText primary={row.kmv} secondary="КМВ"/>*/}
-                            {/*            </Grid>*/}
-                            {/*        </Grid>*/}
-                            {/*    </ListItem>*/}
-                            {/*))}*/}
-                        </List>
-                    </CardContent>
-                </Card>
-            </div>
+            <Query query={MACHINES_QUERY}>
+                {({loading, error, data}) => {
+                    if (loading) return <Loading/>;
+                    if (error) return <div>Error</div>;
+                    return data.locations
+                        // .filter((location) => (location.id === "1"))
+                        .map((location) => (
+                            <div className={classes.content} key={location.id} >
+                                <Card open={false}>
+                                    <CardContent>
+                                        <List component="nav" aria-label="main mailbox folders" >
+                                            <ListSubheader component="div" id="nested-list-subheader">
+                                                {location.name}
+                                            </ListSubheader>
+                                            <ListMachines machines={location.machines} searchFilter={searchFilter}/>
+                                        </List>
+                                    </CardContent>
+                                </Card>
+                            </div>
+                        ))
+                }}
+            </Query>
         </div>
     )
 }

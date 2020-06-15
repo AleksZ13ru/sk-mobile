@@ -116,7 +116,7 @@ function StopTimeList(props) {
             {/*    <SearchInput/>*/}
             {/*</div>*/}
             <div className={classes.content}>
-                <h2>Простой {id}</h2>
+                {/*<h2>Простой {id}</h2>*/}
 
                 <Card>
                     <CardContent>
@@ -132,6 +132,10 @@ function StopTimeList(props) {
                                                 Оборудование
                                             </ListSubheader>
                                             <ListInfo id={1} text={data.stopTimeList.machine.name}/>
+                                            <ListSubheader component="div" id="nested-list-subheader">
+                                                Время
+                                            </ListSubheader>
+                                            <ListInfo id={1} text={"3 часа с 08-30 по 11-30"}/>
                                             <ListSubheader component="div" id="nested-list-subheader">
                                                 Службы
                                             </ListSubheader>
