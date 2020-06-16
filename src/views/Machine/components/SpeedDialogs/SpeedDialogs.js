@@ -113,6 +113,6 @@ export default function SpeedDialogs(props) {
 }
 
 SpeedDialogs.propTypes ={
-    idMachine: PropTypes.number,
+    idMachine: PropTypes.string,
     nameMachine: PropTypes.string
 };

@@ -44,11 +44,11 @@ const useStyles = makeStyles(theme => ({
         marginLeft: theme.spacing(2),
         flex: 1,
     },
-    switches:{
+    switches: {
         margin: theme.spacing(1),
     },
 
-    marginBottom:{
+    marginBottom: {
         marginBottom: theme.spacing(3),
     },
     actionsContainer: {
@@ -67,7 +67,22 @@ function getSteps() {
     return ['Оборудование', 'Службы', 'Описание'];
 }
 
-function SwitchesGroup() {
+function Machine(props) {
+    const {nameMachine} = props;
+
+    return (
+        <div>
+            <h2>{nameMachine}</h2>
+        </div>
+
+    )
+}
+
+Machine.propTypes = {
+    nameMachine: PropTypes.string
+};
+
+function ServicesSelect(props) {
     const classes = useStyles();
     const [state, setState] = React.useState({
         tech: false,
@@ -77,7 +92,7 @@ function SwitchesGroup() {
     });
 
     const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
+        setState({...state, [event.target.name]: event.target.checked});
     };
 
     return (
@@ -85,22 +100,22 @@ function SwitchesGroup() {
             {/*<FormLabel component="legend">Assign responsibility</FormLabel>*/}
             <FormGroup className={classes.marginBottom}>
                 <FormControlLabel
-                    control={<Switch checked={state.tech} onChange={handleChange} name="tech" />}
+                    control={<Switch checked={state.tech} onChange={handleChange} name="tech"/>}
                     label="Технологи"
                     className={classes.switches}
                 />
                 <FormControlLabel
-                    control={<Switch checked={state.energo} onChange={handleChange} name="energo" />}
+                    control={<Switch checked={state.energo} onChange={handleChange} name="energo"/>}
                     label="Энергетики"
                     className={classes.switches}
                 />
                 <FormControlLabel
-                    control={<Switch checked={state.mech} onChange={handleChange} name="mech" />}
+                    control={<Switch checked={state.mech} onChange={handleChange} name="mech"/>}
                     label="Механики"
                     className={classes.switches}
                 />
                 <FormControlLabel
-                    control={<Switch checked={state.electro} onChange={handleChange} name="electro" />}
+                    control={<Switch checked={state.electro} onChange={handleChange} name="electro"/>}
                     label="Электроники"
                     className={classes.switches}
                 />
@@ -109,6 +124,11 @@ function SwitchesGroup() {
         </FormControl>
     );
 }
+
+ServicesSelect.propTypes = {
+    nameMachine: PropTypes.string
+
+};
 
 function MultilineTextFields() {
     const classes = useStyles();
@@ -134,31 +154,31 @@ function MultilineTextFields() {
     );
 }
 
-function getStepContent(props) {
-    const {step, idMachine, nameMachine } = props;
-    switch (step) {
-        case 0:
-            return (
-                <h2>{nameMachine}</h2>
-            );
-        case 1:
-            return (
-                <SwitchesGroup/>
-            );
-        case 2:
-            return (
-                <MultilineTextFields/>
-            );
-        default:
-            return 'Unknown step';
-    }
-}
-
-getStepContent.propTypes = {
-    step: PropTypes.number,
-    idMachine: PropTypes.number,
-    nameMachine:PropTypes.string
-};
+// function getStepContent(props) {
+//     const {step, idMachine, nameMachine } = props;
+//     switch (step) {
+//         case 0:
+//             return (
+//                 <Machine nameMachine={nameMachine}/>
+//             );
+//         case 1:
+//             return (
+//                 <ServicesSelect/>
+//             );
+//         case 2:
+//             return (
+//                 <MultilineTextFields/>
+//             );
+//         default:
+//             return 'Unknown step';
+//     }
+// }
+//
+// getStepContent.propTypes = {
+//     step: PropTypes.number,
+//     idMachine: PropTypes.number,
+//     nameMachine:PropTypes.string
+// };
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -168,10 +188,69 @@ export default function RepairAddDialog(props) {
     const classes = useStyles();
     const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
     const [activeStep, setActiveStep] = React.useState(0);
-    const steps = getSteps();
+    // const steps = getSteps();
+    // const steps = ['Оборудование:', 'Службы:', 'Описание:'];
+    const [steps, setSteps] = React.useState({
+        step1: 'Оборудование: ',
+        step2: 'Службы: ',
+        step3: 'Описание: '
+    });
+
+    const [serviceSelect, setServiceSelect] = React.useState(['nt[', 'rte']);
+    const initState = {
+        nameMachine: {nameMachine},
+        services: [
+            {
+                key: 'tech',
+                name: 'Технологи',
+                checked: false
+            }, {
+                key: 'mech',
+                name: 'Механики',
+                checked: false
+            }
+        ],
+        text: ''
+    };
+    const [state, setState] = React.useState(initState);
+    let key = 2;
+
+    const handleChange = (event) => {
+        console.log(state);
+        setState(prevState => ({
+            ...state, services: prevState.services.map(
+                el => el.key === [event.target.key] ? {...el, checked : event.target.checked} : el
+            )
+
+        }));
+        console.log(state)
+        // setState({...state, [event.target.name]: event.target.checked});
+        // setState(prevState => ({
+        //     ...state, services: state.services.map(
+        //         (service, index) => (
+        //             service.index === 1 ? {...service, checked: true} : service
+        //         )
+        //     )
+        // }))
+    };
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
+        console.log(state);
+        setState(prevState => ({
+            ...state, nameMachine: '2346'
+
+        }));
+        // setState(prevState => ({
+        //     ...state, todoItems: prevState.todoItems.map(
+        //         el => el.name === 'Learn React Basics' ? {...el, status: 'done'} : el
+        //     ),
+        //     // ...state, nameMachine: '234'
+        //
+        // }));
+        console.log(state)
+
+
     };
 
     const handleBack = () => {
@@ -196,7 +275,7 @@ export default function RepairAddDialog(props) {
             <AppBar className={classes.appBar}>
                 <Toolbar style={{color: "white", backgroundColor: "#ff9800"}}>
                     <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
-                        <CloseIcon />
+                        <CloseIcon/>
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
                         Вызов персонала
@@ -207,33 +286,108 @@ export default function RepairAddDialog(props) {
                 </Toolbar>
             </AppBar>
             <Stepper activeStep={activeStep} orientation="vertical">
-                {steps.map((label, index) => (
-                    <Step key={label}>
-                        <StepLabel>{label}</StepLabel>
-                        <StepContent>
-                            <Typography>{getStepContent({step: index, idMachine:0, nameMachine:'nameMachine'})}</Typography>
-                            <div className={classes.actionsContainer}>
-                                <div>
-                                    <Button
-                                        disabled={activeStep === 0}
-                                        onClick={handleBack}
-                                        className={classes.button}
-                                    >
-                                        Назад
-                                    </Button>
-                                    <Button
-                                        variant="contained"
-                                        color="primary"
-                                        onClick={handleNext}
-                                        className={classes.button}
-                                    >
-                                        {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}
-                                    </Button>
-                                    </div>
+                <Step key='step1'>
+                    <StepLabel>{steps.step1}{state.nameMachine}</StepLabel>
+                    <StepContent>
+                        <Typography> <Machine nameMachine={nameMachine}/> </Typography>
+                        <div className={classes.actionsContainer}>
+                            <div>
+                                <Button
+                                    disabled={activeStep === 0}
+                                    onClick={handleBack}
+                                    className={classes.button}
+                                >
+                                    Назад
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleNext}
+                                    className={classes.button}
+                                >
+                                    {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}
+                                </Button>
                             </div>
-                        </StepContent>
-                    </Step>
-                ))}
+                        </div>
+                    </StepContent>
+                </Step>
+                <Step key='step2'>
+                    <StepLabel>{steps.step2} <b>{serviceSelect} </b></StepLabel>
+                    <StepContent>
+                        <Typography><ServicesSelect/></Typography>
+                        <div className={classes.actionsContainer}>
+                            <div>
+                                <Button
+                                    disabled={activeStep === 0}
+                                    onClick={handleBack}
+                                    className={classes.button}
+                                >
+                                    Назад
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleNext}
+                                    className={classes.button}
+                                >
+                                    {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}
+                                </Button>
+                            </div>
+                        </div>
+                    </StepContent>
+                </Step>
+                <Step key='step3'>
+                    <StepLabel>{steps.step3}</StepLabel>
+                    <StepContent>
+                        {/*<Typography>{getStepContent({step: 2, idMachine:0, nameMachine:'nameMachine'})}</Typography>*/}
+                        <div className={classes.actionsContainer}>
+                            <div>
+                                <Button
+                                    disabled={activeStep === 0}
+                                    onClick={handleBack}
+                                    className={classes.button}
+                                >
+                                    Назад
+                                </Button>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleNext}
+                                    className={classes.button}
+                                >
+                                    {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}
+                                </Button>
+                            </div>
+                        </div>
+                    </StepContent>
+                </Step>
+                {/*{steps.map((step, index) => (*/}
+                {/*    <Step key={label}>*/}
+                {/*        <StepLabel>{label}</StepLabel>*/}
+                {/*        <StepContent>*/}
+                {/*            <Typography>{getStepContent({step: index, idMachine:0, nameMachine:'nameMachine'})}</Typography>*/}
+                {/*            <div className={classes.actionsContainer}>*/}
+                {/*                <div>*/}
+                {/*                    <Button*/}
+                {/*                        disabled={activeStep === 0}*/}
+                {/*                        onClick={handleBack}*/}
+                {/*                        className={classes.button}*/}
+                {/*                    >*/}
+                {/*                        Назад*/}
+                {/*                    </Button>*/}
+                {/*                    <Button*/}
+                {/*                        variant="contained"*/}
+                {/*                        color="primary"*/}
+                {/*                        onClick={handleNext}*/}
+                {/*                        className={classes.button}*/}
+                {/*                    >*/}
+                {/*                        {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}*/}
+                {/*                    </Button>*/}
+                {/*                    </div>*/}
+                {/*            </div>*/}
+                {/*        </StepContent>*/}
+                {/*    </Step>*/}
+                {/*))}*/}
             </Stepper>
             {activeStep === steps.length && (
                 <Paper square elevation={0} className={classes.resetContainer}>
@@ -259,7 +413,7 @@ export default function RepairAddDialog(props) {
 RepairAddDialog.propTypes = {
     openRepairAddDialog: PropTypes.bool,
     handleClose: PropTypes.func,
-    idMachine: PropTypes.number,
+    idMachine: PropTypes.string,
     nameMachine: PropTypes.string
 };
 
