@@ -8,7 +8,7 @@ import grey from '@material-ui/core/colors/grey';
 import Topbar from './Topbar'
 import Sidebar from './Sidebar'
 import Footer from './Footer'
-import SpeedDialogs from './SpeedDialogs'
+// import SpeedDialogs from './SpeedDialogs'
 import {store} from "../store";
 
 const useStyles = makeStyles((theme) => ({

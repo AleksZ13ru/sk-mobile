@@ -32,7 +32,6 @@ export default function MultilineTextFields(props) {
                     label=""
                     multiline
                     rows={4}
-                    defaultValue=""
                     variant="outlined"
                     value={text}
                     onChange={event => handleChange(event)}
@@ -43,6 +42,6 @@ export default function MultilineTextFields(props) {
 }
 
 MultilineTextFields.propTypes = {
-    text: PropTypes.array,
+    text: PropTypes.any,
     handleChange: PropTypes.func
 };

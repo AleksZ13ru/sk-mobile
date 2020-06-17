@@ -13,27 +13,21 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
-import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
+import {format} from "date-fns";
+import ruLocale from "date-fns/locale/ru";
+import MachineSelect from "../MachineSelect";
+import ServicesSelect from "../ServicesSelect"
+import ServicesText from "../ServicesText"
+import MultilineTextFields from "../MultilineTextFields"
+import DateTimeSelect from "./components/DateTimeSelect";
+import ButtonGroupDialog from "../ButtonGroupDialog"
+// import Paper from "@material-ui/core/Paper";
+// import TextField from "@material-ui/core/TextField";
+// import {DatePicker, KeyboardDatePicker} from "@material-ui/pickers";
+// import {TimePicker, KeyboardTimePicker} from "@material-ui/pickers";
 
-import { DatePicker, KeyboardDatePicker } from "@material-ui/pickers";
-import { TimePicker, KeyboardTimePicker } from "@material-ui/pickers";
-
-import MachineSelect from "./components/MachineSelect";
-import ServicesSelect from "./components/ServicesSelect"
-import ServicesText from "./components/ServicesText"
-import MultilineTextFields from "./components/MultilineTextFields"
 
 const useStyles = makeStyles(theme => ({
-    // multilineTextFields: {
-    //     '& .MuiTextField-root': {
-    //         margin: theme.spacing(2),
-    //         width: '100%',
-    //
-    //     },
-    //     marginRight: theme.spacing(4),
-    //     marginBottom: theme.spacing(3),
-    // },
     appBar: {
         position: 'relative',
     },
@@ -41,99 +35,27 @@ const useStyles = makeStyles(theme => ({
         marginLeft: theme.spacing(2),
         flex: 1,
     },
-    // switches: {
-    //     margin: theme.spacing(1),
-    // },
-
-    // marginBottom: {
-    //     marginBottom: theme.spacing(3),
-    // },
-    actionsContainer: {
-        marginBottom: theme.spacing(2),
-    },
-    button: {
-        marginTop: theme.spacing(1),
-        marginRight: theme.spacing(1),
-    },
     resetContainer: {
         padding: theme.spacing(2),
     },
 }));
 
-// function MultilineTextFields() {
-//     const classes = useStyles();
-//     const [value, setValue] = React.useState('Controlled');
-//
-//     const handleChange = (event) => {
-//         setValue(event.target.value);
-//     };
-//
-//     return (
-//         <form className={classes.multilineTextFields} noValidate autoComplete="off">
-//             <div>
-//                 <TextField
-//                     id="outlined-multiline-static"
-//                     label=""
-//                     multiline
-//                     rows={4}
-//                     defaultValue=""
-//                     variant="outlined"
-//                 />
-//             </div>
-//         </form>
-//     );
-// }
-
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-
-function ButtonGroup(props) {
-    const classes = useStyles();
-    const {disabledBack, disableNext, handleBack, handleNext, finishStepText} = props;
-    return (
-        <div className={classes.actionsContainer}>
-            <div>
-                <Button
-                    disabled={disabledBack}
-                    onClick={handleBack}
-                    className={classes.button}
-                >
-                    Назад
-                </Button>
-                <Button
-                    disabled={disableNext}
-                    variant="contained"
-                    color="primary"
-                    onClick={handleNext}
-                    className={classes.button}
-                >
-                    {finishStepText ? finishStepText : 'Далее'}
-                </Button>
-            </div>
-        </div>
-    )
-}
-
-ButtonGroup.propTypes = {
-    disabledBack: PropTypes.bool,
-    disableNext: PropTypes.bool,
-    handleBack: PropTypes.func,
-    handleNext: PropTypes.func,
-    finishStepText: PropTypes.string
-};
 
 export default function StopTimeAddDialog(props) {
     const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
     const [activeStep, setActiveStep] = React.useState(1);
     const classes = useStyles();
+    const formatDT = "dd MMMM yyyy г. HH:mm";
     const [steps, setSteps] = React.useState({
         step1: 'Оборудование: ',
         step2: 'Службы: ',
         step3: 'Начало простоя: ',
         step4: 'Окончание простоя: ',
         step5: 'Описание неисправности: ',
-        step6: 'Проверка и отправка: '
+        step6: 'Проверка и добавление: '
 
     });
 
@@ -165,13 +87,11 @@ export default function StopTimeAddDialog(props) {
 
     const [machine, setMachine] = React.useState(initMachine);
     const [services, setServices] = React.useState(initServices);
+    const [selectedDateStart, handleDateChangeStart] = React.useState(new Date());
+    const [selectedDateStop, handleDateChangeStop] = React.useState(new Date());
     const [text, setText] = React.useState('');
 
-    const [selectedDate, handleDateChange] = React.useState(new Date());
-
     const handleServiceSelect = (event) => {
-        // console.log(event.target.checked);
-        // console.log(event.target.name);
         setServices(prevState => ({
             ...services, array: services.array.map(
                 el => el.key === event.target.name ? {...el, checked: event.target.checked} : el
@@ -192,20 +112,6 @@ export default function StopTimeAddDialog(props) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleReset = () => {
-        setActiveStep(0);
-    };
-
-    // const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
-
-    // const handleClickOpen = () => {
-    //     setOpenRepairAddDialog(true);
-    // };
-
-    // const handleClose = () => {
-    //     setOpenRepairAddDialog(false);
-    // };
-
     return (
         <Dialog fullScreen open={openRepairAddDialog} onClose={handleClose} TransitionComponent={Transition}>
             <AppBar className={classes.appBar}>
@@ -216,17 +122,16 @@ export default function StopTimeAddDialog(props) {
                     <Typography variant="h6" className={classes.title}>
                         Добавить простой
                     </Typography>
-                    {/*<Button autoFocus color="inherit" onClick={handleClose}>*/}
-                    {/*    Х*/}
-                    {/*</Button>*/}
                 </Toolbar>
             </AppBar>
             <Stepper activeStep={activeStep} orientation="vertical">
                 <Step key='step1'>
                     <StepLabel>{steps.step1} <b>{machine.nameMachine}</b></StepLabel>
                     <StepContent>
-                        <Typography> <MachineSelect nameMachine={machine.nameMachine}/> </Typography>
-                        <ButtonGroup
+                        {/*<Typography> */}
+                        <MachineSelect nameMachine={machine.nameMachine}/>
+                        {/*</Typography>*/}
+                        <ButtonGroupDialog
                             disabledBack={true}
                             handleNext={handleNext}
                         />
@@ -235,9 +140,11 @@ export default function StopTimeAddDialog(props) {
                 <Step key='step2'>
                     <StepLabel>{steps.step2} <ServicesText services={services.array}/></StepLabel>
                     <StepContent>
-                        <Typography><ServicesSelect services={services.array}
-                                                    handleChange={handleServiceSelect}/></Typography>
-                        <ButtonGroup
+                        {/*<Typography>*/}
+                        <ServicesSelect services={services.array}
+                                        handleChange={handleServiceSelect}/>
+                        {/*</Typography>*/}
+                        <ButtonGroupDialog
                             disableNext={services.array.filter((el) => (el.checked)).length === 0}
                             handleBack={handleBack}
                             handleNext={handleNext}
@@ -245,39 +152,28 @@ export default function StopTimeAddDialog(props) {
                     </StepContent>
                 </Step>
                 <Step key='step3'>
-                    <StepLabel>{steps.step3}</StepLabel>
+                    <StepLabel>{steps.step3}
+                        {activeStep > 1 &&
+                        <p><b>{format(selectedDateStart, formatDT, {locale: ruLocale})}</b></p>
+                        }
+                    </StepLabel>
                     <StepContent>
-                        <DatePicker
-                            disableToolbar
-                            autoOk={true}
-                            variant="inline"
-                            label="Дата"
-                            helperText="Дата"
-                            value={selectedDate}
-                            onChange={handleDateChange}
-                        />
-                        <TimePicker
-                            ampm={false}
-                            variant="inline"
-                            label="Время"
-                            helperText="Время"
-                            value={selectedDate}
-                            onChange={handleDateChange}
-                        />
-                        {/*<Typography><MultilineTextFields text={text}*/}
-                        {/*                                 handleChange={handleTextChange}/></Typography>*/}
-                        <ButtonGroup
+                        <DateTimeSelect selectedDate={selectedDateStart} handleDateChange={handleDateChangeStart}/>
+                        <ButtonGroupDialog
                             handleBack={handleBack}
                             handleNext={handleNext}
                         />
                     </StepContent>
                 </Step>
                 <Step key='step4'>
-                    <StepLabel>{steps.step4}</StepLabel>
+                    <StepLabel>{steps.step4}
+                        {activeStep > 2 &&
+                        <p><b>{format(selectedDateStop, formatDT, {locale: ruLocale})}</b></p>
+                        }
+                    </StepLabel>
                     <StepContent>
-                        {/*<Typography><MultilineTextFields text={text}*/}
-                        {/*                                 handleChange={handleTextChange}/></Typography>*/}
-                        <ButtonGroup
+                        <DateTimeSelect selectedDate={selectedDateStop} handleDateChange={handleDateChangeStop}/>
+                        <ButtonGroupDialog
                             handleBack={handleBack}
                             handleNext={handleNext}
                         />
@@ -286,9 +182,11 @@ export default function StopTimeAddDialog(props) {
                 <Step key='step5'>
                     <StepLabel>{steps.step5} <b>{text}</b></StepLabel>
                     <StepContent>
-                        <Typography><MultilineTextFields text={text}
-                                                         handleChange={handleTextChange}/></Typography>
-                        <ButtonGroup
+                        {/*<Typography>*/}
+                            <MultilineTextFields text={text}
+                                                         handleChange={handleTextChange}/>
+                        {/*</Typography>*/}
+                        <ButtonGroupDialog
                             disableNext={text.length === 0}
                             handleBack={handleBack}
                             handleNext={handleNext}
@@ -299,10 +197,10 @@ export default function StopTimeAddDialog(props) {
                     <StepLabel>{steps.step6}</StepLabel>
                     <StepContent>
                         {/*<Typography></Typography>*/}
-                        <ButtonGroup
+                        <ButtonGroupDialog
                             handleBack={handleBack}
                             handleNext={handleNext}
-                            finishStepText='Отправить заявку'
+                            finishStepText='Добавить простой'
                         />
                     </StepContent>
                 </Step>

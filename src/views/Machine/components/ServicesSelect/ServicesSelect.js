@@ -27,13 +27,16 @@ export default function ServicesSelect(props) {
     return (
         <FormControl component="fieldset">
             <FormGroup className={classes.marginBottom}>
-                {services.map((el) => (
-                    <FormControlLabel
-                        className={classes.switches}
-                        control={<Switch checked={el.checked} name={el.key}/>}
-                        label={el.name}
-                        onChange={event => handleChange(event)}
-                    />
+                {services.map((el, index) => (
+                    <div key={index}>
+                        <FormControlLabel
+                            className={classes.switches}
+                            control={<Switch checked={el.checked} name={el.key}/>}
+                            label={el.name}
+                            onChange={event => handleChange(event)}
+                        />
+                    </div>
+
                 ))}
             </FormGroup>
             {/*<FormHelperText>Be careful</FormHelperText>*/}

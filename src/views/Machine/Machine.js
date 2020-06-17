@@ -24,6 +24,8 @@ import PropTypes from "prop-types";
 import {store} from "../../store";
 import SpeedDialogs from   "./components/SpeedDialogs"
 import DetailsStopTimeList from "./components/DetailsStopTimeList";
+import Loading from "../../components/Loading";
+import Error from "../../components/Error";
 
 
 const MACHINE_QUERY = loader('./Graphql/MACHINE_QUERY.graphql');
@@ -215,14 +217,14 @@ ListDayInfoKMV.propTypes = {
  */
 function Machine(props) {
     const {id} = props.match.params;
-    const [name, setName] = React.useState('');
+    // const [name, setName] = React.useState('');
     const classes = useStyles();
     const {loading, error, data} = useQuery(MACHINE_QUERY, {
         variables: {"pk": id}
     });
 
-    if (loading) return ('Loading...');
-    if (error) return (`Error! ${error.message}`);
+    if (loading) return (<Loading/>);
+    if (error) return (<Error/>);
 
     // useEffect(() => {
     //     // Обновляем заголовок документа, используя API браузера

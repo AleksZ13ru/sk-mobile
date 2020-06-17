@@ -1,6 +1,5 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,23 +12,13 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
-import Paper from "@material-ui/core/Paper";
-import TextField from "@material-ui/core/TextField";
-import MachineSelect from "./components/MachineSelect";
-import ServicesSelect from "./components/ServicesSelect"
-import ServicesText from "./components/ServicesText"
-import MultilineTextFields from "./components/MultilineTextFields"
+import MachineSelect from "../MachineSelect";
+import ServicesSelect from "../ServicesSelect"
+import ServicesText from "../ServicesText"
+import MultilineTextFields from "../MultilineTextFields"
+import ButtonGroupDialog from "../ButtonGroupDialog";
 
 const useStyles = makeStyles(theme => ({
-    // multilineTextFields: {
-    //     '& .MuiTextField-root': {
-    //         margin: theme.spacing(2),
-    //         width: '100%',
-    //
-    //     },
-    //     marginRight: theme.spacing(4),
-    //     marginBottom: theme.spacing(3),
-    // },
     appBar: {
         position: 'relative',
     },
@@ -37,13 +26,6 @@ const useStyles = makeStyles(theme => ({
         marginLeft: theme.spacing(2),
         flex: 1,
     },
-    // switches: {
-    //     margin: theme.spacing(1),
-    // },
-
-    // marginBottom: {
-    //     marginBottom: theme.spacing(3),
-    // },
     actionsContainer: {
         marginBottom: theme.spacing(2),
     },
@@ -55,30 +37,6 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(2),
     },
 }));
-
-// function MultilineTextFields() {
-//     const classes = useStyles();
-//     const [value, setValue] = React.useState('Controlled');
-//
-//     const handleChange = (event) => {
-//         setValue(event.target.value);
-//     };
-//
-//     return (
-//         <form className={classes.multilineTextFields} noValidate autoComplete="off">
-//             <div>
-//                 <TextField
-//                     id="outlined-multiline-static"
-//                     label=""
-//                     multiline
-//                     rows={4}
-//                     defaultValue=""
-//                     variant="outlined"
-//                 />
-//             </div>
-//         </form>
-//     );
-// }
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -124,7 +82,7 @@ export default function RepairAddDialog(props) {
 
     const [machine, setMachine]  = React.useState(initMachine);
     const [services, setServices] = React.useState(initServices);
-    const [text, setText] = React.useState('');
+    const [text, setText] = React.useState([]);
 
     const handleServiceSelect = (event) => {
         // console.log(event.target.checked);
@@ -182,116 +140,63 @@ export default function RepairAddDialog(props) {
                 <Step key='step1'>
                     <StepLabel>{steps.step1} <b>{machine.nameMachine}</b></StepLabel>
                     <StepContent>
-                        <Typography> <MachineSelect nameMachine={machine.nameMachine}/> </Typography>
-                        <div className={classes.actionsContainer}>
-                            <div>
-                                <Button
-                                    disabled={activeStep === 0}
-                                    onClick={handleBack}
-                                    className={classes.button}
-                                >
-                                    Назад
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleNext}
-                                    className={classes.button}
-                                >
-                                    {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}
-                                </Button>
-                            </div>
-                        </div>
+                        {/*<Typography> */}
+                            <MachineSelect nameMachine={machine.nameMachine}/>
+                        {/*</Typography>*/}
+                        <ButtonGroupDialog
+                            disabledBack={true}
+                            handleNext={handleNext}
+                        />
                     </StepContent>
                 </Step>
                 <Step key='step2'>
                     <StepLabel>{steps.step2} <ServicesText services={services.array}/></StepLabel>
                     <StepContent>
-                        <Typography><ServicesSelect services={services.array}
-                                                    handleChange={handleServiceSelect}/></Typography>
-                        <div className={classes.actionsContainer}>
-                            <div>
-                                <Button
-                                    disabled={activeStep === 0}
-                                    onClick={handleBack}
-                                    className={classes.button}
-                                >
-                                    Назад
-                                </Button>
-                                <Button
-                                    disabled={services.array.filter((el)=>(el.checked)).length===0}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleNext}
-                                    className={classes.button}
-                                >
-                                    {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}
-                                </Button>
-                            </div>
-                        </div>
+                        {/*<Typography>*/}
+                            <ServicesSelect services={services.array}
+                                                    handleChange={handleServiceSelect}/>
+                        {/*</Typography>*/}
+                        <ButtonGroupDialog
+                            disableNext={services.array.filter((el) => (el.checked)).length === 0}
+                            handleBack={handleBack}
+                            handleNext={handleNext}
+                        />
                     </StepContent>
                 </Step>
                 <Step key='step3'>
                     <StepLabel>{steps.step3} <b>{text}</b></StepLabel>
                     <StepContent>
-                        <Typography><MultilineTextFields text={text}
-                                                         handleChange={handleTextChange}/></Typography>
-                        <div className={classes.actionsContainer}>
-                            <div>
-                                <Button
-                                    disabled={activeStep === 0}
-                                    onClick={handleBack}
-                                    className={classes.button}
-                                >
-                                    Назад
-                                </Button>
-                                <Button
-                                    disabled={text.length === 0}
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleNext}
-                                    className={classes.button}
-                                >
-                                    {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}
-                                </Button>
-                            </div>
-                        </div>
+                        {/*<Typography>*/}
+                            <MultilineTextFields text={text}
+                                                         handleChange={handleTextChange}/>
+                        {/*</Typography>*/}
+                        <ButtonGroupDialog
+                            disableNext={text.length === 0}
+                            handleBack={handleBack}
+                            handleNext={handleNext}
+                        />
                     </StepContent>
                 </Step>
                 <Step key='step4'>
                     <StepLabel>{steps.step4}</StepLabel>
                     <StepContent>
                         {/*<Typography></Typography>*/}
-                        <div className={classes.actionsContainer}>
-                            <div>
-                                <Button
-                                    disabled={activeStep === 0}
-                                    onClick={handleBack}
-                                    className={classes.button}
-                                >
-                                    Назад
-                                </Button>
-                                <Button
-                                    variant="contained"
-                                    color="primary"
-                                    onClick={handleNext}
-                                    className={classes.button}
-                                >
-                                    Отправить заявку
-                                </Button>
-                            </div>
-                        </div>
+                        <ButtonGroupDialog
+                            handleBack={handleBack}
+                            handleNext={handleNext}
+                            finishStepText='Отправить заявку'
+                        />
                     </StepContent>
                 </Step>
             </Stepper>
-            {activeStep === steps.length && (
-                <Paper square elevation={0} className={classes.resetContainer}>
-                    <Typography>All steps completed - you&apos;re finished</Typography>
-                    <Button onClick={handleReset} className={classes.button}>
-                        Reset
-                    </Button>
-                </Paper>
-            )}
+            {/*{activeStep === steps.length && (*/}
+            {/*    <Paper square elevation={0} className={classes.resetContainer}>*/}
+            {/*        <Typography>All steps completed - you&apos;re finished</Typography>*/}
+            {/*        <Button onClick={handleReset} className={classes.button}>*/}
+            {/*            Reset*/}
+            {/*        </Button>*/}
+            {/*    </Paper>*/}
+            {/*)}*/}
         </Dialog>
     )
 }

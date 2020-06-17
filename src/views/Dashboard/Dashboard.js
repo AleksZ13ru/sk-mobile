@@ -17,7 +17,8 @@ import ListSubheader from "@material-ui/core/ListSubheader";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {store, setTitle} from "../../store";
-import Loading from "./components/Loading";
+import Loading from "../../components/Loading";
+import Error from "../../components/Error";
 
 const MACHINES_QUERY = loader('./Graphql/MACHINES_QUERY.graphql');
 
@@ -42,22 +43,6 @@ const useStyles = makeStyles(theme => ({
 
 }));
 
-// function createData(name, type, kmv, speed, code, id) {
-//     return {name, type, kmv, speed, code, id};
-// }
-//
-// const rows1 = [
-//     createData('Troester CV-Line', 'Наклонная линия', 0.65, 12, 0, 1),
-//     createData('Proton', 'Наклонная линия', 0.34, 15, 1, 2),
-//     createData('Frigeco SLP120 #1', 'Шланговый пресс', 0.12, 0, 0, 3),
-//
-// ];
-//
-// const rows2 = [
-//     createData('Frigeco SLP120 #1', 'Шланговый пресс', 0.12, 0, 0, 4),
-//     createData('Frigeco CU', 'Линия волочения', 0.56, 48, 0, 5),
-//
-// ];
 
 function ListMachine(props) {
     const {id, name, category, kmv} = props;
@@ -174,7 +159,7 @@ export default function Dashboard() {
             <Query query={MACHINES_QUERY}>
                 {({loading, error, data}) => {
                     if (loading) return <Loading/>;
-                    if (error) return <div>Error</div>;
+                    if (error) return <div><Error/></div>;
                     return data.locations
                         // .filter((location) => (location.id === "1"))
                         .map((location) => (
