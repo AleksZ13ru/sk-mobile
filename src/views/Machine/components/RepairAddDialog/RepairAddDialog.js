@@ -2,10 +2,6 @@ import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItem from '@material-ui/core/ListItem';
-import List from '@material-ui/core/List';
-import Divider from '@material-ui/core/Divider';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -18,25 +14,22 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import Paper from "@material-ui/core/Paper";
-import CardContent from "@material-ui/core/CardContent";
-import FormControl from "@material-ui/core/FormControl";
-import FormLabel from "@material-ui/core/FormLabel";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Switch from "@material-ui/core/Switch";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import TextField from "@material-ui/core/TextField";
+import MachineSelect from "./components/MachineSelect";
+import ServicesSelect from "./components/ServicesSelect"
+import ServicesText from "./components/ServicesText"
+import MultilineTextFields from "./components/MultilineTextFields"
 
 const useStyles = makeStyles(theme => ({
-    multilineTextFields: {
-        '& .MuiTextField-root': {
-            margin: theme.spacing(2),
-            width: '100%',
-
-        },
-        marginRight: theme.spacing(4),
-        marginBottom: theme.spacing(3),
-    },
+    // multilineTextFields: {
+    //     '& .MuiTextField-root': {
+    //         margin: theme.spacing(2),
+    //         width: '100%',
+    //
+    //     },
+    //     marginRight: theme.spacing(4),
+    //     marginBottom: theme.spacing(3),
+    // },
     appBar: {
         position: 'relative',
     },
@@ -44,13 +37,13 @@ const useStyles = makeStyles(theme => ({
         marginLeft: theme.spacing(2),
         flex: 1,
     },
-    switches: {
-        margin: theme.spacing(1),
-    },
+    // switches: {
+    //     margin: theme.spacing(1),
+    // },
 
-    marginBottom: {
-        marginBottom: theme.spacing(3),
-    },
+    // marginBottom: {
+    //     marginBottom: theme.spacing(3),
+    // },
     actionsContainer: {
         marginBottom: theme.spacing(2),
     },
@@ -63,122 +56,29 @@ const useStyles = makeStyles(theme => ({
     },
 }));
 
-function getSteps() {
-    return ['Оборудование', 'Службы', 'Описание'];
-}
-
-function Machine(props) {
-    const {nameMachine} = props;
-
-    return (
-        <div>
-            <h2>{nameMachine}</h2>
-        </div>
-
-    )
-}
-
-Machine.propTypes = {
-    nameMachine: PropTypes.string
-};
-
-function ServicesSelect(props) {
-    const classes = useStyles();
-    const [state, setState] = React.useState({
-        tech: false,
-        energo: false,
-        electro: false,
-        mech: false
-    });
-
-    const handleChange = (event) => {
-        setState({...state, [event.target.name]: event.target.checked});
-    };
-
-    return (
-        <FormControl component="fieldset">
-            {/*<FormLabel component="legend">Assign responsibility</FormLabel>*/}
-            <FormGroup className={classes.marginBottom}>
-                <FormControlLabel
-                    control={<Switch checked={state.tech} onChange={handleChange} name="tech"/>}
-                    label="Технологи"
-                    className={classes.switches}
-                />
-                <FormControlLabel
-                    control={<Switch checked={state.energo} onChange={handleChange} name="energo"/>}
-                    label="Энергетики"
-                    className={classes.switches}
-                />
-                <FormControlLabel
-                    control={<Switch checked={state.mech} onChange={handleChange} name="mech"/>}
-                    label="Механики"
-                    className={classes.switches}
-                />
-                <FormControlLabel
-                    control={<Switch checked={state.electro} onChange={handleChange} name="electro"/>}
-                    label="Электроники"
-                    className={classes.switches}
-                />
-            </FormGroup>
-            {/*<FormHelperText>Be careful</FormHelperText>*/}
-        </FormControl>
-    );
-}
-
-ServicesSelect.propTypes = {
-    nameMachine: PropTypes.string
-
-};
-
-function MultilineTextFields() {
-    const classes = useStyles();
-    const [value, setValue] = React.useState('Controlled');
-
-    const handleChange = (event) => {
-        setValue(event.target.value);
-    };
-
-    return (
-        <form className={classes.multilineTextFields} noValidate autoComplete="off">
-            <div>
-                <TextField
-                    id="outlined-multiline-static"
-                    label=""
-                    multiline
-                    rows={4}
-                    defaultValue=""
-                    variant="outlined"
-                />
-            </div>
-        </form>
-    );
-}
-
-// function getStepContent(props) {
-//     const {step, idMachine, nameMachine } = props;
-//     switch (step) {
-//         case 0:
-//             return (
-//                 <Machine nameMachine={nameMachine}/>
-//             );
-//         case 1:
-//             return (
-//                 <ServicesSelect/>
-//             );
-//         case 2:
-//             return (
-//                 <MultilineTextFields/>
-//             );
-//         default:
-//             return 'Unknown step';
-//     }
-// }
+// function MultilineTextFields() {
+//     const classes = useStyles();
+//     const [value, setValue] = React.useState('Controlled');
 //
-// getStepContent.propTypes = {
-//     step: PropTypes.number,
-//     idMachine: PropTypes.number,
-//     nameMachine:PropTypes.string
-// };
+//     const handleChange = (event) => {
+//         setValue(event.target.value);
+//     };
+//
+//     return (
+//         <form className={classes.multilineTextFields} noValidate autoComplete="off">
+//             <div>
+//                 <TextField
+//                     id="outlined-multiline-static"
+//                     label=""
+//                     multiline
+//                     rows={4}
+//                     defaultValue=""
+//                     variant="outlined"
+//                 />
+//             </div>
+//         </form>
+//     );
+// }
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
@@ -187,70 +87,62 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function RepairAddDialog(props) {
     const classes = useStyles();
     const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
-    const [activeStep, setActiveStep] = React.useState(0);
-    // const steps = getSteps();
-    // const steps = ['Оборудование:', 'Службы:', 'Описание:'];
+    const [activeStep, setActiveStep] = React.useState(1);
+
     const [steps, setSteps] = React.useState({
         step1: 'Оборудование: ',
         step2: 'Службы: ',
-        step3: 'Описание: '
+        step3: 'Описание неисправности: ',
+        step4: 'Проверка и отправка'
     });
 
-    const [serviceSelect, setServiceSelect] = React.useState(['nt[', 'rte']);
-    const initState = {
-        nameMachine: {nameMachine},
-        services: [
+    const initServices = {
+        array: [
             {
                 key: 'tech',
                 name: 'Технологи',
                 checked: false
             }, {
+                key: 'energo',
+                name: 'Электрики',
+                checked: false
+            }, {
                 key: 'mech',
                 name: 'Механики',
                 checked: false
+            }, {
+                key: 'electro',
+                name: 'Электроники',
+                checked: false
             }
-        ],
-        text: ''
+        ]
     };
-    const [state, setState] = React.useState(initState);
-    let key = 2;
+    const initMachine = {
+        idMachine: idMachine,
+        nameMachine: nameMachine,
+    };
 
-    const handleChange = (event) => {
-        console.log(state);
-        setState(prevState => ({
-            ...state, services: prevState.services.map(
-                el => el.key === [event.target.key] ? {...el, checked : event.target.checked} : el
+    const [machine, setMachine]  = React.useState(initMachine);
+    const [services, setServices] = React.useState(initServices);
+    const [text, setText] = React.useState('');
+
+    const handleServiceSelect = (event) => {
+        // console.log(event.target.checked);
+        // console.log(event.target.name);
+        setServices(prevState => ({
+            ...services, array: services.array.map(
+                el => el.key === event.target.name ? {...el, checked: event.target.checked} : el
             )
-
         }));
-        console.log(state)
-        // setState({...state, [event.target.name]: event.target.checked});
-        // setState(prevState => ({
-        //     ...state, services: state.services.map(
-        //         (service, index) => (
-        //             service.index === 1 ? {...service, checked: true} : service
-        //         )
-        //     )
-        // }))
+    };
+
+    const handleTextChange = (event) => {
+        setText(event.target.value);
     };
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
-        console.log(state);
-        setState(prevState => ({
-            ...state, nameMachine: '2346'
-
-        }));
-        // setState(prevState => ({
-        //     ...state, todoItems: prevState.todoItems.map(
-        //         el => el.name === 'Learn React Basics' ? {...el, status: 'done'} : el
-        //     ),
-        //     // ...state, nameMachine: '234'
-        //
-        // }));
-        console.log(state)
-
-
+        // console.log(state)
     };
 
     const handleBack = () => {
@@ -260,6 +152,7 @@ export default function RepairAddDialog(props) {
     const handleReset = () => {
         setActiveStep(0);
     };
+
     // const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
 
     // const handleClickOpen = () => {
@@ -287,9 +180,9 @@ export default function RepairAddDialog(props) {
             </AppBar>
             <Stepper activeStep={activeStep} orientation="vertical">
                 <Step key='step1'>
-                    <StepLabel>{steps.step1}{state.nameMachine}</StepLabel>
+                    <StepLabel>{steps.step1} <b>{machine.nameMachine}</b></StepLabel>
                     <StepContent>
-                        <Typography> <Machine nameMachine={nameMachine}/> </Typography>
+                        <Typography> <MachineSelect nameMachine={machine.nameMachine}/> </Typography>
                         <div className={classes.actionsContainer}>
                             <div>
                                 <Button
@@ -312,9 +205,10 @@ export default function RepairAddDialog(props) {
                     </StepContent>
                 </Step>
                 <Step key='step2'>
-                    <StepLabel>{steps.step2} <b>{serviceSelect} </b></StepLabel>
+                    <StepLabel>{steps.step2} <ServicesText services={services.array}/></StepLabel>
                     <StepContent>
-                        <Typography><ServicesSelect/></Typography>
+                        <Typography><ServicesSelect services={services.array}
+                                                    handleChange={handleServiceSelect}/></Typography>
                         <div className={classes.actionsContainer}>
                             <div>
                                 <Button
@@ -325,6 +219,7 @@ export default function RepairAddDialog(props) {
                                     Назад
                                 </Button>
                                 <Button
+                                    disabled={services.array.filter((el)=>(el.checked)).length===0}
                                     variant="contained"
                                     color="primary"
                                     onClick={handleNext}
@@ -337,9 +232,36 @@ export default function RepairAddDialog(props) {
                     </StepContent>
                 </Step>
                 <Step key='step3'>
-                    <StepLabel>{steps.step3}</StepLabel>
+                    <StepLabel>{steps.step3} <b>{text}</b></StepLabel>
                     <StepContent>
-                        {/*<Typography>{getStepContent({step: 2, idMachine:0, nameMachine:'nameMachine'})}</Typography>*/}
+                        <Typography><MultilineTextFields text={text}
+                                                         handleChange={handleTextChange}/></Typography>
+                        <div className={classes.actionsContainer}>
+                            <div>
+                                <Button
+                                    disabled={activeStep === 0}
+                                    onClick={handleBack}
+                                    className={classes.button}
+                                >
+                                    Назад
+                                </Button>
+                                <Button
+                                    disabled={text.length === 0}
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleNext}
+                                    className={classes.button}
+                                >
+                                    {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}
+                                </Button>
+                            </div>
+                        </div>
+                    </StepContent>
+                </Step>
+                <Step key='step4'>
+                    <StepLabel>{steps.step4}</StepLabel>
+                    <StepContent>
+                        {/*<Typography></Typography>*/}
                         <div className={classes.actionsContainer}>
                             <div>
                                 <Button
@@ -355,39 +277,12 @@ export default function RepairAddDialog(props) {
                                     onClick={handleNext}
                                     className={classes.button}
                                 >
-                                    {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}
+                                    Отправить заявку
                                 </Button>
                             </div>
                         </div>
                     </StepContent>
                 </Step>
-                {/*{steps.map((step, index) => (*/}
-                {/*    <Step key={label}>*/}
-                {/*        <StepLabel>{label}</StepLabel>*/}
-                {/*        <StepContent>*/}
-                {/*            <Typography>{getStepContent({step: index, idMachine:0, nameMachine:'nameMachine'})}</Typography>*/}
-                {/*            <div className={classes.actionsContainer}>*/}
-                {/*                <div>*/}
-                {/*                    <Button*/}
-                {/*                        disabled={activeStep === 0}*/}
-                {/*                        onClick={handleBack}*/}
-                {/*                        className={classes.button}*/}
-                {/*                    >*/}
-                {/*                        Назад*/}
-                {/*                    </Button>*/}
-                {/*                    <Button*/}
-                {/*                        variant="contained"*/}
-                {/*                        color="primary"*/}
-                {/*                        onClick={handleNext}*/}
-                {/*                        className={classes.button}*/}
-                {/*                    >*/}
-                {/*                        {activeStep === steps.length - 1 ? 'Вызвать' : 'Далее'}*/}
-                {/*                    </Button>*/}
-                {/*                    </div>*/}
-                {/*            </div>*/}
-                {/*        </StepContent>*/}
-                {/*    </Step>*/}
-                {/*))}*/}
             </Stepper>
             {activeStep === steps.length && (
                 <Paper square elevation={0} className={classes.resetContainer}>
@@ -397,15 +292,6 @@ export default function RepairAddDialog(props) {
                     </Button>
                 </Paper>
             )}
-            {/*<List>*/}
-            {/*    <ListItem button>*/}
-            {/*        <ListItemText primary="Phone ringtone" secondary="Titania"/>*/}
-            {/*    </ListItem>*/}
-            {/*    <Divider/>*/}
-            {/*    <ListItem button>*/}
-            {/*        <ListItemText primary="Default notification ringtone" secondary="Tethys"/>*/}
-            {/*    </ListItem>*/}
-            {/*</List>*/}
         </Dialog>
     )
 }

@@ -17,7 +17,7 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import InfoIcon from "@material-ui/icons/Info";
 import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from "@material-ui/core/styles";
-import {Query} from "react-apollo";
+import {Query, useQuery} from "react-apollo";
 import {loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
@@ -210,93 +210,153 @@ ListDayInfoKMV.propTypes = {
     totalLength: PropTypes.number,
 };
 
+/**
+ * @return {string}
+ */
 function Machine(props) {
     const {id} = props.match.params;
+    const [name, setName] = React.useState('');
     const classes = useStyles();
-
-    useEffect(() => {
-        // Обновляем заголовок документа, используя API браузера
-        // store.dispatch({type:'SET_TITLE', text:`Оборудование #${id}`})
+    const {loading, error, data} = useQuery(MACHINE_QUERY, {
+        variables: {"pk": id}
     });
 
-    const handleSetTitle = (text) => {
-        store.dispatch({type: 'SET_TITLE', text: text})
-    };
+    if (loading) return ('Loading...');
+    if (error) return (`Error! ${error.message}`);
 
+    // useEffect(() => {
+    //     // Обновляем заголовок документа, используя API браузера
+    //     // store.dispatch({type:'SET_TITLE', text:`Оборудование #${id}`})
+    // });
+
+    // const handleSetTitle = (text) => {
+    //     store.dispatch({type: 'SET_TITLE', text: text})
+    // };
+
+    store.dispatch({type: 'SET_TITLE', text: data.machine.name});
     return (
         <div className={classes.root}>
             <div className={classes.content}>
-                {/*<Card className={classes.alert}>*/}
-                {/*    <CardContent>*/}
-                {/*        <List component="nav" aria-label="main mailbox folders">*/}
-                {/*            <ListItem button className={classes.list}>*/}
-                {/*                <Grid container wrap="nowrap" spacing={1}>*/}
-                {/*                    <Grid item>*/}
-
-                {/*                    </Grid>*/}
-                {/*                    <Grid item xs zeroMinWidth>*/}
-                {/*                        <Typography noWrap>Поломка крепления экструзионной головки</Typography>*/}
-                {/*                    </Grid>*/}
-                {/*                </Grid>*/}
-                {/*            </ListItem>*/}
-                {/*        </List>*/}
-
-                {/*        /!*This is a warning alert — <strong>check it out!</strong>*!/*/}
-                {/*    </CardContent>*/}
-                {/*</Card>*/}
-
                 <Card>
                     <CardContent>
                         <List component="nav" aria-label="main mailbox folders">
-                            <Query query={MACHINE_QUERY} variables={{"pk": id}}>
-                                {({loading, error, data}) => {
-                                    if (loading) return <div>Fetching</div>;
-                                    if (error) return <div>Error</div>;
-
-                                    return (
-                                        <Fragment>
-                                            {handleSetTitle(data.machine.name)}
-                                            {data.machine.days
-                                                .sort((a, b) => {
-                                                    if (a.day > b.day) return -1;
-                                                    if (a.day < b.day) return 1;
-                                                    return 0;
-                                                })
-                                                .map((day) => (
-                                                    <Fragment key={day.id}>
-                                                        <ListDay day={day.day}/>
-                                                        {day.valuesInMachine.length > 0 &&
-                                                        <ListDayInfoKMV id={id}
-                                                                        kmv={day.valuesInMachine[0].kmv}
-                                                                        totalLength={day.valuesInMachine[0].totalLength}/>
-                                                        }
-
-                                                        {day.stopTimeListsInMachine.length > 0 &&
-                                                        <ListDayInfoStopList id={id}
-                                                                             counter={day.stopTimeListsInMachine.length}
-                                                                             totalLength={day.totalStopTimeListInMachine}/>
-                                                        }
-                                                        {day.todoInMachine.length > 0 &&
-                                                        <ListDayInfoToDoList id={id}
-                                                                             counter={day.todoInMachine.length}
-                                                        />
-                                                        }
-
-                                                    </Fragment>
-
-                                                ))
+                            <Fragment>
+                                {/*{setName(data.machine.name)}*/}
+                                {/*{handleSetTitle(data.machine.name)}*/}
+                                {data.machine.days
+                                    .sort((a, b) => {
+                                        if (a.day > b.day) return -1;
+                                        if (a.day < b.day) return 1;
+                                        return 0;
+                                    })
+                                    .map((day) => (
+                                        <Fragment key={day.id}>
+                                            <ListDay day={day.day}/>
+                                            {day.valuesInMachine.length > 0 &&
+                                            <ListDayInfoKMV id={id}
+                                                            kmv={day.valuesInMachine[0].kmv}
+                                                            totalLength={day.valuesInMachine[0].totalLength}/>
                                             }
+
+                                            {day.stopTimeListsInMachine.length > 0 &&
+                                            <ListDayInfoStopList id={id}
+                                                                 counter={day.stopTimeListsInMachine.length}
+                                                                 totalLength={day.totalStopTimeListInMachine}/>
+                                            }
+                                            {day.todoInMachine.length > 0 &&
+                                            <ListDayInfoToDoList id={id}
+                                                                 counter={day.todoInMachine.length}
+                                            />
+                                            }
+
                                         </Fragment>
-                                    );
-                                }}
-                            </Query>
+
+                                    ))
+                                }
+                            </Fragment>
                         </List>
                     </CardContent>
                 </Card>
             </div>
-            <SpeedDialogs idMachine={id} nameMachine={'Machine Name'}/>
+            <SpeedDialogs idMachine={id} nameMachine={data.machine.name}/>
         </div>
-    )
+    );
+
+    // return (
+    //     <div className={classes.root}>
+    //         <div className={classes.content}>
+    //             {/*<Card className={classes.alert}>*/}
+    //             {/*    <CardContent>*/}
+    //             {/*        <List component="nav" aria-label="main mailbox folders">*/}
+    //             {/*            <ListItem button className={classes.list}>*/}
+    //             {/*                <Grid container wrap="nowrap" spacing={1}>*/}
+    //             {/*                    <Grid item>*/}
+    //
+    //             {/*                    </Grid>*/}
+    //             {/*                    <Grid item xs zeroMinWidth>*/}
+    //             {/*                        <Typography noWrap>Поломка крепления экструзионной головки</Typography>*/}
+    //             {/*                    </Grid>*/}
+    //             {/*                </Grid>*/}
+    //             {/*            </ListItem>*/}
+    //             {/*        </List>*/}
+    //
+    //             {/*        /!*This is a warning alert — <strong>check it out!</strong>*!/*/}
+    //             {/*    </CardContent>*/}
+    //             {/*</Card>*/}
+    //
+    //             <Card>
+    //                 <CardContent>
+    //                     <List component="nav" aria-label="main mailbox folders">
+    //                         <Query query={MACHINE_QUERY} variables={{"pk": id}}>
+    //                             {({loading, error, data}) => {
+    //                                 if (loading) return <div>Fetching</div>;
+    //                                 if (error) return <div>Error</div>;
+    //
+    //                                 return (
+    //                                     <Fragment>
+    //                                         {setName(data.machine.name)}
+    //                                         {handleSetTitle(data.machine.name)}
+    //                                         {data.machine.days
+    //                                             .sort((a, b) => {
+    //                                                 if (a.day > b.day) return -1;
+    //                                                 if (a.day < b.day) return 1;
+    //                                                 return 0;
+    //                                             })
+    //                                             .map((day) => (
+    //                                                 <Fragment key={day.id}>
+    //                                                     <ListDay day={day.day}/>
+    //                                                     {day.valuesInMachine.length > 0 &&
+    //                                                     <ListDayInfoKMV id={id}
+    //                                                                     kmv={day.valuesInMachine[0].kmv}
+    //                                                                     totalLength={day.valuesInMachine[0].totalLength}/>
+    //                                                     }
+    //
+    //                                                     {day.stopTimeListsInMachine.length > 0 &&
+    //                                                     <ListDayInfoStopList id={id}
+    //                                                                          counter={day.stopTimeListsInMachine.length}
+    //                                                                          totalLength={day.totalStopTimeListInMachine}/>
+    //                                                     }
+    //                                                     {day.todoInMachine.length > 0 &&
+    //                                                     <ListDayInfoToDoList id={id}
+    //                                                                          counter={day.todoInMachine.length}
+    //                                                     />
+    //                                                     }
+    //
+    //                                                 </Fragment>
+    //
+    //                                             ))
+    //                                         }
+    //                                     </Fragment>
+    //                                 );
+    //                             }}
+    //                         </Query>
+    //                     </List>
+    //                 </CardContent>
+    //             </Card>
+    //         </div>
+    //         <SpeedDialogs idMachine={id} nameMachine={name}/>
+    //     </div>
+    // );
 }
 
 // Machine.propTypes = {
