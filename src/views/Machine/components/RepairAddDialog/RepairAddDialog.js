@@ -17,6 +17,10 @@ import ServicesSelect from "../ServicesSelect"
 import ServicesText from "../ServicesText"
 import MultilineTextFields from "../MultilineTextFields"
 import ButtonGroupDialog from "../ButtonGroupDialog";
+import {loader} from "graphql.macro";
+import { useMutation } from '@apollo/react-hooks';
+
+// const ADD_REPAIR= loader('../../Graphql/MACHINE_QUERY.graphql');
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -45,6 +49,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function RepairAddDialog(props) {
     const classes = useStyles();
     const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
+    // const [addRepair] = useMutation(ADD_REPAIR);
     const [activeStep, setActiveStep] = React.useState(1);
 
     const [steps, setSteps] = React.useState({
@@ -107,8 +112,9 @@ export default function RepairAddDialog(props) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleReset = () => {
-        setActiveStep(0);
+    const handleFinish = () => {
+        // setActiveStep(0);
+        alert('qwer')
     };
 
     // const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
@@ -183,7 +189,7 @@ export default function RepairAddDialog(props) {
                         {/*<Typography></Typography>*/}
                         <ButtonGroupDialog
                             handleBack={handleBack}
-                            handleNext={handleNext}
+                            handleNext={handleFinish}
                             finishStepText='Отправить заявку'
                         />
                     </StepContent>

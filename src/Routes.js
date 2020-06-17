@@ -8,7 +8,7 @@ import StopTimeList from "./views/StopTimeList";
 import StopTimeLists from "./views/StopTimeLists";
 import ToDo from "./views/ToDo";
 import Machine from './views/Machine';
-import RepairsAdd from "./views/RepairsAdd";
+import RepairsAdd from "./views/del_RepairsAdd";
 
 const Routes = () => {
     return (
