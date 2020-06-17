@@ -8,6 +8,7 @@ import BuildIcon from '@material-ui/icons/Build';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import {useHistory} from "react-router-dom";
+import StopTimeAddDialog from "../StopTimeAddDialog";
 import RepairAddDialog from "../RepairAddDialog";
 import PropTypes from "prop-types";
 
@@ -45,6 +46,7 @@ export default function SpeedDialogs(props) {
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
+    const [openStopTimeAddDialog, setOpenStopTimeAddDialog] = React.useState(false);
     let history = useHistory();
 
     const handleClose = () => {
@@ -62,6 +64,14 @@ export default function SpeedDialogs(props) {
         setOpenRepairAddDialog(false);
     };
 
+    const handleClickOpenStopTimeAddDialog = () => {
+        setOpenStopTimeAddDialog(true);
+    };
+
+    const handleCloseStopTimeAddDialog = () => {
+        setOpenStopTimeAddDialog(false);
+    };
+
     return (
         <Fragment>
             <div className={classes.exampleWrapper}>
@@ -77,9 +87,7 @@ export default function SpeedDialogs(props) {
                         <Grid container spacing={3} direction="column">
                             <Grid item>
                                 <Fab style={{color: "white", backgroundColor: "#3f51b5"}} variant="extended"
-                                     onClick={() => {
-                                         console.log('12')
-                                     }}>
+                                     onClick={handleClickOpenStopTimeAddDialog}>
                                     <AccessAlarmIcon className={classes.extendedIcon}/>
                                     Добавить простой
                                 </Fab>
@@ -101,6 +109,12 @@ export default function SpeedDialogs(props) {
                         </Grid>
                     </div>
                 </Backdrop>
+                <StopTimeAddDialog
+                    idMachine={idMachine}
+                    nameMachine={nameMachine}
+                    openRepairAddDialog={openStopTimeAddDialog}
+                    handleClose={handleCloseStopTimeAddDialog}
+                />
                 <RepairAddDialog
                     idMachine={idMachine}
                     nameMachine={nameMachine}
