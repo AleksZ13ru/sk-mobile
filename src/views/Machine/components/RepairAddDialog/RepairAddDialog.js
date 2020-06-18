@@ -18,9 +18,9 @@ import ServicesText from "../ServicesText"
 import MultilineTextFields from "../MultilineTextFields"
 import ButtonGroupDialog from "../ButtonGroupDialog";
 import {loader} from "graphql.macro";
-import { useMutation } from '@apollo/react-hooks';
+import {useMutation} from '@apollo/react-hooks';
 
-// const ADD_REPAIR= loader('../../Graphql/MACHINE_QUERY.graphql');
+const ADD_REPAIR = loader('../../Graphql/ADD_REPAIR.graphql');
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -49,7 +49,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function RepairAddDialog(props) {
     const classes = useStyles();
     const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
-    // const [addRepair] = useMutation(ADD_REPAIR);
+    const [addRepair] = useMutation(ADD_REPAIR);
     const [activeStep, setActiveStep] = React.useState(1);
 
     const [steps, setSteps] = React.useState({
@@ -62,18 +62,22 @@ export default function RepairAddDialog(props) {
     const initServices = {
         array: [
             {
+                id: 4,
                 key: 'tech',
                 name: 'Технологи',
                 checked: false
             }, {
+                id: 3,
                 key: 'energo',
                 name: 'Электрики',
                 checked: false
             }, {
+                id: 2,
                 key: 'mech',
                 name: 'Механики',
                 checked: false
             }, {
+                id: 1,
                 key: 'electro',
                 name: 'Электроники',
                 checked: false
@@ -85,7 +89,7 @@ export default function RepairAddDialog(props) {
         nameMachine: nameMachine,
     };
 
-    const [machine, setMachine]  = React.useState(initMachine);
+    const [machine, setMachine] = React.useState(initMachine);
     const [services, setServices] = React.useState(initServices);
     const [text, setText] = React.useState([]);
 
@@ -114,7 +118,17 @@ export default function RepairAddDialog(props) {
 
     const handleFinish = () => {
         // setActiveStep(0);
-        alert('qwer')
+        const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
+        console.log(array_service);
+        addRepair({
+            variables: {
+                machineId: idMachine,
+                // dtStart: "2020-05-29T00:00:00Z",
+                servicesID: array_service,
+                text: text
+            }
+        }).then(r => {
+        })
     };
 
     // const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
@@ -147,7 +161,7 @@ export default function RepairAddDialog(props) {
                     <StepLabel>{steps.step1} <b>{machine.nameMachine}</b></StepLabel>
                     <StepContent>
                         {/*<Typography> */}
-                            <MachineSelect nameMachine={machine.nameMachine}/>
+                        <MachineSelect nameMachine={machine.nameMachine}/>
                         {/*</Typography>*/}
                         <ButtonGroupDialog
                             disabledBack={true}
@@ -159,8 +173,8 @@ export default function RepairAddDialog(props) {
                     <StepLabel>{steps.step2} <ServicesText services={services.array}/></StepLabel>
                     <StepContent>
                         {/*<Typography>*/}
-                            <ServicesSelect services={services.array}
-                                                    handleChange={handleServiceSelect}/>
+                        <ServicesSelect services={services.array}
+                                        handleChange={handleServiceSelect}/>
                         {/*</Typography>*/}
                         <ButtonGroupDialog
                             disableNext={services.array.filter((el) => (el.checked)).length === 0}
@@ -173,8 +187,8 @@ export default function RepairAddDialog(props) {
                     <StepLabel>{steps.step3} <b>{text}</b></StepLabel>
                     <StepContent>
                         {/*<Typography>*/}
-                            <MultilineTextFields text={text}
-                                                         handleChange={handleTextChange}/>
+                        <MultilineTextFields text={text}
+                                             handleChange={handleTextChange}/>
                         {/*</Typography>*/}
                         <ButtonGroupDialog
                             disableNext={text.length === 0}

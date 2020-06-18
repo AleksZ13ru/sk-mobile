@@ -5,10 +5,27 @@ schema {
     mutation: Mutation
 }
 
+type AddCrashListMutation {
+    crash: CrashListType
+}
+
 type CategoryType {
     id: ID!
     machines: [MachineType!]!
     name: String!
+}
+
+type CrashListType {
+    comment: String!
+    dayStart: DayType!
+    dayStop: DayType
+    id: ID!
+    machine: MachineType!
+    services: [ServiceNameType!]!
+    status: String!
+    text: String!
+    timeStart: Time!
+    timeStop: Time
 }
 
 type CreateUser {
@@ -16,12 +33,15 @@ type CreateUser {
 }
 
 type DayType {
+    crashListInDayStart: [CrashListType!]!
+    crashListInMachine(pk: Int): [CrashListType]
+    crashlistSet: [CrashListType!]!
     day: Date!
     id: ID!
     stopTimeListInDayStart: [StopTimeListType!]!
     stopTimeListsInMachine(pk: Int): [StopTimeListType]
     stoptimelistSet: [StopTimeListType!]!
-    todoInMachine(pk: Int): [StopTimeListType]
+    todoInMachine(pk: Int): [ToDoListType]
     todoListInDayStart: [ToDoListType!]!
     todolistSet: [ToDoListType!]!
     totalStopTimeListInMachine(pk: Int): Float
@@ -42,6 +62,7 @@ type MachineType {
     id: ID!
     kmv: Float
     location: LocationType!
+    machineCrashLists: [CrashListType!]!
     machineStopTimeList: [StopTimeListType!]!
     machineTodoList: [ToDoListType!]!
     machineValue: [ValueType!]!
@@ -49,6 +70,7 @@ type MachineType {
 }
 
 type Mutation {
+    addCrash(dtStart: DateTime, machineId: Int, servicesId: [Int], text: String): AddCrashListMutation
     createUser(email: String!, password: String!, username: String!): CreateUser
     refreshToken(token: String): Refresh
     "Obtain JSON Web Token mutation"
@@ -82,6 +104,7 @@ type Refresh {
 }
 
 type ServiceNameType {
+    crashlistSet: [CrashListType!]!
     id: ID!
     name: String!
     servicesStopTimeList: [StopTimeListType!]!

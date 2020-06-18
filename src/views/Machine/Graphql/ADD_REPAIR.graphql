@@ -1,0 +1,7 @@
+#{"machineId": 1, "dtStart": "2020-05-29T00:00:00Z", "servicesID":[1,2] , "text": "Hello"}
+mutation AddCrash($machineId:Int!, $servicesID:[Int], $text:String!){
+#   addCrash(machineId:$machineId, dtStart:$dtStart, servicesId:$servicesID, text:$text){
+       addCrash(machineId:$machineId, servicesId:$servicesID, text:$text){
+     crash{id}
+   }
+ }
