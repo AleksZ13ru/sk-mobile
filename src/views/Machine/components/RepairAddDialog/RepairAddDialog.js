@@ -19,10 +19,17 @@ import MultilineTextFields from "../MultilineTextFields"
 import ButtonGroupDialog from "../ButtonGroupDialog";
 import {loader} from "graphql.macro";
 import {useMutation} from '@apollo/react-hooks';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const ADD_REPAIR = loader('../../Graphql/ADD_REPAIR.graphql');
 
 const useStyles = makeStyles(theme => ({
+    rootProgress: {
+        width: '100%',
+        '& > * + *': {
+            marginTop: theme.spacing(2),
+        },
+    },
     appBar: {
         position: 'relative',
     },
@@ -49,7 +56,19 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function RepairAddDialog(props) {
     const classes = useStyles();
     const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
-    const [addRepair] = useMutation(ADD_REPAIR);
+
+    function onCompleted() {
+        setMachine(initMachine);
+        setServices(initServices);
+        setText([]);
+        setActiveStep(1);
+        handleClose();
+    }
+
+    const [addRepair,
+        {loading: mutationLoading, error: mutationError},
+
+    ] = useMutation(ADD_REPAIR, {onCompleted});
     const [activeStep, setActiveStep] = React.useState(1);
 
     const [steps, setSteps] = React.useState({
@@ -119,16 +138,15 @@ export default function RepairAddDialog(props) {
     const handleFinish = () => {
         // setActiveStep(0);
         const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
-        console.log(array_service);
         addRepair({
             variables: {
                 machineId: idMachine,
                 // dtStart: "2020-05-29T00:00:00Z",
                 servicesID: array_service,
                 text: text
-            }
-        }).then(r => {
-        })
+            },
+
+        }).then(r => {});
     };
 
     // const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
@@ -201,6 +219,11 @@ export default function RepairAddDialog(props) {
                     <StepLabel>{steps.step4}</StepLabel>
                     <StepContent>
                         {/*<Typography></Typography>*/}
+                        {mutationLoading &&
+                        <div className={classes.rootProgress}>
+                            <LinearProgress/>
+                        </div>}
+                        {mutationError && <p><b>Не удалось отправить заявку</b></p>}
                         <ButtonGroupDialog
                             handleBack={handleBack}
                             handleNext={handleFinish}

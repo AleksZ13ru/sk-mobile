@@ -18,7 +18,7 @@ import InfoIcon from "@material-ui/icons/Info";
 import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from "@material-ui/core/styles";
 import {Query, useQuery} from "react-apollo";
-import {loader} from "graphql.macro";
+import {gql, loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {store} from "../../store";
@@ -26,6 +26,7 @@ import SpeedDialogs from   "./components/SpeedDialogs"
 import DetailsStopTimeList from "./components/DetailsStopTimeList";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
+import {useSubscription} from "@apollo/react-hooks";
 
 
 const MACHINE_QUERY = loader('./Graphql/MACHINE_QUERY.graphql');
@@ -212,9 +213,13 @@ ListDayInfoKMV.propTypes = {
     totalLength: PropTypes.number,
 };
 
-/**
- * @return {string}
- */
+
+const COMMENTS_SUBSCRIPTION = gql`
+    subscription{
+        timeOfDay
+    }
+`;
+
 function Machine(props) {
     const {id} = props.match.params;
     // const [name, setName] = React.useState('');
@@ -222,7 +227,10 @@ function Machine(props) {
     const {loading, error, data} = useQuery(MACHINE_QUERY, {
         variables: {"pk": id}
     });
-
+    const { dataSub, loadingSub } = useSubscription(
+        COMMENTS_SUBSCRIPTION,
+        { variables: {} }
+    );
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);
 
@@ -235,9 +243,11 @@ function Machine(props) {
     //     store.dispatch({type: 'SET_TITLE', text: text})
     // };
 
+
     store.dispatch({type: 'SET_TITLE', text: data.machine.name});
     return (
         <div className={classes.root}>
+            <h1>{console.log(dataSub)}</h1>
             <div className={classes.content}>
                 <Card>
                     <CardContent>

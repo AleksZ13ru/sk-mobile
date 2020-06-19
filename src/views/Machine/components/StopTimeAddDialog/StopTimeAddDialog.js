@@ -21,11 +21,15 @@ import ServicesText from "../ServicesText"
 import MultilineTextFields from "../MultilineTextFields"
 import DateTimeSelect from "./components/DateTimeSelect";
 import ButtonGroupDialog from "../ButtonGroupDialog"
+import {loader} from "graphql.macro";
+import {useMutation} from "@apollo/react-hooks";
+import LinearProgress from "@material-ui/core/LinearProgress";
 // import Paper from "@material-ui/core/Paper";
 // import TextField from "@material-ui/core/TextField";
 // import {DatePicker, KeyboardDatePicker} from "@material-ui/pickers";
 // import {TimePicker, KeyboardTimePicker} from "@material-ui/pickers";
 
+const ADD_STOP_TIME = loader('../../Graphql/ADD_STOP_TIME.graphql');
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -44,8 +48,24 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
+function DateIsValid(Date){
+    return (Date !== null && !isNaN(Date.getTime()))
+}
+
 export default function StopTimeAddDialog(props) {
     const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
+    function onCompleted() {
+        setMachine(initMachine);
+        setServices(initServices);
+        setText([]);
+        setActiveStep(1);
+        handleClose();
+    }
+
+    const [addStopTime,
+        {loading: mutationLoading, error: mutationError},
+
+    ] = useMutation(ADD_STOP_TIME, {onCompleted});
     const [activeStep, setActiveStep] = React.useState(1);
     const classes = useStyles();
     const formatDT = "dd MMMM yyyy г. HH:mm";
@@ -62,24 +82,29 @@ export default function StopTimeAddDialog(props) {
     const initServices = {
         array: [
             {
+                id: 4,
                 key: 'tech',
                 name: 'Технологи',
                 checked: false
             }, {
+                id: 3,
                 key: 'energo',
                 name: 'Электрики',
                 checked: false
             }, {
+                id: 2,
                 key: 'mech',
                 name: 'Механики',
                 checked: false
             }, {
+                id: 1,
                 key: 'electro',
                 name: 'Электроники',
                 checked: false
             }
         ]
     };
+
     const initMachine = {
         idMachine: idMachine,
         nameMachine: nameMachine,
@@ -89,7 +114,7 @@ export default function StopTimeAddDialog(props) {
     const [services, setServices] = React.useState(initServices);
     const [selectedDateStart, handleDateChangeStart] = React.useState(new Date());
     const [selectedDateStop, handleDateChangeStop] = React.useState(new Date());
-    const [text, setText] = React.useState('');
+    const [text, setText] = React.useState([]);
 
     const handleServiceSelect = (event) => {
         setServices(prevState => ({
@@ -110,6 +135,23 @@ export default function StopTimeAddDialog(props) {
 
     const handleBack = () => {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
+    };
+
+    const handleFinish = () => {
+        // setActiveStep(0);
+        const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
+        addStopTime({
+            variables: {
+                machineId: idMachine,
+                // dtStart: "2020-05-29T00:00:00Z",
+                // dtStop: "2020-05-29T00:00:00Z",
+                dtStart: selectedDateStart,
+                dtStop: selectedDateStop,
+                servicesID: array_service,
+                text: text
+            },
+
+        }).then(r => {});
     };
 
     return (
@@ -153,13 +195,14 @@ export default function StopTimeAddDialog(props) {
                 </Step>
                 <Step key='step3'>
                     <StepLabel>{steps.step3}
-                        {activeStep > 1 &&
+                        {(activeStep > 1 && DateIsValid(selectedDateStart)) &&
                         <p><b>{format(selectedDateStart, formatDT, {locale: ruLocale})}</b></p>
                         }
                     </StepLabel>
                     <StepContent>
                         <DateTimeSelect selectedDate={selectedDateStart} handleDateChange={handleDateChangeStart}/>
                         <ButtonGroupDialog
+                            disableNext={!DateIsValid(selectedDateStart)}
                             handleBack={handleBack}
                             handleNext={handleNext}
                         />
@@ -167,13 +210,14 @@ export default function StopTimeAddDialog(props) {
                 </Step>
                 <Step key='step4'>
                     <StepLabel>{steps.step4}
-                        {activeStep > 2 &&
+                        {(activeStep > 2 && DateIsValid(selectedDateStop)) &&
                         <p><b>{format(selectedDateStop, formatDT, {locale: ruLocale})}</b></p>
                         }
                     </StepLabel>
                     <StepContent>
                         <DateTimeSelect selectedDate={selectedDateStop} handleDateChange={handleDateChangeStop}/>
                         <ButtonGroupDialog
+                            disableNext={!DateIsValid(selectedDateStop)}
                             handleBack={handleBack}
                             handleNext={handleNext}
                         />
@@ -183,8 +227,8 @@ export default function StopTimeAddDialog(props) {
                     <StepLabel>{steps.step5} <b>{text}</b></StepLabel>
                     <StepContent>
                         {/*<Typography>*/}
-                            <MultilineTextFields text={text}
-                                                         handleChange={handleTextChange}/>
+                        <MultilineTextFields text={text}
+                                             handleChange={handleTextChange}/>
                         {/*</Typography>*/}
                         <ButtonGroupDialog
                             disableNext={text.length === 0}
@@ -196,10 +240,14 @@ export default function StopTimeAddDialog(props) {
                 <Step key='step6'>
                     <StepLabel>{steps.step6}</StepLabel>
                     <StepContent>
-                        {/*<Typography></Typography>*/}
+                        {mutationLoading &&
+                        <div className={classes.rootProgress}>
+                            <LinearProgress/>
+                        </div>}
+                        {mutationError && <p><b>Не удалось добавить простой</b></p>}
                         <ButtonGroupDialog
                             handleBack={handleBack}
-                            handleNext={handleNext}
+                            handleNext={handleFinish}
                             finishStepText='Добавить простой'
                         />
                     </StepContent>
