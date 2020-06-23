@@ -24,6 +24,8 @@ import ButtonGroupDialog from "../ButtonGroupDialog"
 import {loader} from "graphql.macro";
 import {useMutation} from "@apollo/react-hooks";
 import LinearProgress from "@material-ui/core/LinearProgress";
+import DateTimeString from "./components/DateTimeString";
+import {datePickerDefaultProps} from "@material-ui/pickers/constants/prop-types";
 // import Paper from "@material-ui/core/Paper";
 // import TextField from "@material-ui/core/TextField";
 // import {DatePicker, KeyboardDatePicker} from "@material-ui/pickers";
@@ -48,12 +50,13 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function DateIsValid(Date){
+function DateIsValid(Date) {
     return (Date !== null && !isNaN(Date.getTime()))
 }
 
 export default function StopTimeAddDialog(props) {
     const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
+
     function onCompleted() {
         setMachine(initMachine);
         setServices(initServices);
@@ -113,7 +116,9 @@ export default function StopTimeAddDialog(props) {
     const [machine, setMachine] = React.useState(initMachine);
     const [services, setServices] = React.useState(initServices);
     const [selectedDateStart, handleDateChangeStart] = React.useState(new Date());
+    const [selectedTimeStart, handleTimeChangeStart] = React.useState(new Date());
     const [selectedDateStop, handleDateChangeStop] = React.useState(new Date());
+    const [selectedTimeStop, handleTimeChangeStop] = React.useState(new Date());
     const [text, setText] = React.useState([]);
 
     const handleServiceSelect = (event) => {
@@ -151,7 +156,8 @@ export default function StopTimeAddDialog(props) {
                 text: text
             },
 
-        }).then(r => {});
+        }).then(r => {
+        });
     };
 
     return (
@@ -195,14 +201,20 @@ export default function StopTimeAddDialog(props) {
                 </Step>
                 <Step key='step3'>
                     <StepLabel>{steps.step3}
-                        {(activeStep > 1 && DateIsValid(selectedDateStart)) &&
-                        <p><b>{format(selectedDateStart, formatDT, {locale: ruLocale})}</b></p>
+                        {/*{(activeStep > 1 && DateIsValid(selectedDateStart) && DateIsValid(selectedTimeStart)) &&*/}
+                        {activeStep > 1 &&
+                        <DateTimeString date={selectedDateStart} time={selectedTimeStart}/>
+                        // <p><b>{format(selectedDateStart, formatDT, {locale: ruLocale})}</b></p>
                         }
                     </StepLabel>
                     <StepContent>
-                        <DateTimeSelect selectedDate={selectedDateStart} handleDateChange={handleDateChangeStart}/>
+                        <DateTimeSelect selectedDate={selectedDateStart}
+                                        selectedTime={selectedTimeStart}
+                                        handleDateChange={handleDateChangeStart}
+                                        handleTimeChange={handleTimeChangeStart}
+                        />
                         <ButtonGroupDialog
-                            disableNext={!DateIsValid(selectedDateStart)}
+                            disableNext={!DateIsValid(selectedDateStart) && !DateIsValid(selectedTimeStart)}
                             handleBack={handleBack}
                             handleNext={handleNext}
                         />
@@ -210,12 +222,21 @@ export default function StopTimeAddDialog(props) {
                 </Step>
                 <Step key='step4'>
                     <StepLabel>{steps.step4}
-                        {(activeStep > 2 && DateIsValid(selectedDateStop)) &&
-                        <p><b>{format(selectedDateStop, formatDT, {locale: ruLocale})}</b></p>
+                        {/*{(activeStep > 2 && DateIsValid(selectedDateStop) && DateIsValid(selectedTimeStop)) &&*/}
+                        {/*<p><b>{format(selectedDateStop, formatDT, {locale: ruLocale})}</b></p>*/}
+                        {/*}*/}
+                        {activeStep > 2 &&
+                        <DateTimeString date={selectedDateStop} time={selectedTimeStop}/>
+                            // <p><b>{format(selectedDateStart, formatDT, {locale: ruLocale})}</b></p>
                         }
                     </StepLabel>
                     <StepContent>
-                        <DateTimeSelect selectedDate={selectedDateStop} handleDateChange={handleDateChangeStop}/>
+                        <DateTimeSelect
+                            selectedDate={selectedDateStop}
+                            selectedTime={selectedTimeStop}
+                            handleDateChange={handleDateChangeStop}
+                            handleTimeChange={handleTimeChangeStop}
+                        />
                         <ButtonGroupDialog
                             disableNext={!DateIsValid(selectedDateStop)}
                             handleBack={handleBack}

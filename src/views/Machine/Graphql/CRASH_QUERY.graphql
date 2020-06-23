@@ -1,0 +1,11 @@
+#{"pk": 1}
+query Crash($pk:Int!) {
+    crashElement(pk:$pk){
+        id
+        machine{name}
+        services{name}
+        dayStart{day}
+        timeStart
+        text
+    }
+}

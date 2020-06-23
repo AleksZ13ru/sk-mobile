@@ -26,12 +26,15 @@ import SpeedDialogs from "./components/SpeedDialogs"
 import DetailsStopTimeList from "./components/DetailsStopTimeList";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
-import {useSubscription} from "@apollo/react-hooks";
 import Typography from "@material-ui/core/Typography";
-import CrashList from "./components/CrashList"
+import CrashAlert from "./components/CrashAlert"
 import CardActions from "@material-ui/core/CardActions";
 import Button from "@material-ui/core/Button";
 import FlagIcon from '@material-ui/icons/Flag';
+import Paper from "@material-ui/core/Paper";
+import Alert from "@material-ui/lab/Alert";
+import AlertTitle from "@material-ui/lab/AlertTitle";
+import CrashDialogEdit from "./components/CrashDialogEdit/CrashDialogEdit";
 
 const MACHINE_QUERY = loader('./Graphql/MACHINE_QUERY.graphql');
 
@@ -44,16 +47,16 @@ const useStyles = makeStyles(theme => ({
     content: {
         marginTop: theme.spacing(0)
     },
-    alert: {
-        marginBottom: theme.spacing(2),
-        color: '#fff',
-        backgroundColor: '#ff9800',
+    // alert: {
+    //     marginBottom: theme.spacing(2),
+        // color: '#fff',
+        // backgroundColor: '#ff9800',
 
         // color: '#f44336',
         // color: '#2196f3',
         // color: '#4caf50'
 
-    },
+    // },
     row: {
         height: '42px',
         display: 'flex',
@@ -62,7 +65,7 @@ const useStyles = makeStyles(theme => ({
     },
     list: {
         paddingLeft: theme.spacing(0),
-    }
+    },
 
 }));
 
@@ -137,6 +140,61 @@ function ListDayInfoStopList(props) {
 }
 
 ListDayInfoStopList.propTypes = {
+    id: PropTypes.string,
+    counter: PropTypes.number,
+    totalLength: PropTypes.number,
+};
+
+function ListDayInfoCrashList(props) {
+    const {id, counter, totalLength} = props;
+    const classes = useStyles();
+
+    const [open, setOpen] = React.useState(false);
+
+    // const handleClickOpen = () => {
+    //     setOpen(true);
+    // };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const handleClickOpen = () => {
+        setOpen(true);
+        console.log('click')
+    };
+
+    return (
+        <Fragment>
+            <DetailsStopTimeList open={open} handleClose={handleClose}/>
+            <ListItem key={id} button className={classes.list}
+                // component={Link}
+                // to={`#`}
+                      onClick={handleClickOpen}
+            >
+                <Grid container
+                      spacing={2}
+                      direction="row"
+                      justify="space-between"
+                      alignItems="center">
+                    <Grid item xs={1}>
+
+                    </Grid>
+                    <Grid item xs={8}>
+                        <ListItemText primary={`Ремонты: ${counter}`} secondary="шт."/>
+                    </Grid>
+                    <Grid item xs={3}>
+                        {/*<ListItemText primary={`На ${totalLength} ч.`} secondary=""/>*/}
+                        <ListItemText primary={totalLength.toFixed(1)} secondary="час."/>
+                    </Grid>
+                </Grid>
+            </ListItem>
+        </Fragment>
+
+    )
+}
+
+ListDayInfoCrashList.propTypes = {
     id: PropTypes.string,
     counter: PropTypes.number,
     totalLength: PropTypes.number,
@@ -219,12 +277,6 @@ ListDayInfoKMV.propTypes = {
 };
 
 
-const COMMENTS_SUBSCRIPTION = gql`
-    subscription{
-        timeOfDay
-    }
-`;
-
 function Machine(props) {
     const {id} = props.match.params;
     // const [name, setName] = React.useState('');
@@ -233,10 +285,6 @@ function Machine(props) {
         variables: {"pk": id},
         pollInterval: 5000,
     });
-    const {dataSub, loadingSub} = useSubscription(
-        COMMENTS_SUBSCRIPTION,
-        {variables: {}}
-    );
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);
 
@@ -256,50 +304,24 @@ function Machine(props) {
     store.dispatch({type: 'SET_TITLE', text: data.machine.name});
     return (
         <div className={classes.root}>
-            <h1>{console.log(dataSub)}</h1>
             <div className={classes.content}>
-                <Card className={classes.alert}>
-                    <CardContent>
-                        <List component="nav" aria-label="main mailbox folders">
-                            <CrashList id={1} counter={1} totalLength={1}/>
-                        </List>
-                    </CardContent>
-                </Card>
-                <Card className={classes.alert}>
-                    <CardContent>
-                        <List component="nav" aria-label="main mailbox folders">
-                            <CrashList id={1} counter={1} totalLength={1}/>
-                        </List>
-                    </CardContent>
-                </Card>
-                <Card className={classes.alert}>
-                    <CardContent>
-                        <List component="nav" aria-label="main mailbox folders">
-                            <CrashList id={1} counter={1} totalLength={1}/>
-                        </List>
-                    </CardContent>
-                </Card>
-                {/*<Card className={classes.alert}>*/}
-                {/*    <CardContent>*/}
-                {/*        <List component="nav" aria-label="main mailbox folders">*/}
-                {/*            <CrashList id={1} counter={1} totalLength={1}/>*/}
-                {/*        </List>*/}
-                {/*    </CardContent>*/}
-                {/*</Card>*/}
-                {/*<Card className={classes.alert}>*/}
-                {/*    <CardContent>*/}
-                {/*        <List component="nav" aria-label="main mailbox folders">*/}
-                {/*            <CrashList id={1} counter={1} totalLength={1}/>*/}
-                {/*        </List>*/}
-                {/*    </CardContent>*/}
-                {/*</Card>*/}
-                {/*<Card className={classes.alert}>*/}
-                {/*    <CardContent>*/}
-                {/*        <List component="nav" aria-label="main mailbox folders">*/}
-                {/*            <CrashList id={1} counter={1} totalLength={1}/>*/}
-                {/*        </List>*/}
-                {/*    </CardContent>*/}
-                {/*</Card>*/}
+                {data.machine.days
+                    .map((day)=>(
+                        day.crashListInMachine.map(crash=>(
+                            crash.timeStop == null &&
+                            <CrashAlert
+                                key={crash.id}
+                                services={crash.services.map(service=>service.name)}
+                                text={crash.text}
+                                crashId={crash.id}
+                                handleUpdateMachine={handleUpdateMachine}
+                            />
+                        ))
+                    ))
+                }
+                {/*<CrashDialogEdit*/}
+                {/*    open={true}*/}
+                {/*/>*/}
                 <Card>
                     <CardContent>
                         <List component="nav" aria-label="main mailbox folders">
@@ -331,7 +353,11 @@ function Machine(props) {
                                                                  counter={day.todoInMachine.length}
                                             />
                                             }
-
+                                            {day.crashListInMachine.length > 0 &&
+                                            <ListDayInfoCrashList id={id}
+                                                                 counter={day.crashListInMachine.length}
+                                                                 totalLength={0}/>
+                                            }
                                         </Fragment>
 
                                     ))
@@ -344,82 +370,6 @@ function Machine(props) {
             <SpeedDialogs idMachine={id} nameMachine={data.machine.name} handleUpdateMachine={handleUpdateMachine}/>
         </div>
     );
-
-    // return (
-    //     <div className={classes.root}>
-    //         <div className={classes.content}>
-    //             {/*<Card className={classes.alert}>*/}
-    //             {/*    <CardContent>*/}
-    //             {/*        <List component="nav" aria-label="main mailbox folders">*/}
-    //             {/*            <ListItem button className={classes.list}>*/}
-    //             {/*                <Grid container wrap="nowrap" spacing={1}>*/}
-    //             {/*                    <Grid item>*/}
-    //
-    //             {/*                    </Grid>*/}
-    //             {/*                    <Grid item xs zeroMinWidth>*/}
-    //             {/*                        <Typography noWrap>Поломка крепления экструзионной головки</Typography>*/}
-    //             {/*                    </Grid>*/}
-    //             {/*                </Grid>*/}
-    //             {/*            </ListItem>*/}
-    //             {/*        </List>*/}
-    //
-    //             {/*        /!*This is a warning alert — <strong>check it out!</strong>*!/*/}
-    //             {/*    </CardContent>*/}
-    //             {/*</Card>*/}
-    //
-    //             <Card>
-    //                 <CardContent>
-    //                     <List component="nav" aria-label="main mailbox folders">
-    //                         <Query query={MACHINE_QUERY} variables={{"pk": id}}>
-    //                             {({loading, error, data}) => {
-    //                                 if (loading) return <div>Fetching</div>;
-    //                                 if (error) return <div>Error</div>;
-    //
-    //                                 return (
-    //                                     <Fragment>
-    //                                         {setName(data.machine.name)}
-    //                                         {handleSetTitle(data.machine.name)}
-    //                                         {data.machine.days
-    //                                             .sort((a, b) => {
-    //                                                 if (a.day > b.day) return -1;
-    //                                                 if (a.day < b.day) return 1;
-    //                                                 return 0;
-    //                                             })
-    //                                             .map((day) => (
-    //                                                 <Fragment key={day.id}>
-    //                                                     <ListDay day={day.day}/>
-    //                                                     {day.valuesInMachine.length > 0 &&
-    //                                                     <ListDayInfoKMV id={id}
-    //                                                                     kmv={day.valuesInMachine[0].kmv}
-    //                                                                     totalLength={day.valuesInMachine[0].totalLength}/>
-    //                                                     }
-    //
-    //                                                     {day.stopTimeListsInMachine.length > 0 &&
-    //                                                     <ListDayInfoStopList id={id}
-    //                                                                          counter={day.stopTimeListsInMachine.length}
-    //                                                                          totalLength={day.totalStopTimeListInMachine}/>
-    //                                                     }
-    //                                                     {day.todoInMachine.length > 0 &&
-    //                                                     <ListDayInfoToDoList id={id}
-    //                                                                          counter={day.todoInMachine.length}
-    //                                                     />
-    //                                                     }
-    //
-    //                                                 </Fragment>
-    //
-    //                                             ))
-    //                                         }
-    //                                     </Fragment>
-    //                                 );
-    //                             }}
-    //                         </Query>
-    //                     </List>
-    //                 </CardContent>
-    //             </Card>
-    //         </div>
-    //         <SpeedDialogs idMachine={id} nameMachine={name}/>
-    //     </div>
-    // );
 }
 
 // Machine.propTypes = {

@@ -35,7 +35,15 @@ query Machine($pk:Int!){
             todoInMachine(pk:$pk){
                 text
             }
-
+            crashListInMachine(pk:$pk){
+                id
+                text
+                timeStop
+                services{
+                    id
+                    name
+                }
+            }
 
         }
     }

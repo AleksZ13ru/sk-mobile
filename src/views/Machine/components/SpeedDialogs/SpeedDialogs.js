@@ -9,7 +9,7 @@ import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import {useHistory} from "react-router-dom";
 import StopTimeAddDialog from "../StopTimeAddDialog";
-import RepairAddDialog from "../RepairAddDialog";
+import CrashDialogAdd from "../CrashDialogAdd";
 import PropTypes from "prop-types";
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +45,7 @@ export default function SpeedDialogs(props) {
     const {idMachine, nameMachine, handleUpdateMachine} = props;
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
+    const [openCrashDialog, setOpenRepairAddDialog] = React.useState(false);
     const [openStopTimeAddDialog, setOpenStopTimeAddDialog] = React.useState(false);
     let history = useHistory();
 
@@ -60,7 +60,7 @@ export default function SpeedDialogs(props) {
         setOpenRepairAddDialog(true);
     };
 
-    const handleCloseRepairAddDialog = () => {
+    const handleCloseCrashDialogAdd = () => {
         setOpenRepairAddDialog(false);
     };
 
@@ -116,11 +116,11 @@ export default function SpeedDialogs(props) {
                     openRepairAddDialog={openStopTimeAddDialog}
                     handleClose={handleCloseStopTimeAddDialog}
                 />
-                <RepairAddDialog
+                <CrashDialogAdd
                     idMachine={idMachine}
                     nameMachine={nameMachine}
-                    openRepairAddDialog={openRepairAddDialog}
-                    handleClose={handleCloseRepairAddDialog}
+                    openCrashDialogAdd={openCrashDialog}
+                    handleClose={handleCloseCrashDialogAdd}
                     />
             </div>
         </Fragment>

@@ -45,7 +45,7 @@ const useStyles = makeStyles(theme => ({
 
 
 function ListMachine(props) {
-    const {id, name, category, kmv} = props;
+    const {id, name, category, kmv, crash} = props;
     const classes = useStyles();
     return (
         <ListItem key={id} button className={classes.list} component={Link}
@@ -56,7 +56,7 @@ function ListMachine(props) {
                   justify="space-between"
                   alignItems="center">
                 <Grid item xs={1}>
-                    {0 === true &&
+                    {crash > 0  &&
                     <ListItemIcon>
                         <InfoIcon fontSize="small" color={"secondary"}/>
                     </ListItemIcon>
@@ -77,7 +77,8 @@ ListMachine.propTypes = {
     id: PropTypes.string,
     name: PropTypes.string,
     category: PropTypes.string,
-    kmv: PropTypes.number
+    kmv: PropTypes.number,
+    crash: PropTypes.number
 };
 
 function ListMachines(props) {
@@ -88,7 +89,7 @@ function ListMachines(props) {
                 .filter((machine) => (machine.name.toLowerCase().includes(searchFilter.toLowerCase())))
                 .map((machine) => (
                     <ListMachine key={machine.id} id={machine.id} name={machine.name} category={machine.category.name}
-                                 kmv={machine.kmv}/>
+                                 kmv={machine.kmv} crash={machine.crash}/>
                 ))}
         </Fragment>
     )

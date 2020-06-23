@@ -4,7 +4,7 @@ import {KeyboardDatePicker, KeyboardTimePicker} from "@material-ui/pickers";
 import StepContent from "@material-ui/core/StepContent";
 
 export default function DateTimeSelect(props) {
-    const {selectedDate, handleDateChange} = props;
+    const {selectedDate, selectedTime, handleDateChange, handleTimeChange} = props;
 
     return (
         <Fragment>
@@ -31,8 +31,8 @@ export default function DateTimeSelect(props) {
                 variant="inline"
                 id="time-picker"
                 label="Время"
-                value={selectedDate}
-                onChange={handleDateChange}
+                value={selectedTime}
+                onChange={handleTimeChange}
                 KeyboardButtonProps={{
                     'aria-label': 'change time',
                 }}
@@ -44,5 +44,7 @@ export default function DateTimeSelect(props) {
 
 DateTimeSelect.propTypes = {
     selectedDate: PropTypes.any,
-    handleDateChange: PropTypes.func
+    handleDateChange: PropTypes.func,
+    selectedTime: PropTypes.any,
+    handleTimeChange: PropTypes.func
 };

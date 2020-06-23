@@ -21,7 +21,7 @@ import {loader} from "graphql.macro";
 import {useMutation} from '@apollo/react-hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
 
-const ADD_REPAIR = loader('../../Graphql/ADD_REPAIR.graphql');
+const CRASH_ADD = loader('../../Graphql/CRASH_ADD.graphql');
 
 const useStyles = makeStyles(theme => ({
     rootProgress: {
@@ -53,9 +53,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function RepairAddDialog(props) {
+export default function CrashDialogAdd(props) {
     const classes = useStyles();
-    const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
+    const {openCrashDialogAdd, handleClose, idMachine, nameMachine} = props;
 
     function onCompleted() {
         setMachine(initMachine);
@@ -65,10 +65,10 @@ export default function RepairAddDialog(props) {
         handleClose();
     }
 
-    const [addRepair,
+    const [crashAdd,
         {loading: mutationLoading, error: mutationError},
 
-    ] = useMutation(ADD_REPAIR, {onCompleted});
+    ] = useMutation(CRASH_ADD, {onCompleted});
     const [activeStep, setActiveStep] = React.useState(1);
 
     const [steps, setSteps] = React.useState({
@@ -138,7 +138,17 @@ export default function RepairAddDialog(props) {
     const handleFinish = () => {
         // setActiveStep(0);
         const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
-        addRepair({
+        // crashAdd({
+        //     variables: {
+        //         machineId: idMachine,
+        //         // dtStart: "2020-05-29T00:00:00Z",
+        //         servicesID: array_service,
+        //         text: text
+        //     },
+        //
+        // }).then(r => {});
+        console.log(array_service);
+        crashAdd({
             variables: {
                 machineId: idMachine,
                 // dtStart: "2020-05-29T00:00:00Z",
@@ -160,7 +170,7 @@ export default function RepairAddDialog(props) {
     // };
 
     return (
-        <Dialog fullScreen open={openRepairAddDialog} onClose={handleClose} TransitionComponent={Transition}>
+        <Dialog fullScreen open={openCrashDialogAdd} onClose={handleClose} TransitionComponent={Transition}>
             <AppBar className={classes.appBar}>
                 <Toolbar style={{color: "white", backgroundColor: "#ff9800"}}>
                     <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
@@ -227,7 +237,7 @@ export default function RepairAddDialog(props) {
                         <ButtonGroupDialog
                             handleBack={handleBack}
                             handleNext={handleFinish}
-                            finishStepText='Отправить заявку'
+                            nextStepText='Отправить заявку'
                         />
                     </StepContent>
                 </Step>
@@ -244,8 +254,8 @@ export default function RepairAddDialog(props) {
     )
 }
 
-RepairAddDialog.propTypes = {
-    openRepairAddDialog: PropTypes.bool,
+CrashDialogAdd.propTypes = {
+    openCrashDialogAdd: PropTypes.bool,
     handleClose: PropTypes.func,
     idMachine: PropTypes.string,
     nameMachine: PropTypes.string

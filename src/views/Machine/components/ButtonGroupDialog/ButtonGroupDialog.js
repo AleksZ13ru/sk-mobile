@@ -41,7 +41,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function ButtonGroupDialog(props) {
     const classes = useStyles();
-    const {disabledBack, disableNext, handleBack, handleNext, finishStepText} = props;
+    const {disabledBack, disableNext, handleBack, handleNext, backStepText, nextStepText} = props;
     return (
         <div className={classes.actionsContainer}>
             <div>
@@ -50,7 +50,7 @@ export default function ButtonGroupDialog(props) {
                     onClick={handleBack}
                     className={classes.button}
                 >
-                    Назад
+                    {backStepText ? backStepText : 'Назад'}
                 </Button>
                 <Button
                     disabled={disableNext}
@@ -59,7 +59,7 @@ export default function ButtonGroupDialog(props) {
                     onClick={handleNext}
                     className={classes.button}
                 >
-                    {finishStepText ? finishStepText : 'Далее'}
+                    {nextStepText ? nextStepText : 'Далее'}
                 </Button>
             </div>
         </div>
@@ -71,5 +71,6 @@ ButtonGroupDialog.propTypes = {
     disableNext: PropTypes.bool,
     handleBack: PropTypes.func,
     handleNext: PropTypes.func,
-    finishStepText: PropTypes.string
+    backStepText: PropTypes.string,
+    nextStepText: PropTypes.string
 };

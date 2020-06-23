@@ -9,6 +9,7 @@ query{
             id
             name
             kmv
+            crash
             machineValue{
                 day{
                     day

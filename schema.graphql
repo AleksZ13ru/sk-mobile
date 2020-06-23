@@ -6,10 +6,6 @@ schema {
     subscription: Subscription
 }
 
-type AddCrashListMutation {
-    crash: CrashListType
-}
-
 type AddStopTimeListMutation {
     stopTime: StopTimeListType
 }
@@ -18,6 +14,14 @@ type CategoryType {
     id: ID!
     machines: [MachineType!]!
     name: String!
+}
+
+type CrashElementMutationAdd {
+    crash: CrashListType
+}
+
+type CrashElementMutationEdit {
+    crash: CrashListType
 }
 
 type CrashListType {
@@ -63,6 +67,7 @@ type LocationType {
 type MachineType {
     category: CategoryType!
     comment: String!
+    crash: Int
     days: [DayType]
     id: ID!
     kmv: Float
@@ -75,8 +80,9 @@ type MachineType {
 }
 
 type Mutation {
-    addCrash(machineId: Int, servicesId: [Int], text: String): AddCrashListMutation
     addStopTime(dtStart: DateTime, dtStop: DateTime, machineId: Int, servicesId: [Int], text: String): AddStopTimeListMutation
+    crashElementAdd(machineId: Int, servicesId: [Int], text: String): CrashElementMutationAdd
+    crashElementEdit(crashId: Int, finish: Boolean, text2: String): CrashElementMutationEdit
     createUser(email: String!, password: String!, username: String!): CreateUser
     refreshToken(token: String): Refresh
     "Obtain JSON Web Token mutation"
@@ -93,6 +99,7 @@ type ObtainJSONWebToken {
 
 type Query {
     category: [CategoryType]
+    crashElement(pk: Int): CrashListType
     days: [DayType]
     hello: String
     locations: [LocationType]
