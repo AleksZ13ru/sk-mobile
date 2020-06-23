@@ -78,7 +78,7 @@ export default function CrashDialogEdit(props) {
         setMachine(initMachine);
         setServices(initServices);
         setText([]);
-        setActiveStep(1);
+        setActiveStep(3);
         handleClose();
     }
 
@@ -207,7 +207,7 @@ export default function CrashDialogEdit(props) {
                         <CloseIcon/>
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        Завершение ремонта {crashId}
+                        Завершение ремонта №{crashId}
                     </Typography>
                     {/*<Button autoFocus color="inherit" onClick={handleClose}>*/}
                     {/*    Х*/}

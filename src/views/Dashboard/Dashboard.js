@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {loader} from "graphql.macro";
-import {Query} from "react-apollo";
+import {Query, useQuery} from "react-apollo";
 
 import SearchInput from "../../components/SearchInput";
 import Card from "@material-ui/core/Card";
@@ -10,8 +10,9 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-import InfoIcon from '@material-ui/icons/Info';
-// import BuildIcon from '@material-ui/icons/Build';
+// import InfoIcon from '@material-ui/icons/Info';
+import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
+import BuildIcon from '@material-ui/icons/Build';
 import Grid from "@material-ui/core/Grid";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import {Link} from "react-router-dom";
@@ -19,6 +20,7 @@ import PropTypes from "prop-types";
 import {store, setTitle} from "../../store";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
+import Fab from "@material-ui/core/Fab";
 
 const MACHINES_QUERY = loader('./Graphql/MACHINES_QUERY.graphql');
 
@@ -53,12 +55,12 @@ function ListMachine(props) {
             <Grid container
                   spacing={2}
                   direction="row"
-                  justify="space-between"
+                  justify="flex-start"
                   alignItems="center">
                 <Grid item xs={1}>
-                    {crash > 0  &&
+                    {crash > 0 &&
                     <ListItemIcon>
-                        <InfoIcon fontSize="small" color={"secondary"}/>
+                        <FiberManualRecordIcon fontSize="small"  style={{color: "#ff9800"}}/>
                     </ListItemIcon>
                     }
                 </Grid>
@@ -124,6 +126,18 @@ ListMachines.propTypes = {
 export default function Dashboard() {
     const [searchFilter, setSearchFilter] = React.useState(store.getState().searchMachine);
     const classes = useStyles();
+    useEffect(() => {
+        // Обновляем заголовок документа, используя API браузера
+        // store.dispatch({type:'SET_TITLE', text:'Сарансккабель2'})
+        store.dispatch(setTitle('Сарансккабель'))
+    });
+
+    const {loading, error, data, refetch} = useQuery(MACHINES_QUERY, {
+        pollInterval: 1000,
+    });
+    if (loading) return (<Loading/>);
+    if (error) return (<Error/>);
+
 
     const handleSetSearchFilter = (event) => {
         // setSearchFilter(event.target.value);
@@ -135,16 +149,12 @@ export default function Dashboard() {
         store.dispatch({type: 'CLEAR_SEARCH_MACHINE'})
     };
 
-    useEffect(() => {
-        // Обновляем заголовок документа, используя API браузера
-        // store.dispatch({type:'SET_TITLE', text:'Сарансккабель2'})
-        store.dispatch(setTitle('Сарансккабель'))
-    });
 
     function handleChange() {
         // console.log(store.getState().searchMachine);
         setSearchFilter(store.getState().searchMachine);
     }
+
     store.subscribe(handleChange);
     return (
         <div className={classes.root}>
@@ -157,28 +167,46 @@ export default function Dashboard() {
                              handleClearSearchFilter={handleClearSearchFilter}/>
             </div>
 
-            <Query query={MACHINES_QUERY}>
-                {({loading, error, data}) => {
-                    if (loading) return <Loading/>;
-                    if (error) return <div><Error/></div>;
-                    return data.locations
-                        // .filter((location) => (location.id === "1"))
-                        .map((location) => (
-                            <div className={classes.content} key={location.id} >
-                                <Card open={false}>
-                                    <CardContent>
-                                        <List component="nav" aria-label="main mailbox folders" >
-                                            <ListSubheader component="div" id="nested-list-subheader">
-                                                {location.name}
-                                            </ListSubheader>
-                                            <ListMachines machines={location.machines} searchFilter={searchFilter}/>
-                                        </List>
-                                    </CardContent>
-                                </Card>
-                            </div>
-                        ))
-                }}
-            </Query>
+            {data.locations
+                // .filter((location) => (location.id === "1"))
+                .map((location) => (
+                    <div className={classes.content} key={location.id}>
+                        <Card open={false}>
+                            <CardContent>
+                                <List component="nav" aria-label="main mailbox folders">
+                                    <ListSubheader component="div" id="nested-list-subheader">
+                                        {location.name}
+                                    </ListSubheader>
+                                    <ListMachines machines={location.machines} searchFilter={searchFilter}/>
+                                </List>
+                            </CardContent>
+                        </Card>
+                    </div>
+                ))}
+
+
+            {/*<Query query={MACHINES_QUERY}>*/}
+            {/*    {({loading, error, data}) => {*/}
+            {/*        if (loading) return <Loading/>;*/}
+            {/*        if (error) return <div><Error/></div>;*/}
+            {/*        return data.locations*/}
+            {/*            // .filter((location) => (location.id === "1"))*/}
+            {/*            .map((location) => (*/}
+            {/*                <div className={classes.content} key={location.id} >*/}
+            {/*                    <Card open={false}>*/}
+            {/*                        <CardContent>*/}
+            {/*                            <List component="nav" aria-label="main mailbox folders" >*/}
+            {/*                                <ListSubheader component="div" id="nested-list-subheader">*/}
+            {/*                                    {location.name}*/}
+            {/*                                </ListSubheader>*/}
+            {/*                                <ListMachines machines={location.machines} searchFilter={searchFilter}/>*/}
+            {/*                            </List>*/}
+            {/*                        </CardContent>*/}
+            {/*                    </Card>*/}
+            {/*                </div>*/}
+            {/*            ))*/}
+            {/*    }}*/}
+            {/*</Query>*/}
         </div>
     )
 }
