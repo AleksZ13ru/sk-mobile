@@ -22,28 +22,33 @@ import {gql, loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {store} from "../../store";
-import SpeedDialogs from   "./components/SpeedDialogs"
+import SpeedDialogs from "./components/SpeedDialogs"
 import DetailsStopTimeList from "./components/DetailsStopTimeList";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
 import {useSubscription} from "@apollo/react-hooks";
-
+import Typography from "@material-ui/core/Typography";
+import CrashList from "./components/CrashList"
+import CardActions from "@material-ui/core/CardActions";
+import Button from "@material-ui/core/Button";
+import FlagIcon from '@material-ui/icons/Flag';
 
 const MACHINE_QUERY = loader('./Graphql/MACHINE_QUERY.graphql');
 
 const useStyles = makeStyles(theme => ({
     root: {
         '& > *': {
-            margin: theme.spacing(1),
+            margin: theme.spacing(0),
         },
     },
     content: {
-        marginTop: theme.spacing(1)
+        marginTop: theme.spacing(0)
     },
     alert: {
         marginBottom: theme.spacing(2),
         color: '#fff',
-        backgroundColor: '#ff9800'
+        backgroundColor: '#ff9800',
+
         // color: '#f44336',
         // color: '#2196f3',
         // color: '#4caf50'
@@ -122,7 +127,7 @@ function ListDayInfoStopList(props) {
                     </Grid>
                     <Grid item xs={3}>
                         {/*<ListItemText primary={`На ${totalLength} ч.`} secondary=""/>*/}
-                        <ListItemText primary={totalLength} secondary="час."/>
+                        <ListItemText primary={totalLength.toFixed(1)} secondary="час."/>
                     </Grid>
                 </Grid>
             </ListItem>
@@ -224,12 +229,13 @@ function Machine(props) {
     const {id} = props.match.params;
     // const [name, setName] = React.useState('');
     const classes = useStyles();
-    const {loading, error, data} = useQuery(MACHINE_QUERY, {
-        variables: {"pk": id}
+    const {loading, error, data, refetch} = useQuery(MACHINE_QUERY, {
+        variables: {"pk": id},
+        pollInterval: 5000,
     });
-    const { dataSub, loadingSub } = useSubscription(
+    const {dataSub, loadingSub} = useSubscription(
         COMMENTS_SUBSCRIPTION,
-        { variables: {} }
+        {variables: {}}
     );
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);
@@ -242,13 +248,58 @@ function Machine(props) {
     // const handleSetTitle = (text) => {
     //     store.dispatch({type: 'SET_TITLE', text: text})
     // };
-
+    const handleUpdateMachine = () => {
+        refetch().then(r => {
+        })
+    };
 
     store.dispatch({type: 'SET_TITLE', text: data.machine.name});
     return (
         <div className={classes.root}>
             <h1>{console.log(dataSub)}</h1>
             <div className={classes.content}>
+                <Card className={classes.alert}>
+                    <CardContent>
+                        <List component="nav" aria-label="main mailbox folders">
+                            <CrashList id={1} counter={1} totalLength={1}/>
+                        </List>
+                    </CardContent>
+                </Card>
+                <Card className={classes.alert}>
+                    <CardContent>
+                        <List component="nav" aria-label="main mailbox folders">
+                            <CrashList id={1} counter={1} totalLength={1}/>
+                        </List>
+                    </CardContent>
+                </Card>
+                <Card className={classes.alert}>
+                    <CardContent>
+                        <List component="nav" aria-label="main mailbox folders">
+                            <CrashList id={1} counter={1} totalLength={1}/>
+                        </List>
+                    </CardContent>
+                </Card>
+                {/*<Card className={classes.alert}>*/}
+                {/*    <CardContent>*/}
+                {/*        <List component="nav" aria-label="main mailbox folders">*/}
+                {/*            <CrashList id={1} counter={1} totalLength={1}/>*/}
+                {/*        </List>*/}
+                {/*    </CardContent>*/}
+                {/*</Card>*/}
+                {/*<Card className={classes.alert}>*/}
+                {/*    <CardContent>*/}
+                {/*        <List component="nav" aria-label="main mailbox folders">*/}
+                {/*            <CrashList id={1} counter={1} totalLength={1}/>*/}
+                {/*        </List>*/}
+                {/*    </CardContent>*/}
+                {/*</Card>*/}
+                {/*<Card className={classes.alert}>*/}
+                {/*    <CardContent>*/}
+                {/*        <List component="nav" aria-label="main mailbox folders">*/}
+                {/*            <CrashList id={1} counter={1} totalLength={1}/>*/}
+                {/*        </List>*/}
+                {/*    </CardContent>*/}
+                {/*</Card>*/}
                 <Card>
                     <CardContent>
                         <List component="nav" aria-label="main mailbox folders">
@@ -290,7 +341,7 @@ function Machine(props) {
                     </CardContent>
                 </Card>
             </div>
-            <SpeedDialogs idMachine={id} nameMachine={data.machine.name}/>
+            <SpeedDialogs idMachine={id} nameMachine={data.machine.name} handleUpdateMachine={handleUpdateMachine}/>
         </div>
     );
 

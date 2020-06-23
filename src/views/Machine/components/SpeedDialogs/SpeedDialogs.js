@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SpeedDialogs(props) {
-    const {idMachine, nameMachine} = props;
+    const {idMachine, nameMachine, handleUpdateMachine} = props;
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
     const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
@@ -70,6 +70,7 @@ export default function SpeedDialogs(props) {
 
     const handleCloseStopTimeAddDialog = () => {
         setOpenStopTimeAddDialog(false);
+        handleUpdateMachine();
     };
 
     return (
@@ -128,5 +129,6 @@ export default function SpeedDialogs(props) {
 
 SpeedDialogs.propTypes ={
     idMachine: PropTypes.string,
-    nameMachine: PropTypes.string
+    nameMachine: PropTypes.string,
+    handleUpdateMachine: PropTypes.func
 };
