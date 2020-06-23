@@ -1,7 +1,7 @@
 import React, {Fragment, useEffect} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {loader} from "graphql.macro";
-import {Query, useQuery} from "react-apollo";
+import {useQuery} from "react-apollo";
 
 import SearchInput from "../../components/SearchInput";
 import Card from "@material-ui/core/Card";
@@ -10,9 +10,7 @@ import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-// import InfoIcon from '@material-ui/icons/Info';
 import FiberManualRecordIcon from '@material-ui/icons/FiberManualRecord';
-import BuildIcon from '@material-ui/icons/Build';
 import Grid from "@material-ui/core/Grid";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import {Link} from "react-router-dom";
@@ -20,7 +18,6 @@ import PropTypes from "prop-types";
 import {store, setTitle} from "../../store";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
-import Fab from "@material-ui/core/Fab";
 
 const MACHINES_QUERY = loader('./Graphql/MACHINES_QUERY.graphql');
 
@@ -132,7 +129,7 @@ export default function Dashboard() {
         store.dispatch(setTitle('Сарансккабель'))
     });
 
-    const {loading, error, data, refetch} = useQuery(MACHINES_QUERY, {
+    const {loading, error, data} = useQuery(MACHINES_QUERY, {
         pollInterval: 1000,
     });
     if (loading) return (<Loading/>);

@@ -1,7 +1,6 @@
 import PropTypes from "prop-types";
 import React, {Fragment} from "react";
 import {KeyboardDatePicker, KeyboardTimePicker} from "@material-ui/pickers";
-import StepContent from "@material-ui/core/StepContent";
 
 export default function DateTimeSelect(props) {
     const {selectedDate, selectedTime, handleDateChange, handleTimeChange} = props;

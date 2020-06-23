@@ -1,6 +1,5 @@
 import React from 'react';
 import {makeStyles} from '@material-ui/core/styles';
-import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -13,8 +12,6 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
-import {format} from "date-fns";
-import ruLocale from "date-fns/locale/ru";
 import MachineSelect from "../MachineSelect";
 import ServicesSelect from "../ServicesSelect"
 import ServicesText from "../ServicesText"
@@ -25,11 +22,6 @@ import {loader} from "graphql.macro";
 import {useMutation} from "@apollo/react-hooks";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import DateTimeString from "./components/DateTimeString";
-import {datePickerDefaultProps} from "@material-ui/pickers/constants/prop-types";
-// import Paper from "@material-ui/core/Paper";
-// import TextField from "@material-ui/core/TextField";
-// import {DatePicker, KeyboardDatePicker} from "@material-ui/pickers";
-// import {TimePicker, KeyboardTimePicker} from "@material-ui/pickers";
 
 const ADD_STOP_TIME = loader('../../Graphql/ADD_STOP_TIME.graphql');
 
@@ -71,7 +63,7 @@ export default function StopTimeAddDialog(props) {
     ] = useMutation(ADD_STOP_TIME, {onCompleted});
     const [activeStep, setActiveStep] = React.useState(1);
     const classes = useStyles();
-    const formatDT = "dd MMMM yyyy г. HH:mm";
+    // const formatDT = "dd MMMM yyyy г. HH:mm";
     const [steps, setSteps] = React.useState({
         step1: 'Оборудование: ',
         step2: 'Службы: ',

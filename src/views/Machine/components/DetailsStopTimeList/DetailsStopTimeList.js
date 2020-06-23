@@ -1,5 +1,4 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -23,22 +22,22 @@ const styles = (theme) => ({
     }
 });
 
-const useStyles = makeStyles({
-    root: {
-        minWidth: 275,
-    },
-    bullet: {
-        display: 'inline-block',
-        margin: '0 2px',
-        transform: 'scale(0.8)',
-    },
-    title: {
-        fontSize: 12,
-    },
-    text: {
-        fontSize: 16,
-    },
-});
+// const useStyles = makeStyles({
+//     root: {
+//         minWidth: 275,
+//     },
+//     bullet: {
+//         display: 'inline-block',
+//         margin: '0 2px',
+//         transform: 'scale(0.8)',
+//     },
+//     title: {
+//         fontSize: 12,
+//     },
+//     text: {
+//         fontSize: 16,
+//     },
+// });
 
 const DialogTitle = withStyles(styles)((props) => {
     const { children, classes, onClose, ...other } = props;
@@ -69,8 +68,10 @@ const DialogActions = withStyles((theme) => ({
 
 export default function DetailsStopTimeList(props) {
     const {open, handleClose} = props;
-    const [fullWidth, setFullWidth] = React.useState(true);
-    const [maxWidth, setMaxWidth] = React.useState('sm');
+    // const [fullWidth, setFullWidth] = React.useState(true);
+    // const [maxWidth, setMaxWidth] = React.useState('sm');
+    const fullWidth = true;
+    const maxWidth = 'sm';
     // const [open, setOpen] = React.useState(false);
 
     // const handleClickOpen = () => {

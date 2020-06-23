@@ -2,13 +2,12 @@ import React from 'react';
 import {Switch, Redirect} from 'react-router-dom';
 import RouteWithLayout from './components/RouteWithLayout';
 import  Main  from './components/Main';
-
 import Dashboard from './views/Dashboard';
 import StopTimeList from "./views/StopTimeList";
 import StopTimeLists from "./views/StopTimeLists";
 import ToDo from "./views/ToDo";
 import Machine from './views/Machine';
-import RepairsAdd from "./views/del_RepairsAdd";
+
 
 const Routes = () => {
     return (

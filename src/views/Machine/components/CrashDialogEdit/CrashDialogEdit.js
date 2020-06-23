@@ -12,9 +12,6 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
-import MachineSelect from "../MachineSelect";
-import ServicesSelect from "../ServicesSelect"
-import ServicesText from "../ServicesText"
 import MultilineTextFields from "../MultilineTextFields"
 import ButtonGroupDialog from "../ButtonGroupDialog";
 import {loader} from "graphql.macro";
@@ -56,7 +53,7 @@ const useStyles = makeStyles(theme => ({
     resetContainer: {
         padding: theme.spacing(2),
     },
-    chip:{
+    chip: {
         display: 'flex',
         justifyContent: 'left',
         flexWrap: 'wrap',
@@ -75,8 +72,8 @@ export default function CrashDialogEdit(props) {
     const {open, handleClose, crashId, nameMachine, handleUpdateMachine} = props;
 
     function onCompleted() {
-        setMachine(initMachine);
-        setServices(initServices);
+        // setMachine(initMachine);
+        // setServices(initServices);
         setText([]);
         setActiveStep(3);
         handleClose();
@@ -101,44 +98,44 @@ export default function CrashDialogEdit(props) {
         step5: 'Проверка и отправка'
     });
 
-    const initServices = {
-        array: [
-            {
-                id: 4,
-                key: 'tech',
-                name: 'Технологи',
-                checked: false
-            }, {
-                id: 3,
-                key: 'energo',
-                name: 'Электрики',
-                checked: false
-            }, {
-                id: 2,
-                key: 'mech',
-                name: 'Механики',
-                checked: false
-            }, {
-                id: 1,
-                key: 'electro',
-                name: 'Электроники',
-                checked: false
-            }
-        ]
-    };
-    const initMachine = {
-        idMachine: 'idMachine',
-        nameMachine: nameMachine,
-    };
+    // const initServices = {
+    //     array: [
+    //         {
+    //             id: 4,
+    //             key: 'tech',
+    //             name: 'Технологи',
+    //             checked: false
+    //         }, {
+    //             id: 3,
+    //             key: 'energo',
+    //             name: 'Электрики',
+    //             checked: false
+    //         }, {
+    //             id: 2,
+    //             key: 'mech',
+    //             name: 'Механики',
+    //             checked: false
+    //         }, {
+    //             id: 1,
+    //             key: 'electro',
+    //             name: 'Электроники',
+    //             checked: false
+    //         }
+    //     ]
+    // };
+    // const initMachine = {
+    //     idMachine: 'idMachine',
+    //     nameMachine: nameMachine,
+    // };
 
-    const [machine, setMachine] = React.useState(initMachine);
-    const [services, setServices] = React.useState(initServices);
+    // const [machine, setMachine] = React.useState(initMachine);
+    // const [services, setServices] = React.useState(initServices);
     const [text, setText] = React.useState([]);
     const [state, setState] = React.useState({
         checkedA: false,
         checkedFinish: false,
     });
-    const {loading, error, data, refetch} = useQuery(CRASH_QUERY, {
+    const {loading, error, data} = useQuery(CRASH_QUERY, {
         variables: {"pk": crashId},
     });
 
@@ -146,20 +143,19 @@ export default function CrashDialogEdit(props) {
     if (error) return (<Error/>);
 
 
-
-
     const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
+        setState({...state, [event.target.name]: event.target.checked});
     };
-    const handleServiceSelect = (event) => {
-        // console.log(event.target.checked);
-        // console.log(event.target.name);
-        setServices(prevState => ({
-            ...services, array: services.array.map(
-                el => el.key === event.target.name ? {...el, checked: event.target.checked} : el
-            )
-        }));
-    };
+
+    // const handleServiceSelect = (event) => {
+    //     // console.log(event.target.checked);
+    //     // console.log(event.target.name);
+    //     setServices(prevState => ({
+    //         ...services, array: services.array.map(
+    //             el => el.key === event.target.name ? {...el, checked: event.target.checked} : el
+    //         )
+    //     }));
+    // };
 
     const handleTextChange = (event) => {
         setText(event.target.value);
@@ -221,7 +217,7 @@ export default function CrashDialogEdit(props) {
                     </StepContent>
                 </Step>
                 <Step key='step2'>
-                    <StepLabel>{steps.step2} <b>{data.crashElement.services.map(el=>`${el.name} `)}</b></StepLabel>
+                    <StepLabel>{steps.step2} <b>{data.crashElement.services.map(el => `${el.name} `)}</b></StepLabel>
                     <StepContent>
                     </StepContent>
                 </Step>
@@ -234,7 +230,7 @@ export default function CrashDialogEdit(props) {
                     <StepLabel>{steps.step4}
                         <div className={classes.chip}>
                             {state.checkedA && <Chip size="small" label="Не согласен" color="secondary"/>}
-                            {state.checkedFinish && <Chip size="small" label="Завершен" color="primary" />}
+                            {state.checkedFinish && <Chip size="small" label="Завершен" color="primary"/>}
                         </div>
                         <b>{text}</b>
                     </StepLabel>
@@ -246,7 +242,7 @@ export default function CrashDialogEdit(props) {
                                         <Switch
                                             checked={state.checkedA}
                                             onChange={handleChange}
-                                            name="checkedA" />}
+                                            name="checkedA"/>}
                                     label="С вызовом не согласен"
                                 />
                                 <FormControlLabel
@@ -288,7 +284,7 @@ export default function CrashDialogEdit(props) {
                             handleBack={handleBack}
                             handleNext={handleFinish}
                             // backStepText='Ремонт не завершен'
-                            nextStepText= {state.checkedFinish ? 'Завершить ремонт' : 'Сохранить заметку'}
+                            nextStepText={state.checkedFinish ? 'Завершить ремонт' : 'Сохранить заметку'}
                         />
                     </StepContent>
                 </Step>
