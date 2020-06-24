@@ -1,0 +1,25 @@
+#test variables = {"pk": 2}
+query  {
+    days{
+        day
+#        stopTimeListInDayStart{
+#            id
+#            machine{name}
+#            text
+#            deltaTime
+#
+#        }
+        crashListInDayStart{
+            id
+            machine{name}
+            text
+            deltaTime
+            timeStop
+            services{
+                id
+                name
+            }
+        }
+    }
+}
+

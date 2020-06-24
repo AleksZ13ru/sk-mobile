@@ -7,6 +7,7 @@ import StopTimeList from "./views/StopTimeList";
 import StopTimeLists from "./views/StopTimeLists";
 import ToDo from "./views/ToDo";
 import Machine from './views/Machine';
+import CrashLists from "./views/CrashLists";
 
 
 const Routes = () => {
@@ -17,6 +18,7 @@ const Routes = () => {
 
             <RouteWithLayout exact path="/stoptimelists" component={StopTimeLists} layout={Main}/>
             <RouteWithLayout exact path="/stoptimelist/:id" component={StopTimeList} layout={Main}/>
+            <RouteWithLayout exact path="/crashlists" component={CrashLists} layout={Main}/>
             <RouteWithLayout exact path="/todo/:id" component={ToDo} layout={Main}/>
             {/*<RouteWithLayout exact path="/machines" component={Machine} layout={Main}/>*/}
             <RouteWithLayout exact path="/machine/:id" component={Machine} layout={Main}/>   {/*render={(props)=><MachinePage {...props}/>}*/}

@@ -17,13 +17,16 @@ import ListItem from "@material-ui/core/ListItem";
 import Grid from "@material-ui/core/Grid";
 import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from "@material-ui/core/styles";
-import {Query} from "react-apollo";
+import {Query, useQuery} from "react-apollo";
 import {loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import {store} from "../../store";
+import CrashAlert from "../Machine/components/CrashAlert/CrashAlert";
+import Loading from "../../components/Loading/Loading";
+import Error from "../../components/Error/Error";
 
-const STOP_TIME_LIST_ALL_DAY_QUERY = loader('./Graphql/STOP_TIME_LIST_ALL_DAY_QUERY.graphql');
+const CRASH_LIST_ALL_DAY_QUERY = loader('./Graphql/CRASH_LIST_ALL_DAY_QUERY.graphql');
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -96,8 +99,8 @@ function ListDayInfo(props) {
     const classes = useStyles();
 
     return (
-        // to={`/stoptimelist/${id}`}
-        <ListItem key={id} button className={classes.list} component={Link}>
+        // button to={`/stoptimelist/${id}`}
+        <ListItem key={id} className={classes.list} component={Link}>
             <Grid container
                   spacing={2}
                   direction="row"
@@ -128,17 +131,22 @@ ListDayInfo.propTypes = {
     deltaTime: PropTypes.number
 };
 
-function StopTimeLists(props) {
+function CrashLists(props) {
     // const {id} = props.match.params;
     const classes = useStyles();
 
-    useEffect(() => {
-        // Обновляем заголовок документа, используя API браузера
-        store.dispatch({type:'SET_TITLE', text:'Простои'})
+    const {loading, error, data, refetch} = useQuery(CRASH_LIST_ALL_DAY_QUERY, {
+        pollInterval: 5000,
     });
+    if (loading) return (<Loading/>);
+    if (error) return (<Error/>);
 
+    const handleUpdateCrashList = () => {
+        refetch().then(r => {
+        })
+    };
 
-
+    store.dispatch({type: 'SET_TITLE', text: 'Ремонты'});
     return (
         // <h1>{row.name}</h1>
         <div className={classes.root}>
@@ -147,55 +155,41 @@ function StopTimeLists(props) {
             {/*    <SearchInput/>*/}
             {/*</div>*/}
             <div className={classes.content}>
-                {/*<Card className={classes.alert}>*/}
-                {/*    <CardContent>*/}
-                {/*        <List component="nav" aria-label="main mailbox folders">*/}
-                {/*            <ListItem button className={classes.list}>*/}
-                {/*                <Grid container wrap="nowrap" spacing={1}>*/}
-                {/*                    <Grid item>*/}
-
-                {/*                    </Grid>*/}
-                {/*                    <Grid item xs zeroMinWidth>*/}
-                {/*                        <Typography noWrap>1 Поломка крепления экструзионной головки</Typography>*/}
-                {/*                    </Grid>*/}
-                {/*                </Grid>*/}
-                {/*            </ListItem>*/}
-                {/*        </List>*/}
-
-                {/*        /!*This is a warning alert — <strong>check it out!</strong>*!/*/}
-                {/*    </CardContent>*/}
-                {/*</Card>*/}
+                {data.days
+                    .map((day)=>(
+                        day.crashListInDayStart.map(crash=>(
+                            crash.timeStop == null &&
+                            <CrashAlert
+                                key={crash.id}
+                                services={crash.services.map(service=>service.name)}
+                                text={crash.text}
+                                crashId={crash.id}
+                                handleUpdateMachine={handleUpdateCrashList}
+                            />
+                        ))
+                    ))
+                }
 
                 <Card>
                     <CardContent>
                         <List component="nav" aria-label="main mailbox folders">
-                            <Query query={STOP_TIME_LIST_ALL_DAY_QUERY}>
-                                {({loading, error, data}) => {
-                                    if (loading) return <div>Fetching</div>;
-                                    if (error) return <div>Error</div>;
-
-                                    return data.days.sort((a, b) => {
-                                        if (a.day > b.day) return -1;
-                                        if (a.day < b.day) return 1;
-                                        return 0;
-                                    }).map((day, index) => (
-                                        <Fragment key={index}>
-                                            {day.stopTimeListInDayStart.length > 0 &&
-                                            <Fragment>
-                                                <ListDay day={day.day}/>
-                                                <Lists array={day.stopTimeListInDayStart}/>
-                                            </Fragment>
-                                            }
-
-                                            {/*<ListDayInfo id={id} */}
-                                            {/*             name={day.stopTimeListInDayStart.machine.name} */}
-                                            {/*             text={day.text}/>*/}
-
+                            <Fragment>
+                                {data.days.sort((a, b) => {
+                                    if (a.day > b.day) return -1;
+                                    if (a.day < b.day) return 1;
+                                    return 0;
+                                }).map((day, index) => (
+                                    <Fragment key={index}>
+                                        {day.crashListInDayStart.length > 0 &&
+                                        <Fragment>
+                                            <ListDay day={day.day}/>
+                                            <Lists array={day.crashListInDayStart}/>
                                         </Fragment>
+                                        }
+                                    </Fragment>
 
-                                    ))
-                                }}
-                            </Query>
+                                ))}
+                            </Fragment>
                         </List>
                     </CardContent>
                 </Card>
@@ -208,4 +202,4 @@ function StopTimeLists(props) {
 //     id: PropTypes.number
 // };
 
-export default StopTimeLists;
+export default CrashLists;

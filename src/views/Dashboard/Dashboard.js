@@ -135,7 +135,6 @@ export default function Dashboard() {
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);
 
-
     const handleSetSearchFilter = (event) => {
         // setSearchFilter(event.target.value);
         store.dispatch({type: 'SET_SEARCH_MACHINE', text: event.target.value})

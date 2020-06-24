@@ -1,0 +1,5 @@
+query  Statistic{
+    statistic {
+        crashInWork
+    }
+}

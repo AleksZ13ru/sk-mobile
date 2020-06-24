@@ -135,10 +135,11 @@ function ToDo(props) {
     const {id} = props.match.params;
     const classes = useStyles();
 
-    const handleSetTitle = (text) => {
-        store.dispatch({type:'SET_TITLE', text:text})
-    };
+    // const handleSetTitle = (text) => {
+        // store.dispatch({type:'SET_TITLE', text:text})
+    // };
 
+    store.dispatch({type:'SET_TITLE', text:"Журнал смен"});
     return (
         // <h1>{row.name}</h1>
         <div className={classes.root}>
@@ -176,7 +177,7 @@ function ToDo(props) {
 
                                     return (
                                         <Fragment>
-                                            {handleSetTitle("Журнал смен")}
+                                            {/*{handleSetTitle("Журнал смен")}*/}
                                             {data.days.sort((a, b) => {
                                                 if (a.day > b.day) return -1;
                                                 if (a.day < b.day) return 1;

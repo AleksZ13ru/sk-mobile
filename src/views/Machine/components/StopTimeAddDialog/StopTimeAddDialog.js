@@ -196,7 +196,7 @@ export default function StopTimeAddDialog(props) {
                         {/*{(activeStep > 1 && DateIsValid(selectedDateStart) && DateIsValid(selectedTimeStart)) &&*/}
                         {activeStep > 1 &&
                         <DateTimeString date={selectedDateStart} time={selectedTimeStart}/>
-                        // <p><b>{format(selectedDateStart, formatDT, {locale: ruLocale})}</b></p>
+                            // <p><b>{format(selectedDateStart, formatDT, {locale: ruLocale})}</b></p>
                         }
                     </StepLabel>
                     <StepContent>

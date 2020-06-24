@@ -31,8 +31,7 @@ export default function CrashAlert(props) {
 
     return (
         <div className={classes.alert}>            {/*<DetailsStopTimeList open={open} handleClose={handleClose}/>*/}
-
-            <Alert variant="filled" severity="warning" icon={false} elevation={2} button onClick={handleClick}>
+            <Alert variant="filled" severity="warning" icon={false} elevation={2} button="true" onClick={handleClick}>
                 {/*<AlertTitle>Механики</AlertTitle>*/}
                 <strong>{services.map(el=>(`${el} `))} : </strong>{text}
             </Alert>
@@ -50,6 +49,6 @@ export default function CrashAlert(props) {
 CrashAlert.propTypes = {
     crashId: PropTypes.string,
     services: PropTypes.array,
-    text: PropTypes.number,
+    text: PropTypes.string,
     handleUpdateMachine: PropTypes.func
 };

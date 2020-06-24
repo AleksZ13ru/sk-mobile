@@ -3,7 +3,6 @@
 schema {
     query: Query
     mutation: Mutation
-    subscription: Subscription
 }
 
 type AddStopTimeListMutation {
@@ -28,7 +27,9 @@ type CrashListType {
     comment: String!
     dayStart: DayType!
     dayStop: DayType
+    deltaTime: Float
     id: ID!
+    inWork: Int
     machine: MachineType!
     services: [ServiceNameType!]!
     status: String!
@@ -106,6 +107,7 @@ type Query {
     machine(pk: Int): MachineType
     machines: [MachineType]
     me: UserType
+    statistic: StatisticType
     stopTimeList(pk: Int): StopTimeListType
     users: [UserType]
     values: [ValueType]
@@ -125,6 +127,10 @@ type ServiceNameType {
     servicesTodoList: [ToDoListType!]!
 }
 
+type StatisticType {
+    crashInWork: Int
+}
+
 type StopTimeListType {
     comment: String!
     dayStart: DayType!
@@ -137,10 +143,6 @@ type StopTimeListType {
     text: String!
     timeStart: Time!
     timeStop: Time
-}
-
-type Subscription {
-    timeOfDay: String
 }
 
 type ToDoListType {
