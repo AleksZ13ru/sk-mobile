@@ -164,6 +164,7 @@ function CrashLists(props) {
                                 services={crash.services.map(service=>service.name)}
                                 text={crash.text}
                                 crashId={crash.id}
+                                machineName={crash.machine.name}
                                 handleUpdateMachine={handleUpdateCrashList}
                             />
                         ))
