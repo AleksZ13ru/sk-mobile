@@ -8,7 +8,7 @@ import StopTimeLists from "./views/StopTimeLists";
 import ToDo from "./views/ToDo";
 import Machine from './views/Machine';
 import CrashLists from "./views/CrashLists";
-
+import SignInPage from "./views/SignInPage";
 
 const Routes = () => {
     return (
@@ -24,7 +24,7 @@ const Routes = () => {
             <RouteWithLayout exact path="/machine/:id" component={Machine} layout={Main}/>   {/*render={(props)=><MachinePage {...props}/>}*/}
             {/*<RouteWithLayout exact path="/repair_add/" component={RepairsAdd} layout={Main}/>   /!*render={(props)=><MachinePage {...props}/>}*!/*/}
             {/*<RouteWithLayout exact path="/machine/repair_add/:id" component={RepairsAdd} layout={Main}/>*/}
-            {/*<Route exact path="/sign-in" component={SignInPage}/>*/}
+            <RouteWithLayout exact path="/sign-in" component={SignInPage} layout={Main}/>
             {/*<Route exact path="/machines" component={MachinesPage}/>*/}
             {/*<Route exact path="/dashboard" component={Dashboard}/>*/}
         </Switch>

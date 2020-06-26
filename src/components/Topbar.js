@@ -9,8 +9,10 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import MeetingRoomIcon from '@material-ui/icons/MeetingRoom';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import {AUTH_TOKEN} from '../constants'
 
 const useStyles = makeStyles((theme) => ({
     menuButton: {
@@ -51,7 +53,7 @@ ElevationScroll.propTypes = {
 
 export default function Topbar(props) {
     const {title, onSidebarOpen} = props;
-
+    const authToken = localStorage.getItem(AUTH_TOKEN);
     const classes = useStyles();
     let history = useHistory();
     return (
@@ -86,14 +88,28 @@ export default function Topbar(props) {
                         <Typography variant="h6" className={classes.title}>
                             {title}
                         </Typography>
-                        <IconButton
-                            aria-label="show more"
-                            aria-haspopup="true"
-                            color="inherit"
-                            onClick={() => alert("Login In")}
-                        >
-                            <AccountCircle/>
-                        </IconButton>
+                        {authToken ? (<IconButton
+                                aria-label="show more"
+                                aria-haspopup="true"
+                                color="inherit"
+                                onClick={() => {
+                                    localStorage.removeItem(AUTH_TOKEN);
+                                    history.push(`/`)
+                                }}
+                            >
+                                <MeetingRoomIcon/>
+                            </IconButton>
+                        ) : (
+                            <IconButton
+                                aria-label="show more"
+                                aria-haspopup="true"
+                                color="inherit"
+                                onClick={() => history.push('/sign-in')}
+                            >
+                                <AccountCircle/>
+                            </IconButton>
+                        )}
+
                     </Toolbar>
                 </AppBar>
             </ElevationScroll>

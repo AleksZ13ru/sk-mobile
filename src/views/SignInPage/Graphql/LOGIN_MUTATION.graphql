@@ -1,0 +1,6 @@
+#{"username": "admin", "password": "11112"}
+mutation LoginMutation($username: String!, $password: String!) {
+    tokenAuth(username: $username, password: $password){
+        token
+    }
+}
