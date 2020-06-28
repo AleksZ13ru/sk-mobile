@@ -17,14 +17,17 @@ import ListItem from "@material-ui/core/ListItem";
 import Grid from "@material-ui/core/Grid";
 import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from "@material-ui/core/styles";
-import {Query} from "react-apollo";
-import {loader} from "graphql.macro";
+import {Query, useQuery} from "react-apollo";
+import {gql, loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import {store} from "../../store";
 
 const STOP_TIME_LIST_ALL_DAY_QUERY = loader('./Graphql/STOP_TIME_LIST_ALL_DAY_QUERY.graphql');
-
+const GET_TITLE = gql`
+    {
+        title @client
+    }
+`;
 const useStyles = makeStyles(theme => ({
     root: {
         '& > *': {
@@ -131,12 +134,12 @@ ListDayInfo.propTypes = {
 function StopTimeLists(props) {
     // const {id} = props.match.params;
     const classes = useStyles();
-
+    const {client} = useQuery(GET_TITLE);
     useEffect(() => {
         // Обновляем заголовок документа, используя API браузера
-        store.dispatch({type:'SET_TITLE', text:'Простои'})
+        // store.dispatch({type:'SET_TITLE', text:'Простои'})
     });
-
+    client.writeData({data: {title: 'Простои'}});
 
 
     return (

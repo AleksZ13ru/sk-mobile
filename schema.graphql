@@ -25,12 +25,14 @@ type CrashElementMutationEdit {
 
 type CrashListType {
     comment: String!
+    crashListMessages: [MessageType!]!
     dayStart: DayType!
     dayStop: DayType
     deltaTime: Float
     id: ID!
     inWork: Int
     machine: MachineType!
+    messages: [MessageType]
     services: [ServiceNameType!]!
     status: String!
     text: String!
@@ -80,6 +82,15 @@ type MachineType {
     name: String!
 }
 
+type MessageType {
+    code: MessageCode!
+    crashList: CrashListType
+    dtCreate: DateTime!
+    id: ID!
+    postedBy: UserType
+    text: String!
+}
+
 type Mutation {
     addStopTime(dtStart: DateTime, dtStop: DateTime, machineId: Int, servicesId: [Int], text: String): AddStopTimeListMutation
     crashElementAdd(machineId: Int, servicesId: [Int], text: String): CrashElementMutationAdd
@@ -107,7 +118,7 @@ type Query {
     machine(pk: Int): MachineType
     machines: [MachineType]
     me: UserType
-    statistic: StatisticType
+    statistic(serviceId: Int): StatisticType
     stopTimeList(pk: Int): StopTimeListType
     users: [UserType]
     values: [ValueType]
@@ -171,6 +182,7 @@ type UserType {
     isSuperuser: Boolean!
     lastLogin: DateTime
     lastName: String!
+    messageSet: [MessageType!]!
     password: String!
     "Обязательное поле. Не более 150 символов. Только буквы, цифры и символы @/./+/-/_."
     username: String!
@@ -189,6 +201,16 @@ type ValueType {
 
 type Verify {
     payload: GenericScalar!
+}
+
+"An enumeration."
+enum MessageCode {
+    "Finish"
+    FNS
+    "Message"
+    MSG
+    "Start"
+    STR
 }
 
 

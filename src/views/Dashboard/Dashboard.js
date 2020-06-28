@@ -1,6 +1,6 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
-import {loader} from "graphql.macro";
+import {gql, loader} from "graphql.macro";
 import {useQuery} from "react-apollo";
 
 import SearchInput from "../../components/SearchInput";
@@ -15,7 +15,7 @@ import Grid from "@material-ui/core/Grid";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import {store, setTitle} from "../../store";
+import {store} from "../../store";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
 
@@ -41,7 +41,17 @@ const useStyles = makeStyles(theme => ({
     }
 
 }));
+const GET_TITLE = gql`
+    {
+        title @client
+    }
+`;
 
+// const GET_SEARCH_MACHINE = gql`
+//     {
+//         searchMachine @client
+//     }
+// `;
 
 function ListMachine(props) {
     const {id, name, category, kmv, crash} = props;
@@ -57,7 +67,7 @@ function ListMachine(props) {
                 <Grid item xs={1}>
                     {crash > 0 &&
                     <ListItemIcon>
-                        <FiberManualRecordIcon fontSize="small"  style={{color: "#ff9800"}}/>
+                        <FiberManualRecordIcon fontSize="small" style={{color: "#ff9800"}}/>
                     </ListItemIcon>
                     }
                 </Grid>
@@ -82,6 +92,7 @@ ListMachine.propTypes = {
 
 function ListMachines(props) {
     const {machines, searchFilter} = props;
+    // const {data: dataSearchMachine, client: clientSearchMachine} = useQuery(GET_SEARCH_MACHINE);
     return (
         <Fragment>
             {machines
@@ -120,38 +131,45 @@ ListMachines.propTypes = {
 //     </Grid>
 // </ListItem>
 
-export default function Dashboard() {
+export default function Dashboard(props) {
     const [searchFilter, setSearchFilter] = React.useState(store.getState().searchMachine);
-    const classes = useStyles();
-    useEffect(() => {
-        // Обновляем заголовок документа, используя API браузера
-        // store.dispatch({type:'SET_TITLE', text:'Сарансккабель2'})
-        store.dispatch(setTitle('Сарансккабель'))
-    });
+    // const [searchFilter, setSearchFilter] = React.useState('');
 
+    const classes = useStyles();
+    // useEffect(() => {
+    //     // Обновляем заголовок документа, используя API браузера
+    //     // store.dispatch({type:'SET_TITLE', text:'Сарансккабель2'})
+    //     store.dispatch(setTitle('Сарансккабель'))
+    // });
+    const {client} = useQuery(GET_TITLE);
+    // const {data: dataSearchMachine, client: clientSearchMachine} = useQuery(GET_SEARCH_MACHINE);
     const {loading, error, data} = useQuery(MACHINES_QUERY, {
-        pollInterval: 1000,
+        pollInterval: 5000,
     });
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);
 
     const handleSetSearchFilter = (event) => {
-        // setSearchFilter(event.target.value);
+        setSearchFilter(event.target.value);
+        // clientSearchMachine.writeData({data: {searchMachine: event.target.value}});
         store.dispatch({type: 'SET_SEARCH_MACHINE', text: event.target.value})
     };
 
     const handleClearSearchFilter = () => {
-        // setSearchFilter('');
+        setSearchFilter('');
+        // clientSearchMachine.writeData({data: {searchMachine: ''}});
         store.dispatch({type: 'CLEAR_SEARCH_MACHINE'})
     };
 
 
-    function handleChange() {
+    // function handleChange() {
         // console.log(store.getState().searchMachine);
-        setSearchFilter(store.getState().searchMachine);
-    }
+        // setSearchFilter(store.getState().searchMachine);
+    // }
 
-    store.subscribe(handleChange);
+    // store.subscribe(handleChange);
+
+    client.writeData({data: {title: 'Сарансккабель'}});
     return (
         <div className={classes.root}>
             <div className={classes.row}>
@@ -208,6 +226,5 @@ export default function Dashboard() {
 }
 
 Dashboard.propTypes = {
-    // searchFilter: PropTypes.string,
-    // handleSetSearchFilter: PropTypes.func.isRequired
+
 };

@@ -10,7 +10,7 @@ const RouteWithLayout = props => {
             {...rest}
             render={matchProps => (
                 <Layout >
-                    <Component {...matchProps}  />
+                    <Component {...matchProps} {...props} />
                 </Layout>
             )}
         />
@@ -20,7 +20,7 @@ const RouteWithLayout = props => {
 RouteWithLayout.propTypes = {
     component: PropTypes.any.isRequired,
     layout: PropTypes.any.isRequired,
-    path: PropTypes.string
+    path: PropTypes.string,
 };
 
 export default RouteWithLayout;

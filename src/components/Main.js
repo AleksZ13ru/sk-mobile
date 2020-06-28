@@ -2,15 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {makeStyles} from '@material-ui/core/styles';
 import grey from '@material-ui/core/colors/grey';
-// import Fab from "@material-ui/core/Fab";
-// import AddIcon from '@material-ui/icons/Add';
-
 import Topbar from './Topbar'
 import Sidebar from './Sidebar'
 import Footer from './Footer'
+import {useQuery} from "@apollo/react-hooks";
+import {gql} from "graphql.macro";
+// import Fab from "@material-ui/core/Fab";
+// import AddIcon from '@material-ui/icons/Add';
 // import SpeedDialogs from './SpeedDialogs'
-import {store} from "../store";
+// import {store} from "../store";
 
+const GET_TITLE = gql`
+    {
+        title @client
+    }
+`;
 const useStyles = makeStyles((theme) => ({
     root: {
         flexGrow: 1,
@@ -32,7 +38,8 @@ export default function Main(props) {
     const {children} = props;
 
     const classes = useStyles();
-    const [title, setTitle] = React.useState(store.getState().title);
+    // const [title, setTitle] = React.useState(store.getState().title);
+    const {data} = useQuery(GET_TITLE);
     const [openSidebar, setOpenSidebar] = React.useState(false);
 
     // const [title, setTitle] = React.useState('Сарансккабель');
@@ -45,17 +52,18 @@ export default function Main(props) {
         setOpenSidebar(false);
     };
 
-    function handleChange() {
+    // function handleChange() {
         // console.log(store.getState().title);
-        setTitle(store.getState().title);
-    }
-    store.subscribe(handleChange);
+        // setTitle(store.getState().title);
+    // }
+
+    // store.subscribe(handleChange);
     // const unsubscribe = store.subscribe(handleChange);
 
     return (
         <div className={classes.root} style={{backgroundColor: grey[200]}}>
             {/*{store.subscribe(handleChange)}*/}
-            <Topbar title={title} onSidebarOpen={handleSidebarOpen}/>
+            <Topbar title={data.title} onSidebarOpen={handleSidebarOpen}/>
             <Sidebar
                 onClose={handleSidebarClose}
                 open={openSidebar}

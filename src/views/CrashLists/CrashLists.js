@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React, {Fragment} from 'react';
 // import SearchInput from "../../components/SearchInput";
 // import {Link} from "react-router-dom";
 // import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -17,17 +17,20 @@ import ListItem from "@material-ui/core/ListItem";
 import Grid from "@material-ui/core/Grid";
 import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from "@material-ui/core/styles";
-import {Query, useQuery} from "react-apollo";
-import {loader} from "graphql.macro";
+import {useQuery} from "react-apollo";
+import {gql, loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import {store} from "../../store";
 import CrashAlert from "../Machine/components/CrashAlert/CrashAlert";
 import Loading from "../../components/Loading/Loading";
 import Error from "../../components/Error/Error";
 
 const CRASH_LIST_ALL_DAY_QUERY = loader('./Graphql/CRASH_LIST_ALL_DAY_QUERY.graphql');
-
+const GET_TITLE = gql`
+    {
+        title @client
+    }
+`;
 const useStyles = makeStyles(theme => ({
     root: {
         '& > *': {
@@ -131,22 +134,22 @@ ListDayInfo.propTypes = {
     deltaTime: PropTypes.number
 };
 
-function CrashLists(props) {
+function CrashLists() {
     // const {id} = props.match.params;
     const classes = useStyles();
-
+    const {client} = useQuery(GET_TITLE);
     const {loading, error, data, refetch} = useQuery(CRASH_LIST_ALL_DAY_QUERY, {
         pollInterval: 5000,
     });
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);
 
+    client.writeData({data: {title: 'Ремонты'}});
     const handleUpdateCrashList = () => {
         refetch().then(r => {
         })
     };
 
-    store.dispatch({type: 'SET_TITLE', text: 'Ремонты'});
     return (
         // <h1>{row.name}</h1>
         <div className={classes.root}>
@@ -156,12 +159,12 @@ function CrashLists(props) {
             {/*</div>*/}
             <div className={classes.content}>
                 {data.days
-                    .map((day)=>(
-                        day.crashListInDayStart.map(crash=>(
+                    .map((day) => (
+                        day.crashListInDayStart.map(crash => (
                             crash.timeStop == null &&
                             <CrashAlert
                                 key={crash.id}
-                                services={crash.services.map(service=>service.name)}
+                                services={crash.services.map(service => service.name)}
                                 text={crash.text}
                                 crashId={crash.id}
                                 machineName={crash.machine.name}

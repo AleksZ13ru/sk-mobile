@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react';
+import React from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {store, setTitle} from "../../store";
 import TextField from "@material-ui/core/TextField";
@@ -42,8 +42,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function SignInPage() {
     const classes = useStyles();
-    const [userName, setUserName] = React.useState();
-    const [pass, setPass] = React.useState();
+    const [errorLogin, setErrorLogin] = React.useState(false);
+    const [userName, setUserName] = React.useState('');
+    const [pass, setPass] = React.useState('');
     let history = useHistory();
     store.dispatch(setTitle('Сарансккабель'));
 
@@ -54,32 +55,48 @@ export default function SignInPage() {
 
     // store.subscribe(handleChange);
 
-    const confirm = async data => {
-        const {token} = data.login;
-        _saveUserData(token);
-        history.push('/');
-    };
-
     const _saveUserData = token => {
         localStorage.setItem(AUTH_TOKEN, token)
     };
 
-    const [tokenAuth,
-        {loading: mutationLoading, error: mutationError},
-    ] = useMutation(LOGIN_MUTATION, {});
+    function onCompleted(data) {
 
+        const {token} = data.tokenAuth;
+        console.log(token);
+        _saveUserData(token);
+        history.push('/');
+
+    }
+
+    function onError() {
+        setErrorLogin(true)
+    }
+
+    const [tokenAuth,
+        // {loading: mutationLoading, error: mutationError},
+    ] = useMutation(LOGIN_MUTATION, {onCompleted, onError});
+    // if (mutationLoading) {
+    //     return (
+    //         <div>Loading...</div>
+    //     )
+    // }
+    // if (mutationError) {
+    //     return <p>Error :(</p>
+    // }
     const handleLogin = () => {
         tokenAuth({
             variables: {
-                username: "admin",
-                password: "11112"
+                username: userName,
+                password: pass
             },
 
         }).then(r => {
-            const {token} = r.data.tokenAuth;
-            console.log(token);
-            _saveUserData(token);
-            history.push('/');
+            // if (r.data.tokenAuth !== null) {
+            //     const {token} = r.data.tokenAuth;
+            //     console.log(token);
+            //     _saveUserData(token);
+            //     history.push('/');
+            // }
         });
     };
     return (
@@ -93,6 +110,13 @@ export default function SignInPage() {
                         >
                             Сарансккабель
                         </Typography>
+                        {errorLogin &&
+                        <Typography
+                            className={classes.title}
+                            color={"error"}
+                        >
+                            Не верно имя пользователя или пароль
+                        </Typography>}
                         <TextField
                             className={classes.textField}
                             // error={hasError('email')}
@@ -102,7 +126,7 @@ export default function SignInPage() {
                             // }
                             label="Пользователь"
                             name="email0"
-                            onChange={(value) => setTitle(value)}
+                            onChange={(event) => setUserName(event.target.value)}
                             type="text"
                             value={userName}
                             variant="outlined"
@@ -116,7 +140,7 @@ export default function SignInPage() {
                             // }
                             label="Пароль"
                             name="password"
-                            onChange={(value) => setTitle(value)}
+                            onChange={(event) => setPass(event.target.value)}
                             type="password"
                             value={pass}
                             variant="outlined"

@@ -18,13 +18,18 @@ import {makeStyles} from "@material-ui/core/styles";
 // import BuildIcon from "@material-ui/icons/Build";
 // import Typography from "@material-ui/core/Typography";
 import {Query} from "react-apollo";
-import {loader} from "graphql.macro";
+import {gql, loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import {store} from "../../store";
+import {useQuery} from "@apollo/react-hooks";
 // import PropTypes from "prop-types";
 
 const TODO_LIST_ALL_DAY_QUERY = loader('./Graphql/TODO_LIST_ALL_DAY_QUERY.graphql');
+const GET_TITLE = gql`
+    {
+        title @client
+    }
+`;
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -138,8 +143,9 @@ function ToDo(props) {
     // const handleSetTitle = (text) => {
         // store.dispatch({type:'SET_TITLE', text:text})
     // };
-
-    store.dispatch({type:'SET_TITLE', text:"Журнал смен"});
+    const { client } = useQuery(GET_TITLE);
+    client.writeData({ data: { title: 'Журнал смен' } });
+    // store.dispatch({type:'SET_TITLE', text:"Журнал смен"});
     return (
         // <h1>{row.name}</h1>
         <div className={classes.root}>

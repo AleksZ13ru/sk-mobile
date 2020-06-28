@@ -64,15 +64,24 @@ export default function StopTimeAddDialog(props) {
     const [activeStep, setActiveStep] = React.useState(1);
     const classes = useStyles();
     // const formatDT = "dd MMMM yyyy г. HH:mm";
-    const [steps, setSteps] = React.useState({
+    // const [steps, setSteps] = React.useState({
+    //     step1: 'Оборудование: ',
+    //     step2: 'Службы: ',
+    //     step3: 'Начало простоя: ',
+    //     step4: 'Окончание простоя: ',
+    //     step5: 'Описание неисправности: ',
+    //     step6: 'Проверка и добавление: '
+    //
+    // });
+
+    const steps = {
         step1: 'Оборудование: ',
         step2: 'Службы: ',
         step3: 'Начало простоя: ',
         step4: 'Окончание простоя: ',
         step5: 'Описание неисправности: ',
         step6: 'Проверка и добавление: '
-
-    });
+    };
 
     const initServices = {
         array: [

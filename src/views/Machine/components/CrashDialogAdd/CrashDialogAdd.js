@@ -71,12 +71,19 @@ export default function CrashDialogAdd(props) {
     ] = useMutation(CRASH_ADD, {onCompleted});
     const [activeStep, setActiveStep] = React.useState(1);
 
-    const [steps, setSteps] = React.useState({
+    // const [steps, setSteps] = React.useState({
+    //     step1: 'Оборудование: ',
+    //     step2: 'Службы: ',
+    //     step3: 'Описание неисправности: ',
+    //     step4: 'Проверка и отправка'
+    // });
+
+    const steps = {
         step1: 'Оборудование: ',
         step2: 'Службы: ',
         step3: 'Описание неисправности: ',
         step4: 'Проверка и отправка'
-    });
+    };
 
     const initServices = {
         array: [

@@ -69,7 +69,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 export default function CrashDialogEdit(props) {
     const classes = useStyles();
-    const {open, handleClose, crashId, nameMachine, handleUpdateMachine} = props;
+    const {open, handleClose, crashId, handleUpdateMachine} = props;
 
     function onCompleted() {
         // setMachine(initMachine);
@@ -90,13 +90,21 @@ export default function CrashDialogEdit(props) {
     // ] = useMutation(CRASH_ADD, {onCompleted});
     const [activeStep, setActiveStep] = React.useState(3);
 
-    const [steps, setSteps] = React.useState({
+    // const [steps, setSteps] = React.useState({
+    //     step1: 'Оборудование: ',
+    //     step2: 'Службы: ',
+    //     step3: 'Описание неисправности: ',
+    //     step4: 'Выполненная работа: ',
+    //     step5: 'Проверка и отправка'
+    // });
+
+    const steps = {
         step1: 'Оборудование: ',
         step2: 'Службы: ',
         step3: 'Описание неисправности: ',
         step4: 'Выполненная работа: ',
         step5: 'Проверка и отправка'
-    });
+    };
 
     // const initServices = {
     //     array: [

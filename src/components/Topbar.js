@@ -51,11 +51,18 @@ ElevationScroll.propTypes = {
     window: PropTypes.func,
 };
 
+// const GET_TITLE = gql`
+//     {
+//         title @client
+//     }
+// `;
+
 export default function Topbar(props) {
     const {title, onSidebarOpen} = props;
     const authToken = localStorage.getItem(AUTH_TOKEN);
     const classes = useStyles();
     let history = useHistory();
+    // const {data} = useQuery(GET_TITLE);
     return (
         <React.Fragment>
             <CssBaseline/>
@@ -63,29 +70,29 @@ export default function Topbar(props) {
                 <AppBar>
                     {/*<AppBar position="static" className={classes.toolbar}>*/}
                     <Toolbar>
-                        {title === 'Сарансккабель' &&
-                        <IconButton
-                            edge="start"
-                            className={classes.menuButton}
-                            color="inherit"
-                            aria-label="menu"
-                            onClick={onSidebarOpen}
-                        >
-                            <MenuIcon/>
-                        </IconButton>
-                        }
-                        {title !== 'Сарансккабель' &&
-                        <IconButton
-                            edge="start"
-                            className={classes.menuButton}
-                            color="inherit"
-                            aria-label="menu"
-                            onClick={() => history.push('/')}
-                        >
-                            <ChevronLeftIcon/>
-                        </IconButton>
+                        {window.location.pathname === '/dashboard' ?
+                            <IconButton
+                                edge="start"
+                                className={classes.menuButton}
+                                color="inherit"
+                                aria-label="menu"
+                                onClick={onSidebarOpen}
+                            >
+                                <MenuIcon/>
+                            </IconButton>
+                            :
+                            <IconButton
+                                edge="start"
+                                className={classes.menuButton}
+                                color="inherit"
+                                aria-label="menu"
+                                onClick={() => history.push('/dashboard')}
+                            >
+                                <ChevronLeftIcon/>
+                            </IconButton>
                         }
                         <Typography variant="h6" className={classes.title}>
+                            {/*{title}*/}
                             {title}
                         </Typography>
                         {authToken ? (<IconButton

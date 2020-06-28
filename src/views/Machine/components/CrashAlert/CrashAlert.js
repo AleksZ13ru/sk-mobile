@@ -33,7 +33,7 @@ export default function CrashAlert(props) {
         <div className={classes.alert}>            {/*<DetailsStopTimeList open={open} handleClose={handleClose}/>*/}
             <Alert variant="filled" severity="warning" icon={false} elevation={2} button="true" onClick={handleClick}>
                 {/*<AlertTitle>Механики</AlertTitle>*/}
-                <strong>{services.map(el=>(`${el} `))} -> {machineName} : </strong>{text}
+                <strong>{services.map(el=>(`${el} `))} </strong>{machineName} :{text}
             </Alert>
             <CrashDialogEdit
                 crashId={crashId}

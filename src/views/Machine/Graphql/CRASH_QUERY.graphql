@@ -7,5 +7,15 @@ query Crash($pk:Int!) {
         dayStart{day}
         timeStart
         text
+        messages{
+            id
+            text
+            code
+            dtCreate
+            postedBy{
+                username
+            }
+        }
+
     }
 }

@@ -18,10 +18,9 @@ import InfoIcon from "@material-ui/icons/Info";
 import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from "@material-ui/core/styles";
 import {useQuery} from "react-apollo";
-import {loader} from "graphql.macro";
+import {gql, loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import {store} from "../../store";
 import SpeedDialogs from "./components/SpeedDialogs"
 import DetailsStopTimeList from "./components/DetailsStopTimeList";
 import Loading from "../../components/Loading";
@@ -29,6 +28,11 @@ import Error from "../../components/Error";
 import CrashAlert from "./components/CrashAlert"
 
 const MACHINE_QUERY = loader('./Graphql/MACHINE_QUERY.graphql');
+const GET_TITLE = gql`
+    {
+        title @client
+    }
+`;
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -273,13 +277,18 @@ function Machine(props) {
     const {id} = props.match.params;
     // const [name, setName] = React.useState('');
     const classes = useStyles();
+    const {client } = useQuery(GET_TITLE);
     const {loading, error, data, refetch} = useQuery(MACHINE_QUERY, {
         variables: {"pk": id},
         pollInterval: 5000,
+        onCompleted
     });
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);
 
+    function onCompleted() {
+        client.writeData({ data: { title: data.machine.name } });
+    }
     // useEffect(() => {
     //     // Обновляем заголовок документа, используя API браузера
     //     // store.dispatch({type:'SET_TITLE', text:`Оборудование #${id}`})
@@ -293,7 +302,8 @@ function Machine(props) {
         })
     };
 
-    store.dispatch({type: 'SET_TITLE', text: data.machine.name});
+    // store.dispatch({type: 'SET_TITLE', text: data.machine.name});
+    // client.writeData({ data: { title: data.machine.name } });
     return (
         <div className={classes.root}>
             <div className={classes.content}>
