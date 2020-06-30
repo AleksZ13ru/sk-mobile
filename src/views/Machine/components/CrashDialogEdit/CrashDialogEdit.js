@@ -25,6 +25,9 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Switch from "@material-ui/core/Switch";
 import FormControl from "@material-ui/core/FormControl";
 import Chip from "@material-ui/core/Chip";
+import ListItemText from "@material-ui/core/ListItemText";
+import Grid from "@material-ui/core/Grid";
+import FiberManualRecordIcon from "@material-ui/icons/FiberManualRecord";
 
 const CRASH_QUERY = loader('../../Graphql/CRASH_QUERY.graphql');
 const CRASH_EDIT = loader('../../Graphql/CRASH_EDIT.graphql');
@@ -70,10 +73,15 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function CrashDialogEdit(props) {
     const classes = useStyles();
     const {open, handleClose, crashId, handleUpdateMachine} = props;
+    const initState = {
+        checkedDoNotAgree: false,
+        checkedFinish: false
+    };
 
     function onCompleted() {
         // setMachine(initMachine);
         // setServices(initServices);
+        setState(initState);
         setText([]);
         setActiveStep(3);
         handleClose();
@@ -106,45 +114,13 @@ export default function CrashDialogEdit(props) {
         step5: 'Проверка и отправка'
     };
 
-    // const initServices = {
-    //     array: [
-    //         {
-    //             id: 4,
-    //             key: 'tech',
-    //             name: 'Технологи',
-    //             checked: false
-    //         }, {
-    //             id: 3,
-    //             key: 'energo',
-    //             name: 'Электрики',
-    //             checked: false
-    //         }, {
-    //             id: 2,
-    //             key: 'mech',
-    //             name: 'Механики',
-    //             checked: false
-    //         }, {
-    //             id: 1,
-    //             key: 'electro',
-    //             name: 'Электроники',
-    //             checked: false
-    //         }
-    //     ]
-    // };
-    // const initMachine = {
-    //     idMachine: 'idMachine',
-    //     nameMachine: nameMachine,
-    // };
-
     // const [machine, setMachine] = React.useState(initMachine);
     // const [services, setServices] = React.useState(initServices);
     const [text, setText] = React.useState([]);
-    const [state, setState] = React.useState({
-        checkedA: false,
-        checkedFinish: false,
-    });
+    const [state, setState] = React.useState(initState);
     const {loading, error, data} = useQuery(CRASH_QUERY, {
         variables: {"pk": crashId},
+        pollInterval: 5000,
     });
 
     if (loading) return (<Loading/>);
@@ -185,7 +161,8 @@ export default function CrashDialogEdit(props) {
                 crashId: crashId,
                 // dtStart: "2020-05-29T00:00:00Z",
                 finish: state.checkedFinish,
-                text2: text
+                doNotAgree: state.checkedDoNotAgree,
+                text: text
             },
 
         }).then(r => {
@@ -202,6 +179,14 @@ export default function CrashDialogEdit(props) {
     // const handleClose = () => {
     //     setOpenRepairAddDialog(false);
     // };
+    let formatter = new Intl.DateTimeFormat("ru", {
+        day: "numeric",
+        // year: "numeric",
+        // weekday: "long",
+        month: "numeric",
+        hour: "numeric",
+        minute: "numeric"
+    });
 
     return (
         <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>
@@ -230,14 +215,44 @@ export default function CrashDialogEdit(props) {
                     </StepContent>
                 </Step>
                 <Step key='step3'>
-                    <StepLabel>{steps.step3} <b>{data.crashElement.text}</b></StepLabel>
+                    <StepLabel>{steps.step3} <b>{data.crashElement.text}</b>
+                        {data.crashElement.messages.map(el => {
+                            let secondary = `${formatter.format(new Date(el.dtCreate))} ${el.postedBy.username} `;
+                            return (
+                                <Grid container
+                                      spacing={1}
+                                      direction="row"
+                                      justify="flex-start"
+                                      alignItems="center">
+                                    <Grid item xs={1}>
+                                        {el.doNotAgree &&
+                                            <FiberManualRecordIcon fontSize="small" color="secondary"/>}
+                                        {el.code === 'STR' &&
+                                            <FiberManualRecordIcon fontSize="small" style={{color: '#4caf50'}}/>}
+                                        {el.code === 'FNS' &&
+                                            <FiberManualRecordIcon fontSize="small" color="primary"/>}
+                                    </Grid>
+                                    <Grid item xs={11}>
+                                        <ListItemText primary={el.text} secondary={secondary}/>
+                                    </Grid>
+                                </Grid>
+                                // <ListItemText primary={el.text} secondary= {secondary} />
+                                // <div>
+                                //     <p>
+                                //         <i> {formatter.format(new Date(el.dtCreate))} </i> {el.postedBy.username}:
+                                //     </p>
+                                //     <p> <b>{el.text}</b></p>
+                                // </div>
+                            )
+                        })}
+                    </StepLabel>
                     <StepContent>
                     </StepContent>
                 </Step>
                 <Step key='step4'>
                     <StepLabel>{steps.step4}
                         <div className={classes.chip}>
-                            {state.checkedA && <Chip size="small" label="Не согласен" color="secondary"/>}
+                            {state.checkedDoNotAgree && <Chip size="small" label="Не согласен" color="secondary"/>}
                             {state.checkedFinish && <Chip size="small" label="Завершен" color="primary"/>}
                         </div>
                         <b>{text}</b>
@@ -248,9 +263,9 @@ export default function CrashDialogEdit(props) {
                                 <FormControlLabel
                                     control={
                                         <Switch
-                                            checked={state.checkedA}
+                                            checked={state.checkedDoNotAgree}
                                             onChange={handleChange}
-                                            name="checkedA"/>}
+                                            name="checkedDoNotAgree"/>}
                                     label="С вызовом не согласен"
                                 />
                                 <FormControlLabel

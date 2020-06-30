@@ -12,6 +12,7 @@ query Crash($pk:Int!) {
             text
             code
             dtCreate
+            doNotAgree
             postedBy{
                 username
             }
