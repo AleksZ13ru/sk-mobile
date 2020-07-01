@@ -93,13 +93,13 @@ export default function SpeedDialogs(props) {
                                     Добавить простой
                                 </Fab>
                             </Grid>
-                            <Grid item>
-                                <Fab style={{color: "white", backgroundColor: "#219653"}} variant="extended"
-                                     onClick={() => history.push('/repair_add')}>
-                                    <LibraryBooksIcon className={classes.extendedIcon}/>
-                                    Добавить заметку
-                                </Fab>
-                            </Grid>
+                            {/*<Grid item>*/}
+                            {/*    <Fab style={{color: "white", backgroundColor: "#219653"}} variant="extended"*/}
+                            {/*         onClick={() => history.push('/repair_add')}>*/}
+                            {/*        <LibraryBooksIcon className={classes.extendedIcon}/>*/}
+                            {/*        Добавить заметку*/}
+                            {/*    </Fab>*/}
+                            {/*</Grid>*/}
                             <Grid item>
                                 <Fab style={{color: "white", backgroundColor: "#ff9800"}} variant="extended"
                                      onClick={handleClickOpenRepairAddDialog}>

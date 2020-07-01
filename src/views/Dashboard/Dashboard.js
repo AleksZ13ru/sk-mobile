@@ -154,7 +154,7 @@ export default function Dashboard(props) {
     const {client} = useQuery(GET_TITLE);
     // const {data: dataSearchMachine, client: clientSearchMachine} = useQuery(GET_SEARCH_MACHINE);
     const {loading, error, data} = useQuery(MACHINES_QUERY, {
-        pollInterval: 5000,
+        pollInterval: 2000,
     });
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);

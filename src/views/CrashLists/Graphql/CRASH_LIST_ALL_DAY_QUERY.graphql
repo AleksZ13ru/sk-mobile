@@ -1,6 +1,7 @@
 #test variables = {"pk": 2}
 query  {
     days{
+        id
         day
 #        stopTimeListInDayStart{
 #            id

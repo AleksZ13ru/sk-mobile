@@ -25,6 +25,7 @@ import CrashAlert from "../Machine/components/CrashAlert/CrashAlert";
 import Loading from "../../components/Loading/Loading";
 import Error from "../../components/Error/Error";
 import CrashDialogDetails from "../Machine/components/CrashDialogDetails/CrashDialogDetails";
+import {keys} from "@material-ui/core/styles/createBreakpoints";
 
 const CRASH_LIST_ALL_DAY_QUERY = loader('./Graphql/CRASH_LIST_ALL_DAY_QUERY.graphql');
 const GET_TITLE = gql`
@@ -179,7 +180,8 @@ function CrashLists() {
             <div className={classes.content}>
                 {data.days
                     .map((day) => (
-                        day.crashListInDayStart.map(crash => (
+                        <Fragment key={day.id}>
+                            {day.crashListInDayStart.map(crash => (
                             crash.timeStop == null &&
                             <CrashAlert
                                 key={crash.id}
@@ -189,7 +191,9 @@ function CrashLists() {
                                 machineName={crash.machine.name}
                                 handleUpdateMachine={handleUpdateCrashList}
                             />
-                        ))
+                            ))}
+                        </Fragment>
+
                     ))
                 }
 
