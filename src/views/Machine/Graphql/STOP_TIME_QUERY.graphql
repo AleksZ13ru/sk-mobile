@@ -1,0 +1,25 @@
+#{"pk": 1}
+query StopTime($pk:Int!) {
+    stopTimeList(pk:$pk){
+        id
+        machine{name}
+        services{name}
+        dayStart{day}
+        dayStop{day}
+        timeStart
+        timeStop
+        text
+        deltaTime
+#        messages{
+#            id
+#            text
+#            code
+#            dtCreate
+#            doNotAgree
+#            postedBy{
+#                username
+#            }
+#        }
+
+    }
+}

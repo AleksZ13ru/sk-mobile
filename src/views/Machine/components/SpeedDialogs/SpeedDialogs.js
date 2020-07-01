@@ -8,7 +8,7 @@ import BuildIcon from '@material-ui/icons/Build';
 import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import {useHistory} from "react-router-dom";
-import StopTimeAddDialog from "../StopTimeAddDialog";
+import StopTimeDialogDetails from "../StopTimeDialogAdd";
 import CrashDialogAdd from "../CrashDialogAdd";
 import PropTypes from "prop-types";
 
@@ -110,7 +110,7 @@ export default function SpeedDialogs(props) {
                         </Grid>
                     </div>
                 </Backdrop>
-                <StopTimeAddDialog
+                <StopTimeDialogDetails
                     idMachine={idMachine}
                     nameMachine={nameMachine}
                     openRepairAddDialog={openStopTimeAddDialog}

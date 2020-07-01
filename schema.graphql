@@ -95,7 +95,7 @@ type MessageType {
 type Mutation {
     addStopTime(dtStart: DateTime, dtStop: DateTime, machineId: Int, servicesId: [Int], text: String): AddStopTimeListMutation
     crashElementAdd(machineId: Int, servicesId: [Int], text: String): CrashElementMutationAdd
-    crashElementEdit(crashId: Int, doNotAgree: Boolean, finish: Boolean, text: String): CrashElementMutationEdit
+    crashElementEdit(crashId: Int, doNotAgree: Boolean, finish: Boolean, rewrite: Boolean, text: String): CrashElementMutationEdit
     createUser(email: String!, password: String!, username: String!): CreateUser
     refreshToken(token: String): Refresh
     "Obtain JSON Web Token mutation"

@@ -1,8 +1,8 @@
 #{"machineId": 1, "dtStart": "2020-05-29T00:00:00Z", "servicesID":[1,2] , "text": "Hello"}
-#{"crashId": 1, "finish": true, "text2": "Заменена деталь"}
-mutation crashElementEdit($crashId:Int!, $finish:Boolean, $doNotAgree:Boolean, $text:String){
+#{"crashId": 1, "finish": true, "text": "Заменена детали"}
+mutation crashElementEdit($crashId:Int!, $finish:Boolean, $doNotAgree:Boolean, $rewrite:Boolean, $text:String!){
 #   addCrash(machineId:$machineId, dtStart:$dtStart, servicesId:$servicesID, text:$text){
-       crashElementEdit(crashId:$crashId, finish:$finish, doNotAgree:$doNotAgree, text:$text){
+       crashElementEdit(crashId:$crashId, finish:$finish, doNotAgree:$doNotAgree, rewrite:$rewrite, text:$text){
      crash{id}
    }
  }

@@ -1,0 +1,5 @@
+mutation AddStopTime($machineId:Int!, $servicesID:[Int], $dtStart:DateTime, $dtStop:DateTime, $text:String!, ){
+    addStopTime(machineId:$machineId, servicesId:$servicesID,  dtStart:$dtStart, dtStop:$dtStop, text:$text){
+        stopTime{id}
+    }
+}

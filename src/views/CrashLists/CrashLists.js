@@ -9,6 +9,7 @@ import React, {Fragment} from 'react';
 // import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 // import BuildIcon from "@material-ui/icons/Build";
 // import Typography from "@material-ui/core/Typography";
+// import {Link} from "react-router-dom";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import List from "@material-ui/core/List";
@@ -19,11 +20,11 @@ import ListItemText from "@material-ui/core/ListItemText";
 import {makeStyles} from "@material-ui/core/styles";
 import {useQuery} from "react-apollo";
 import {gql, loader} from "graphql.macro";
-import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
 import CrashAlert from "../Machine/components/CrashAlert/CrashAlert";
 import Loading from "../../components/Loading/Loading";
 import Error from "../../components/Error/Error";
+import CrashDialogDetails from "../Machine/components/CrashDialogDetails/CrashDialogDetails";
 
 const CRASH_LIST_ALL_DAY_QUERY = loader('./Graphql/CRASH_LIST_ALL_DAY_QUERY.graphql');
 const GET_TITLE = gql`
@@ -31,6 +32,7 @@ const GET_TITLE = gql`
         title @client
     }
 `;
+
 const useStyles = makeStyles(theme => ({
     root: {
         '& > *': {
@@ -60,7 +62,6 @@ const useStyles = makeStyles(theme => ({
     }
 
 }));
-
 
 function ListDay(props) {
     const {day} = props;
@@ -100,30 +101,48 @@ Lists.propTypes = {
 function ListDayInfo(props) {
     const {id, name, text, deltaTime} = props;
     const classes = useStyles();
-
+    const [openCrashDialogDetails, setOpenCrashDialogDetails] = React.useState(false);
+    const handleCloseCrashDialogEdit = () => {
+        setOpenCrashDialogDetails(false);
+    };
+    const handleClick = () => {
+        setOpenCrashDialogDetails(true);
+    };
     return (
+        <Fragment>
+            <CrashDialogDetails
+                crashId={id}
+                open={openCrashDialogDetails}
+                handleClose={handleCloseCrashDialogEdit}
+                // handleUpdateMachine={handleUpdateMachine}
+            />
+            <ListItem key={id} button className={classes.list}
+                // component={Link}
+                      onClick={handleClick}>
+                {/*<ListItem key={id} className={classes.list} component={Link}>*/}
+                <Grid container
+                      spacing={2}
+                      direction="row"
+                      justify="space-between"
+                      alignItems="center">
+                    <Grid item xs={1}>
+                        {/*{kmv < 0.2 &&*/}
+                        {/*< ListItemIcon>*/}
+                        {/*    < InfoIcon fontSize="small" color={"secondary"}/>*/}
+                        {/*</ListItemIcon>*/}
+                        {/*}*/}
+                    </Grid>
+                    <Grid item xs={9}>
+                        <ListItemText primary={`${name}`} secondary={`${text}`}/>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <ListItemText primary={deltaTime.toFixed(1)} secondary="час."/>
+                    </Grid>
+                </Grid>
+            </ListItem>
+        </Fragment>
         // button to={`/stoptimelist/${id}`}
-        <ListItem key={id} className={classes.list} component={Link}>
-            <Grid container
-                  spacing={2}
-                  direction="row"
-                  justify="space-between"
-                  alignItems="center">
-                <Grid item xs={1}>
-                    {/*{kmv < 0.2 &&*/}
-                    {/*< ListItemIcon>*/}
-                    {/*    < InfoIcon fontSize="small" color={"secondary"}/>*/}
-                    {/*</ListItemIcon>*/}
-                    {/*}*/}
-                </Grid>
-                <Grid item xs={9}>
-                    <ListItemText primary={`${name}`} secondary={`${text}`}/>
-                </Grid>
-                <Grid item xs={2}>
-                    <ListItemText primary={deltaTime.toFixed(1)} secondary="час."/>
-                </Grid>
-            </Grid>
-        </ListItem>
+
     )
 }
 

@@ -26,6 +26,8 @@ import DetailsStopTimeList from "./components/DetailsStopTimeList";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
 import CrashAlert from "./components/CrashAlert"
+import CrashDialogDetails from "./components/CrashDialogDetails";
+import StopTimeDialogDetails from "./components/StopTimeDialogDetails";
 
 const MACHINE_QUERY = loader('./Graphql/MACHINE_QUERY.graphql');
 const GET_TITLE = gql`
@@ -45,12 +47,12 @@ const useStyles = makeStyles(theme => ({
     },
     // alert: {
     //     marginBottom: theme.spacing(2),
-        // color: '#fff',
-        // backgroundColor: '#ff9800',
+    // color: '#fff',
+    // backgroundColor: '#ff9800',
 
-        // color: '#f44336',
-        // color: '#2196f3',
-        // color: '#4caf50'
+    // color: '#f44336',
+    // color: '#2196f3',
+    // color: '#4caf50'
 
     // },
     row: {
@@ -271,24 +273,150 @@ ListDayInfoKMV.propTypes = {
     kmv: PropTypes.number,
     totalLength: PropTypes.number,
 };
+function CrashItem(props) {
+    const {el, handleUpdateMachine} = props;
+    const classes = useStyles();
+    const [openCrashDialogDetails, setOpenCrashDialogDetails] = React.useState(false);
+    const handleCloseCrashDialogEdit = () => {
+        setOpenCrashDialogDetails(false);
+    };
+    const handleClick = () => {
+        setOpenCrashDialogDetails(true);
+    };
+    return (
+        <Fragment>
+            <CrashDialogDetails
+                crashId={el.id}
+                open={openCrashDialogDetails}
+                handleClose={handleCloseCrashDialogEdit}
+                handleUpdateMachine={handleUpdateMachine}
+            />
+            <ListItem key={el.id} button className={classes.list}
+                // component={Link}
+                // to={`#`}
+                      onClick={handleClick}
+            >
+                <Grid container
+                      spacing={2}
+                      direction="row"
+                      justify="space-between"
+                      alignItems="center">
+                    <Grid item xs={1}>
 
+                    </Grid>
+                    <Grid item xs={8}>
+                        <ListItemText primary={`Ремонт: ${el.text}`} secondary={el.services.map(service => (
+                            ` ${service.name}`
+                        ))}/>
+                    </Grid>
+                    <Grid item xs={3}>
+                        {/*<ListItemText primary={`На ${totalLength} ч.`} secondary=""/>*/}
+                        <ListItemText primary={el.deltaTime.toFixed(1)} secondary="час."/>
+                    </Grid>
+                </Grid>
+            </ListItem>
+        </Fragment>
+    )
+}
+
+CrashItem.propTypes = {
+    el: PropTypes.any,
+    handleUpdateMachine: PropTypes.func,
+    setCrashIdToDialog: PropTypes.func
+};
+
+function StopItem(props) {
+    const {el, handleUpdateMachine} = props;
+    const classes = useStyles();
+    const [openCrashDialogDetails, setOpenCrashDialogDetails] = React.useState(false);
+    const handleCloseCrashDialogEdit = () => {
+        setOpenCrashDialogDetails(false);
+    };
+    const handleClick = () => {
+        setOpenCrashDialogDetails(true);
+    };
+    return (
+        <Fragment>
+            <StopTimeDialogDetails
+                stopId={el.id}
+                open={openCrashDialogDetails}
+                handleClose={handleCloseCrashDialogEdit}
+                handleUpdateMachine={handleUpdateMachine}
+            />
+            <ListItem key={el.id} button className={classes.list}
+                // component={Link}
+                // to={`#`}
+                      onClick={handleClick}
+            >
+                <Grid container
+                      spacing={2}
+                      direction="row"
+                      justify="space-between"
+                      alignItems="center">
+                    <Grid item xs={1}>
+
+                    </Grid>
+                    <Grid item xs={8}>
+                        <ListItemText primary={`Простой: ${el.text}`} secondary={el.services.map(service => (
+                            ` ${service.name}`
+                        ))}/>
+                    </Grid>
+                    <Grid item xs={3}>
+                        {/*<ListItemText primary={`На ${totalLength} ч.`} secondary=""/>*/}
+                        <ListItemText primary={el.deltaTime.toFixed(1)} secondary="час."/>
+                    </Grid>
+                </Grid>
+            </ListItem>
+        </Fragment>
+    )
+}
+
+StopItem.propTypes = {
+    el: PropTypes.any,
+    handleUpdateMachine: PropTypes.func,
+    setStopTimeIdToDialog: PropTypes.func
+};
 
 function Machine(props) {
     const {id} = props.match.params;
     // const [name, setName] = React.useState('');
     const classes = useStyles();
-    const {client } = useQuery(GET_TITLE);
+    const [openCrashDialogDetails, setOpenCrashDialogDetails] = React.useState(false);
+    const [openStopTimeDialogDetails, setOpenStopTimeDialogDetails] = React.useState(false);
+    const [crashIdDialog, setCrashIdDialog] = React.useState(null);
+    const [stopTimeIdDialog, setStopTimeIdDialog] = React.useState(null);
+
+    const handleCloseCrashDialogEdit = () => {
+        setOpenCrashDialogDetails(false);
+    };
+    const setCrashIdToDialog = (id) => {
+        console.log('setCrashIdToDialog'+id);
+        setCrashIdDialog(id);
+        setOpenCrashDialogDetails(true)
+    };
+
+    const handleCloseStoTimeDialogEdit = () => {
+        setOpenStopTimeDialogDetails(false);
+    };
+    const setStopTimeIdToDialog = (id) => {
+        console.log('setStopTimeIdToDialog'+id);
+        setStopTimeIdDialog(id);
+        setOpenStopTimeDialogDetails(true)
+    };
+
+    const {client} = useQuery(GET_TITLE);
     const {loading, error, data, refetch} = useQuery(MACHINE_QUERY, {
         variables: {"pk": id},
-        pollInterval: 5000,
+        pollInterval: 10000,
         onCompleted
     });
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);
 
     function onCompleted() {
-        client.writeData({ data: { title: data.machine.name } });
+        client.writeData({data: {title: data.machine.name}});
     }
+
     // useEffect(() => {
     //     // Обновляем заголовок документа, используя API браузера
     //     // store.dispatch({type:'SET_TITLE', text:`Оборудование #${id}`})
@@ -308,12 +436,12 @@ function Machine(props) {
         <div className={classes.root}>
             <div className={classes.content}>
                 {data.machine.days
-                    .map((day)=>(
-                        day.crashListInMachine.map(crash=>(
+                    .map((day) => (
+                        day.crashListInMachine.map(crash => (
                             crash.timeStop == null &&
                             <CrashAlert
                                 key={crash.id}
-                                services={crash.services.map(service=>service.name)}
+                                services={crash.services.map(service => service.name)}
                                 text={crash.text}
                                 crashId={crash.id}
                                 handleUpdateMachine={handleUpdateMachine}
@@ -345,21 +473,52 @@ function Machine(props) {
                                                             totalLength={day.valuesInMachine[0].totalLength}/>
                                             }
 
-                                            {day.stopTimeListsInMachine.length > 0 &&
-                                            <ListDayInfoStopList id={id}
-                                                                 counter={day.stopTimeListsInMachine.length}
-                                                                 totalLength={day.totalStopTimeListInMachine}/>
-                                            }
+                                            {/*{day.stopTimeListsInMachine.length > 0 &&*/}
+                                            {/*<ListDayInfoStopList id={id}*/}
+                                            {/*                     counter={day.stopTimeListsInMachine.length}*/}
+                                            {/*                     totalLength={day.totalStopTimeListInMachine}/>*/}
+                                            {/*}*/}
                                             {day.todoInMachine.length > 0 &&
                                             <ListDayInfoToDoList id={id}
                                                                  counter={day.todoInMachine.length}
                                             />
                                             }
-                                            {day.crashListInMachine.length > 0 &&
-                                            <ListDayInfoCrashList id={id}
-                                                                 counter={day.crashListInMachine.length}
-                                                                 totalLength={0}/>
-                                            }
+                                            {/*{day.crashListInMachine.length > 0 &&*/}
+                                            {/*<ListDayInfoCrashList id={id}*/}
+                                            {/*                      counter={day.crashListInMachine.length}*/}
+                                            {/*                      totalLength={0}/>*/}
+                                            {/*}*/}
+
+                                            {day.stopTimeListsInMachine
+                                                .map((el) => (
+                                                        <StopItem key={el.id} el={el}
+                                                                  handleUpdateMachine={handleUpdateMachine}
+                                                                  // setStopTimeIdToDialog={(id)=>setStopTimeIdToDialog(id)}
+                                                        />
+                                                    )
+                                                )}
+
+                                            {day.crashListInMachine
+                                                .filter((el) => (el.timeStop !== null))
+                                                .map((el) => (
+                                                        <CrashItem key={el.id} el={el}
+                                                                   handleUpdateMachine={handleUpdateMachine}
+                                                                   // setCrashIdToDialog={(id)=>setCrashIdToDialog(id)}
+                                                        />
+                                                    )
+                                                )}
+                                            {/*<StopTimeDialogDetails*/}
+                                            {/*    stopId={stopTimeIdDialog}*/}
+                                            {/*    open={openStopTimeDialogDetails}*/}
+                                            {/*    handleClose={handleCloseStoTimeDialogEdit}*/}
+                                            {/*    handleUpdateMachine={handleUpdateMachine}*/}
+                                            {/*/>*/}
+                                            {/*<CrashDialogDetails*/}
+                                            {/*    crashId={crashIdDialog}*/}
+                                            {/*    open={openCrashDialogDetails}*/}
+                                            {/*    handleClose={handleCloseCrashDialogEdit}*/}
+                                            {/*    handleUpdateMachine={handleUpdateMachine}*/}
+                                            {/*/>*/}
                                         </Fragment>
 
                                     ))

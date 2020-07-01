@@ -82,7 +82,7 @@ export default function CrashDialogAdd(props) {
         step1: 'Оборудование: ',
         step2: 'Службы: ',
         step3: 'Описание неисправности: ',
-        step4: 'Проверка и отправка'
+        step4: 'Проверка и отправка: '
     };
 
     const initServices = {
@@ -143,18 +143,7 @@ export default function CrashDialogAdd(props) {
     };
 
     const handleFinish = () => {
-        // setActiveStep(0);
         const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
-        // crashAdd({
-        //     variables: {
-        //         machineId: idMachine,
-        //         // dtStart: "2020-05-29T00:00:00Z",
-        //         servicesID: array_service,
-        //         text: text
-        //     },
-        //
-        // }).then(r => {});
-        console.log(array_service);
         crashAdd({
             variables: {
                 machineId: idMachine,
@@ -244,7 +233,7 @@ export default function CrashDialogAdd(props) {
                         <ButtonGroupDialog
                             handleBack={handleBack}
                             handleNext={handleFinish}
-                            nextStepText='Отправить заявку'
+                            nextStepText='Вызвать персонал'
                         />
                     </StepContent>
                 </Step>

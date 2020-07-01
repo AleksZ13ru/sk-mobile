@@ -23,7 +23,7 @@ import {useMutation} from "@apollo/react-hooks";
 import LinearProgress from "@material-ui/core/LinearProgress";
 import DateTimeString from "./components/DateTimeString";
 
-const ADD_STOP_TIME = loader('../../Graphql/ADD_STOP_TIME.graphql');
+const ADD_STOP_TIME = loader('../../Graphql/STOP_TIME_ADD.graphql');
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -46,7 +46,7 @@ function DateIsValid(Date) {
     return (Date !== null && !isNaN(Date.getTime()))
 }
 
-export default function StopTimeAddDialog(props) {
+export default function StopTimeDialogAdd(props) {
     const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
 
     function onCompleted() {
@@ -80,7 +80,7 @@ export default function StopTimeAddDialog(props) {
         step3: 'Начало простоя: ',
         step4: 'Окончание простоя: ',
         step5: 'Описание неисправности: ',
-        step6: 'Проверка и добавление: '
+        step6: 'Проверка и отправка: '
     };
 
     const initServices = {
@@ -144,7 +144,6 @@ export default function StopTimeAddDialog(props) {
     };
 
     const handleFinish = () => {
-        // setActiveStep(0);
         const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
         addStopTime({
             variables: {
@@ -169,7 +168,7 @@ export default function StopTimeAddDialog(props) {
                         <CloseIcon/>
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        Добавить простой
+                        Добавление простоя
                     </Typography>
                 </Toolbar>
             </AppBar>
@@ -270,7 +269,8 @@ export default function StopTimeAddDialog(props) {
                         <ButtonGroupDialog
                             handleBack={handleBack}
                             handleNext={handleFinish}
-                            finishStepText='Добавить простой'
+                            nextStepText='Добавить простой'
+                            // finishStepText='Добавить простой'
                         />
                     </StepContent>
                 </Step>
@@ -279,7 +279,7 @@ export default function StopTimeAddDialog(props) {
     )
 }
 
-StopTimeAddDialog.propTypes = {
+StopTimeDialogAdd.propTypes = {
     openRepairAddDialog: PropTypes.bool,
     handleClose: PropTypes.func,
     idMachine: PropTypes.string,

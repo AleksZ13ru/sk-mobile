@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useEffect } from 'react';
 import PropTypes from 'prop-types';
-// import clsx from 'clsx';
 import {makeStyles, useTheme} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import List from '@material-ui/core/List';
@@ -10,24 +9,15 @@ import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import {Link as RouterLink} from 'react-router-dom';
 import DashboardIcon from '@material-ui/icons/Dashboard';
-// import PeopleIcon from '@material-ui/icons/People';
-// import BarChartIcon from '@material-ui/icons/BarChart';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import BuildIcon from '@material-ui/icons/Build';
-
-// import SettingsIcon from '@material-ui/icons/Settings';
-// import OfflineBoltIcon from '@material-ui/icons/OfflineBolt';
-// import MyLocationIcon from '@material-ui/icons/MyLocation';
 import MemoryIcon from '@material-ui/icons/Memory';
-
 import IconButton from "@material-ui/core/IconButton";
 import Badge from "@material-ui/core/Badge";
 import {loader} from "graphql.macro";
 import {useQuery} from "react-apollo";
-// import Loading from "./Loading/Loading";
-// import Error from "./Error/Error";
 
 const STATISTIC_QUERY = loader('./Graphql/STATISTIC_QUERY.graphql');
 
@@ -95,22 +85,35 @@ function Sidebar(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [buildCounter, setBuildCounter] = React.useState(0);
+    const initPollInterval = 1000;
+    const [pollInterval, setPollInterval] = React.useState(initPollInterval);
 
     function onError() {
         console.log('Sidebar.js GraphQL error')
     }
 
-    function onCompleted(data) {
+    function onCompleted() {
         setBuildCounter(data.statistic.crashInWork);
     }
 
+
     const {data} = useQuery(STATISTIC_QUERY, {
         variables: {},
-        pollInterval: 5000,
+        pollInterval: {pollInterval},
         onError,
         onCompleted
 
     });
+
+    useEffect(() => {
+        if (open) {
+            setPollInterval(initPollInterval)
+        }else{
+            setPollInterval(0)
+        }
+
+    },[open]);
+
     // if (loading) return (<Loading/>);
     // if (error) return (<Error/>);
 

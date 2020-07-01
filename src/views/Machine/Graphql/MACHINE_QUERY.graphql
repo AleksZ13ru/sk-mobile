@@ -28,9 +28,13 @@ query Machine($pk:Int!){
                 totalLength
             }
             stopTimeListsInMachine(pk:$pk){
+                id
                 text
-                services{name}
                 deltaTime
+                services{
+                    id
+                    name
+                }
             }
             todoInMachine(pk:$pk){
                 text
@@ -39,6 +43,7 @@ query Machine($pk:Int!){
                 id
                 text
                 timeStop
+                deltaTime
                 services{
                     id
                     name

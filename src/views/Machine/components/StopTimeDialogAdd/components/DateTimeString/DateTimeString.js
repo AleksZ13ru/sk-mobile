@@ -9,7 +9,7 @@ function DateIsValid(Date) {
 
 export default function DateTimeString(props) {
     const {date, time} = props;
-    const formatDT = "dd MMMM yyyy г. HH:mm";
+    const formatDT = "dd MMMM yy г. HH:mm";
     if (DateIsValid(date) && DateIsValid(time)) {
         const dt = new Date(date.getYear(), date.getMonth(), date.getDate(), time.getHours(), time.getMinutes());
         return (

@@ -96,7 +96,17 @@ function ListMachines(props) {
     return (
         <Fragment>
             {machines
-                .filter((machine) => (machine.name.toLowerCase().includes(searchFilter.toLowerCase())))
+                .filter((machine) => (machine.name.toLowerCase().includes(searchFilter.toLowerCase())) ||  machine.crash)
+                .sort((a, b) => {
+                    if (a.name > b.name) return 1;
+                    if (a.name < b.name) return -1;
+                    return 0;
+                })
+                .sort((a, b) => {
+                    if (a.crash > b.crash) return -1;
+                    if (a.crash < b.crash) return 1;
+                    return 0;
+                })
                 .map((machine) => (
                     <ListMachine key={machine.id} id={machine.id} name={machine.name} category={machine.category.name}
                                  kmv={machine.kmv} crash={machine.crash}/>

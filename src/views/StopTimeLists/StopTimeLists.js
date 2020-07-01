@@ -21,6 +21,7 @@ import {Query, useQuery} from "react-apollo";
 import {gql, loader} from "graphql.macro";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
+import StopTimeDialogDetails from "../Machine/components/StopTimeDialogDetails/StopTimeDialogDetails";
 
 const STOP_TIME_LIST_ALL_DAY_QUERY = loader('./Graphql/STOP_TIME_LIST_ALL_DAY_QUERY.graphql');
 const GET_TITLE = gql`
@@ -97,30 +98,47 @@ Lists.propTypes = {
 function ListDayInfo(props) {
     const {id, name, text, deltaTime} = props;
     const classes = useStyles();
-
+    const [openCrashDialogDetails, setOpenCrashDialogDetails] = React.useState(false);
+    const handleCloseCrashDialogEdit = () => {
+        setOpenCrashDialogDetails(false);
+    };
+    const handleClick = () => {
+        setOpenCrashDialogDetails(true);
+    };
     return (
+        <Fragment>
+            <StopTimeDialogDetails
+                stopId={id}
+                open={openCrashDialogDetails}
+                handleClose={handleCloseCrashDialogEdit}
+                // handleUpdateMachine={handleUpdateMachine}
+            />
+            <ListItem key={id} button className={classes.list}
+                      // component={Link}
+                      onClick={handleClick}>
+                <Grid container
+                      spacing={2}
+                      direction="row"
+                      justify="space-between"
+                      alignItems="center">
+                    <Grid item xs={1}>
+                        {/*{kmv < 0.2 &&*/}
+                        {/*< ListItemIcon>*/}
+                        {/*    < InfoIcon fontSize="small" color={"secondary"}/>*/}
+                        {/*</ListItemIcon>*/}
+                        {/*}*/}
+                    </Grid>
+                    <Grid item xs={9}>
+                        <ListItemText primary={`${name}`} secondary={`${text}`}/>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <ListItemText primary={deltaTime.toFixed(1)} secondary="час."/>
+                    </Grid>
+                </Grid>
+            </ListItem>
+        </Fragment>
         // to={`/stoptimelist/${id}`}
-        <ListItem key={id} button className={classes.list} component={Link}>
-            <Grid container
-                  spacing={2}
-                  direction="row"
-                  justify="space-between"
-                  alignItems="center">
-                <Grid item xs={1}>
-                    {/*{kmv < 0.2 &&*/}
-                    {/*< ListItemIcon>*/}
-                    {/*    < InfoIcon fontSize="small" color={"secondary"}/>*/}
-                    {/*</ListItemIcon>*/}
-                    {/*}*/}
-                </Grid>
-                <Grid item xs={9}>
-                    <ListItemText primary={`${name}`} secondary={`${text}`}/>
-                </Grid>
-                <Grid item xs={2}>
-                    <ListItemText primary={deltaTime.toFixed(1)} secondary="час."/>
-                </Grid>
-            </Grid>
-        </ListItem>
+
     )
 }
 
@@ -135,10 +153,10 @@ function StopTimeLists(props) {
     // const {id} = props.match.params;
     const classes = useStyles();
     const {client} = useQuery(GET_TITLE);
-    useEffect(() => {
+    // useEffect(() => {
         // Обновляем заголовок документа, используя API браузера
         // store.dispatch({type:'SET_TITLE', text:'Простои'})
-    });
+    // });
     client.writeData({data: {title: 'Простои'}});
 
 
