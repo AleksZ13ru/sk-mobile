@@ -22,7 +22,8 @@ import {InMemoryCache} from "apollo-cache-inmemory";
 
 
 const httpLink = createHttpLink({
-    uri: 'http://192.168.1.66:8000/graphql/'
+    // uri: 'http://192.168.1.66:8000/graphql/'
+    uri: 'http://192.168.137.1:8000/graphql/'
 });
 
 const authLink = setContext((_, {headers}) => {

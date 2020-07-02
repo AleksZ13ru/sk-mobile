@@ -154,7 +154,7 @@ export default function CrashDialogDetails(props) {
 
         }).then(r => {
         });
-        handleUpdateMachine()
+        // handleUpdateMachine()
     };
 
     let formatter = new Intl.DateTimeFormat("ru", {

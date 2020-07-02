@@ -86,7 +86,9 @@ ListDay.propTypes = {
 function Lists(props) {
     const {array} = props;
     return (
-        array.map((element) => {
+        array
+            .filter((element) => (element.timeStop !== null))
+            .map((element) => {
             return (
                 <ListDayInfo key={element.id} id={element.id} name={element.machine.name} text={element.text}
                              deltaTime={element.deltaTime}/>

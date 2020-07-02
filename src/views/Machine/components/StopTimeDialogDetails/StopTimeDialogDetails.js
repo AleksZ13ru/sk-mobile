@@ -51,7 +51,7 @@ function DateIsValid(Date) {
 }
 
 export default function StopTimeDialogDetails(props) {
-    const {open, handleClose,  stopId, handleUpdateMachine} = props;
+    const {open, handleClose, stopId, handleUpdateMachine} = props;
     const initPollInterval = 5000;
     const [pollInterval, setPollInterval] = React.useState(initPollInterval);
 
@@ -62,14 +62,15 @@ export default function StopTimeDialogDetails(props) {
         setActiveStep(4);
         handleClose();
     }
+
     useEffect(() => {
         if (open) {
             setPollInterval(initPollInterval)
-        }else{
+        } else {
             setPollInterval(0)
         }
 
-    },[open]);
+    }, [open]);
     // const [addStopTime,
     //     {loading: mutationLoading, error: mutationError},
     //
@@ -200,16 +201,16 @@ export default function StopTimeDialogDetails(props) {
                         {/*const [selectedDateStop, handleDateChangeStop] = React.useState(new Date());*/}
                         {/*const [selectedTimeStop, handleTimeChangeStop] = React.useState(new Date());*/}
                         <DateTimeString
-                            date={new Date(`${data.stopTimeList.dayStart.day} ${data.stopTimeList.timeStart}`)}
-                            time={new Date(`${data.stopTimeList.dayStart.day} ${data.stopTimeList.timeStart}`)}/>
+                            date={new Date(`${data.stopTimeList.dayStart.day} ${data.stopTimeList.timeStart}`.split(' ').join('T'))}
+                            time={new Date(`${data.stopTimeList.dayStart.day} ${data.stopTimeList.timeStart}`.split(' ').join('T'))}/>
                     </StepLabel>
                 </Step>
                 <Step key='step4'>
                     <StepLabel>{steps.step4}
                         {/*<DateTimeString date={data.stopTimeList.dayStop.day} time={data.stopTimeList.timeStop}/>*/}
                         <DateTimeString
-                            date={new Date(`${data.stopTimeList.dayStop.day} ${data.stopTimeList.timeStop}`)}
-                            time={new Date(`${data.stopTimeList.dayStop.day} ${data.stopTimeList.timeStop}`)}/>
+                            date={new Date(`${data.stopTimeList.dayStop.day} ${data.stopTimeList.timeStop}`.split(' ').join('T'))}
+                            time={new Date(`${data.stopTimeList.dayStop.day} ${data.stopTimeList.timeStop}`.split(' ').join('T'))}/>
                     </StepLabel>
                 </Step>
                 <Step key='step5'>
@@ -227,7 +228,7 @@ export default function StopTimeDialogDetails(props) {
                     </StepContent>
                 </Step>
                 <Step key='step6'>
-                    <StepLabel>{steps.step6}   <b>{data.stopTimeList.deltaTime.toFixed(1)} ч.</b></StepLabel>
+                    <StepLabel>{steps.step6} <b>{data.stopTimeList.deltaTime.toFixed(1)} ч.</b></StepLabel>
                     <StepContent>
                     </StepContent>
                 </Step>

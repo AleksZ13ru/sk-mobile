@@ -54,7 +54,7 @@ const GET_TITLE = gql`
 // `;
 
 function ListMachine(props) {
-    const {id, name, category, kmv, crash} = props;
+    const {id, name, category, kmv, crash, inCrash} = props;
     const classes = useStyles();
     return (
         <ListItem key={id} button className={classes.list} component={Link}
@@ -75,7 +75,8 @@ function ListMachine(props) {
                     <ListItemText primary={name} secondary={category}/>
                 </Grid>
                 <Grid item xs={2}>
-                    <ListItemText primary={kmv} secondary="КМВ"/>
+                    {inCrash ? <ListItemText primary={crash} secondary="шт."/>
+                            : <ListItemText primary={kmv} secondary="КМВ"/>}
                 </Grid>
             </Grid>
         </ListItem>
@@ -87,16 +88,18 @@ ListMachine.propTypes = {
     name: PropTypes.string,
     category: PropTypes.string,
     kmv: PropTypes.number,
-    crash: PropTypes.number
+    crash: PropTypes.number,
+    inCrash: PropTypes.bool
 };
 
 function ListMachines(props) {
-    const {machines, searchFilter} = props;
+    const {machines, searchFilter, inCrash} = props;
     // const {data: dataSearchMachine, client: clientSearchMachine} = useQuery(GET_SEARCH_MACHINE);
     return (
         <Fragment>
             {machines
-                .filter((machine) => (machine.name.toLowerCase().includes(searchFilter.toLowerCase())) ||  machine.crash)
+                .filter((machine) => (machine.name.toLowerCase().includes(searchFilter.toLowerCase())) || machine.crash)
+                .filter((machine) => (machine.crash && inCrash || !inCrash))
                 .sort((a, b) => {
                     if (a.name > b.name) return 1;
                     if (a.name < b.name) return -1;
@@ -109,7 +112,7 @@ function ListMachines(props) {
                 })
                 .map((machine) => (
                     <ListMachine key={machine.id} id={machine.id} name={machine.name} category={machine.category.name}
-                                 kmv={machine.kmv} crash={machine.crash}/>
+                                 kmv={machine.kmv} crash={machine.crash} inCrash={inCrash}/>
                 ))}
         </Fragment>
     )
@@ -117,8 +120,10 @@ function ListMachines(props) {
 
 ListMachines.propTypes = {
     machines: PropTypes.array,
-    searchFilter: PropTypes.string
+    searchFilter: PropTypes.string,
+    inCrash: PropTypes.bool
 };
+
 
 // <ListItem key={machine.id} button className={classes.list} component={Link}
 //           to={`/machine/${machine.id}`}>
@@ -173,8 +178,8 @@ export default function Dashboard(props) {
 
 
     // function handleChange() {
-        // console.log(store.getState().searchMachine);
-        // setSearchFilter(store.getState().searchMachine);
+    // console.log(store.getState().searchMachine);
+    // setSearchFilter(store.getState().searchMachine);
     // }
 
     // store.subscribe(handleChange);
@@ -190,7 +195,22 @@ export default function Dashboard(props) {
                              handleSetSearchFilter={handleSetSearchFilter}
                              handleClearSearchFilter={handleClearSearchFilter}/>
             </div>
-
+            <div className={classes.content}>
+                <Card>
+                    <CardContent>
+                        <List component="nav" aria-label="main mailbox folders">
+                            <ListSubheader component="div" id="nested-list-subheader">
+                                В работе
+                            </ListSubheader>
+                            {data.locations.map((location) => (
+                                    <ListMachines machines={location.machines} searchFilter={searchFilter} inCrash={true}/>
+                                )
+                            )}
+                            {/*<ListMachines machines={location.machines} searchFilter={searchFilter}/>*/}
+                        </List>
+                    </CardContent>
+                </Card>
+            </div>
             {data.locations
                 // .filter((location) => (location.id === "1"))
                 .map((location) => (
@@ -235,6 +255,4 @@ export default function Dashboard(props) {
     )
 }
 
-Dashboard.propTypes = {
-
-};
+Dashboard.propTypes = {};
