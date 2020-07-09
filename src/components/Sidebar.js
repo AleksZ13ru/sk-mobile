@@ -12,6 +12,7 @@ import DashboardIcon from '@material-ui/icons/Dashboard';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import NetworkCheckIcon from '@material-ui/icons/NetworkCheck';
 import BuildIcon from '@material-ui/icons/Build';
 import MemoryIcon from '@material-ui/icons/Memory';
 import IconButton from "@material-ui/core/IconButton";
@@ -146,6 +147,10 @@ function Sidebar(props) {
                     {/*<ListItemLink to="#" primary="Энергетики" icon={<OfflineBoltIcon/>}/>*/}
                     {/*<ListItemLink to="#" primary="Технологи" icon={<MyLocationIcon/>}/>*/}
                     <ListItemLink to="/todo/1" primary="Электроники" icon={<MemoryIcon/>}/>
+                </List>
+                <Divider/>
+                <List>
+                    <ListItemLink to="/massmeters" primary="Весы" icon={<NetworkCheckIcon/>} badgeContent={2}/>
                 </List>
             </Drawer>
         </React.Fragment>

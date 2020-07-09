@@ -10,6 +10,7 @@ import Machine from './views/Machine';
 import CrashLists from "./views/CrashLists";
 import SignInPage from "./views/SignInPage";
 import {AUTH_TOKEN} from "./constants";
+import MassMeters from "./views/MassMeters";
 
 function PrivateRoute({ children, ...rest }) {
     const authToken = localStorage.getItem(AUTH_TOKEN);
@@ -47,6 +48,7 @@ const Routes = () => {
                 <RouteWithLayout exact path="/crashlists" component={CrashLists} layout={Main}/>
                 <RouteWithLayout exact path="/todo/:id" component={ToDo} layout={Main}/>
                 <RouteWithLayout exact path="/machine/:id" component={Machine} layout={Main}/>
+                <RouteWithLayout exact path="/massmeters" component={MassMeters} layout={Main}/>
             </PrivateRoute>
 
             {/*<RouteWithLayout exact path="/dashboard" component={Dashboard} layout={Main}/>*/}
