@@ -219,18 +219,20 @@ export default function CrashDialogEdit(props) {
                         {data.crashElement.messages.map(el => {
                             let secondary = `${formatter.format(new Date(el.dtCreate))} ${el.postedBy.username} `;
                             return (
-                                <Grid container
-                                      spacing={1}
-                                      direction="row"
-                                      justify="flex-start"
-                                      alignItems="center">
+                                <Grid
+                                    key={el.id}
+                                    container
+                                    spacing={1}
+                                    direction="row"
+                                    justify="flex-start"
+                                    alignItems="center">
                                     <Grid item xs={1}>
                                         {el.doNotAgree &&
-                                            <FiberManualRecordIcon fontSize="small" color="secondary"/>}
+                                        <FiberManualRecordIcon fontSize="small" color="secondary"/>}
                                         {el.code === 'STR' &&
-                                            <FiberManualRecordIcon fontSize="small" style={{color: '#4caf50'}}/>}
+                                        <FiberManualRecordIcon fontSize="small" style={{color: '#4caf50'}}/>}
                                         {el.code === 'FNS' &&
-                                            <FiberManualRecordIcon fontSize="small" color="primary"/>}
+                                        <FiberManualRecordIcon fontSize="small" color="primary"/>}
                                     </Grid>
                                     <Grid item xs={11}>
                                         <ListItemText primary={el.text} secondary={secondary}/>

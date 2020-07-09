@@ -31,7 +31,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "run": "serve -s build -l 3000",
+    "run_serve": "serve -s build -l 3000",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

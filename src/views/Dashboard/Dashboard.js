@@ -203,7 +203,10 @@ export default function Dashboard(props) {
                                 В работе
                             </ListSubheader>
                             {data.locations.map((location) => (
-                                    <ListMachines machines={location.machines} searchFilter={searchFilter} inCrash={true}/>
+                                    <Fragment key={location.id}>
+                                        <ListMachines machines={location.machines} searchFilter={searchFilter} inCrash={true}/>
+                                    </Fragment>
+
                                 )
                             )}
                             {/*<ListMachines machines={location.machines} searchFilter={searchFilter}/>*/}

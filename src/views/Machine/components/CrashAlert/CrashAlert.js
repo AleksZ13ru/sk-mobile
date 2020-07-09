@@ -10,6 +10,7 @@ import Paper from "@material-ui/core/Paper";
 
 const useStyles = makeStyles(theme => ({
     alert: {
+        marginTop: theme.spacing(2),
         marginBottom: theme.spacing(2),
     }
 
