@@ -91,7 +91,8 @@ export default function Topbar(props) {
                                 <ChevronLeftIcon/>
                             </IconButton>
                         }
-                        <Typography variant="h6" className={classes.title}>
+
+                        <Typography variant="h6" className={classes.title} noWrap>
                             {/*{title}*/}
                             {title}
                         </Typography>
