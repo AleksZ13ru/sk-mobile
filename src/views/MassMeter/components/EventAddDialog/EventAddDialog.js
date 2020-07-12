@@ -12,22 +12,29 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
-import MachineSelect from "../MachineSelect";
-import ServicesSelect from "../ServicesSelect"
-import ServicesText from "../ServicesText"
-import MultilineTextFields from "../MultilineTextFields"
+// import MachineSelect from "../MachineSelect";
+// import ServicesSelect from "../ServicesSelect"
+// import ServicesText from "../ServicesText"
+// import MultilineTextFields from "../MultilineTextFields"
 import ButtonGroupDialog from "../../../../components/ButtonGroupDialog";
 import {loader} from "graphql.macro";
 import {useMutation} from '@apollo/react-hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import TextField from "@material-ui/core/TextField";
 
-const CRASH_ADD = loader('../../Graphql/CRASH_ADD.graphql');
+// const CRASH_ADD = loader('../../Graphql/CRASH_ADD.graphql');
 
 const useStyles = makeStyles(theme => ({
     rootProgress: {
         width: '100%',
         '& > * + *': {
             marginTop: theme.spacing(2),
+        },
+    },
+    rootTextField: {
+        '& .MuiTextField-root': {
+            margin: theme.spacing(1),
+            // width: 200,
         },
     },
     appBar: {
@@ -53,22 +60,27 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-export default function CrashDialogAdd(props) {
+export default function EventAddDialog(props) {
     const classes = useStyles();
     const {openCrashDialogAdd, handleClose, idMachine, nameMachine} = props;
+    const initObj = '';
+    const intMassObject = null;
+    const initMassIndicator = null;
+    const [obj, setObj] = React.useState(initObj);
+    const [massObject, setMassObject] = React.useState(intMassObject);
+    const [massIndication, setMassIndication] = React.useState(initMassIndicator);
 
     function onCompleted() {
         setMachine(initMachine);
-        setServices(initServices);
         setText([]);
         setActiveStep(1);
         handleClose();
     }
 
-    const [crashAdd,
-        {loading: mutationLoading, error: mutationError},
-
-    ] = useMutation(CRASH_ADD, {onCompleted});
+    // const [crashAdd,
+    //     {loading: mutationLoading, error: mutationError},
+    //
+    // ] = useMutation(CRASH_ADD, {onCompleted});
     const [activeStep, setActiveStep] = React.useState(1);
 
     // const [steps, setSteps] = React.useState({
@@ -79,55 +91,19 @@ export default function CrashDialogAdd(props) {
     // });
 
     const steps = {
-        step1: 'Оборудование: ',
-        step2: 'Службы: ',
-        step3: 'Описание неисправности: ',
+        step1: 'Весы: ',
+        step2: 'Предмет взвешивания: ',
+        step3: 'Показания весов ',
         step4: 'Проверка и отправка: '
     };
 
-    const initServices = {
-        array: [
-            {
-                id: 4,
-                key: 'tech',
-                name: 'Технологи',
-                checked: false
-            }, {
-                id: 3,
-                key: 'energo',
-                name: 'Электрики',
-                checked: false
-            }, {
-                id: 2,
-                key: 'mech',
-                name: 'Механики',
-                checked: false
-            }, {
-                id: 1,
-                key: 'electro',
-                name: 'Электроники',
-                checked: false
-            }
-        ]
-    };
     const initMachine = {
         idMachine: idMachine,
         nameMachine: nameMachine,
     };
 
     const [machine, setMachine] = React.useState(initMachine);
-    const [services, setServices] = React.useState(initServices);
     const [text, setText] = React.useState([]);
-
-    const handleServiceSelect = (event) => {
-        // console.log(event.target.checked);
-        // console.log(event.target.name);
-        setServices(prevState => ({
-            ...services, array: services.array.map(
-                el => el.key === event.target.name ? {...el, checked: event.target.checked} : el
-            )
-        }));
-    };
 
     const handleTextChange = (event) => {
         setText(event.target.value);
@@ -143,16 +119,16 @@ export default function CrashDialogAdd(props) {
     };
 
     const handleFinish = () => {
-        const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
-        crashAdd({
-            variables: {
-                machineId: idMachine,
-                // dtStart: "2020-05-29T00:00:00Z",
-                servicesID: array_service,
-                text: text
-            },
-
-        }).then(r => {});
+        // const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
+        // crashAdd({
+        //     variables: {
+        //         machineId: idMachine,
+        //         // dtStart: "2020-05-29T00:00:00Z",
+        //         servicesID: array_service,
+        //         text: text
+        //     },
+        //
+        // }).then(r => {});
     };
 
     // const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
@@ -168,12 +144,12 @@ export default function CrashDialogAdd(props) {
     return (
         <Dialog fullScreen open={openCrashDialogAdd} onClose={handleClose} TransitionComponent={Transition}>
             <AppBar className={classes.appBar}>
-                <Toolbar style={{color: "white", backgroundColor: "#ff9800"}}>
+                <Toolbar style={{color: "white", backgroundColor: "#d500f9"}}>
                     <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
                         <CloseIcon/>
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        Вызов персонала
+                        Взвешивание груза
                     </Typography>
                     {/*<Button autoFocus color="inherit" onClick={handleClose}>*/}
                     {/*    Х*/}
@@ -185,7 +161,7 @@ export default function CrashDialogAdd(props) {
                     <StepLabel>{steps.step1} <b>{machine.nameMachine}</b></StepLabel>
                     <StepContent>
                         {/*<Typography> */}
-                        <MachineSelect nameMachine={machine.nameMachine}/>
+                        {/*<MachineSelect nameMachine={machine.nameMachine}/>*/}
                         {/*</Typography>*/}
                         <ButtonGroupDialog
                             disabledBack={true}
@@ -194,28 +170,33 @@ export default function CrashDialogAdd(props) {
                     </StepContent>
                 </Step>
                 <Step key='step2'>
-                    <StepLabel>{steps.step2} <ServicesText services={services.array}/></StepLabel>
+                    <StepLabel>{steps.step2} <b>{obj} {+massObject>0 && massObject} {+massObject>0 && 'кг.'}</b></StepLabel>
                     <StepContent>
                         {/*<Typography>*/}
-                        <ServicesSelect services={services.array}
-                                        handleChange={handleServiceSelect}/>
+                        <div className={classes.rootTextField}>
+                            <TextField id="obj" label="Наименование" variant="outlined" value={obj}
+                                       onChange={(event) => setObj(event.target.value)}/>
+                            <TextField id="mass-object" label="Известный вес" variant="outlined" value={massObject} type="number"
+                                       onChange={(event) => setMassObject(event.target.value)}/>
+                        </div>
+
                         {/*</Typography>*/}
                         <ButtonGroupDialog
-                            disableNext={services.array.filter((el) => (el.checked)).length === 0}
+                            disableNext={obj.length === 0}
                             handleBack={handleBack}
                             handleNext={handleNext}
                         />
                     </StepContent>
                 </Step>
                 <Step key='step3'>
-                    <StepLabel>{steps.step3} <b>{text}</b></StepLabel>
+                    <StepLabel>{steps.step3} <b>{+massIndication>0 && massIndication} {+massIndication>0 && 'кг.'}</b></StepLabel>
                     <StepContent>
                         {/*<Typography>*/}
-                        <MultilineTextFields text={text}
-                                             handleChange={handleTextChange}/>
+                        <TextField id="mass-indication" label="Показания весов" variant="outlined" value={massIndication } type="number"
+                                   onChange={(event) => setMassIndication(event.target.value)}/>
                         {/*</Typography>*/}
                         <ButtonGroupDialog
-                            disableNext={text.length === 0}
+                            disableNext={!+massIndication > 0}
                             handleBack={handleBack}
                             handleNext={handleNext}
                         />
@@ -224,16 +205,23 @@ export default function CrashDialogAdd(props) {
                 <Step key='step4'>
                     <StepLabel>{steps.step4}</StepLabel>
                     <StepContent>
+                        {
+                            +massObject>0 && `Погрешность измерения: ${Math.abs(100-massIndication/massObject*100)} %`
+
+                        }
+
+
                         {/*<Typography></Typography>*/}
-                        {mutationLoading &&
-                        <div className={classes.rootProgress}>
-                            <LinearProgress/>
-                        </div>}
-                        {mutationError && <p><b>Не удалось отправить заявку</b></p>}
+                        {/*{mutationLoading &&*/}
+                        {/*<div className={classes.rootProgress}>*/}
+                        {/*    <LinearProgress/>*/}
+                        {/*</div>}*/}
+                        {/*{mutationError && <p><b>Не удалось отправить заявку</b></p>}*/}
+
                         <ButtonGroupDialog
                             handleBack={handleBack}
                             handleNext={handleFinish}
-                            nextStepText='Вызвать персонал'
+                            nextStepText='Оправить результат'
                         />
                     </StepContent>
                 </Step>
@@ -250,7 +238,7 @@ export default function CrashDialogAdd(props) {
     )
 }
 
-CrashDialogAdd.propTypes = {
+EventAddDialog.propTypes = {
     openCrashDialogAdd: PropTypes.bool,
     handleClose: PropTypes.func,
     idMachine: PropTypes.string,

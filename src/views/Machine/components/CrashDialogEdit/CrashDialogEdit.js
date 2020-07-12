@@ -13,7 +13,7 @@ import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
 import MultilineTextFields from "../MultilineTextFields"
-import ButtonGroupDialog from "../ButtonGroupDialog";
+import ButtonGroupDialog from "../../../../components/ButtonGroupDialog";
 import {loader} from "graphql.macro";
 import {useMutation} from '@apollo/react-hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';

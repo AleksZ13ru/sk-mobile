@@ -17,7 +17,7 @@ import ServicesSelect from "../ServicesSelect"
 import ServicesText from "../ServicesText"
 import MultilineTextFields from "../MultilineTextFields"
 import DateTimeSelect from "./components/DateTimeSelect";
-import ButtonGroupDialog from "../ButtonGroupDialog"
+import ButtonGroupDialog from "../../../../components/ButtonGroupDialog"
 import {loader} from "graphql.macro";
 import {useMutation} from "@apollo/react-hooks";
 import LinearProgress from "@material-ui/core/LinearProgress";

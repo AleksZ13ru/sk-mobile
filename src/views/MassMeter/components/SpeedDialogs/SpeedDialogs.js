@@ -12,6 +12,7 @@ import {useHistory} from "react-router-dom";
 // import StopTimeDialogDetails from "../StopTimeDialogAdd";
 // import CrashDialogAdd from "../CrashDialogAdd";
 import PropTypes from "prop-types";
+import EventAddDialog from "../EventAddDialog";
 
 const useStyles = makeStyles((theme) => ({
     exampleWrapper: {
@@ -46,8 +47,8 @@ export default function SpeedDialogs(props) {
     const {idMachine, nameMachine, handleUpdateMachine} = props;
     const classes = useStyles();
     const [open, setOpen] = React.useState(false);
-    const [openCrashDialog, setOpenRepairAddDialog] = React.useState(false);
-    const [openStopTimeAddDialog, setOpenStopTimeAddDialog] = React.useState(false);
+    const [openCrashAddDialog, setOpenCrashAddDialog] = React.useState(false);
+    const [openMassEventAddDialog, setOpenMassEventAddDialog] = React.useState(false);
     let history = useHistory();
 
     const handleClose = () => {
@@ -58,20 +59,20 @@ export default function SpeedDialogs(props) {
     };
 
     const handleClickOpenRepairAddDialog = () => {
-        setOpenRepairAddDialog(true);
+        setOpenCrashAddDialog(true);
     };
 
     const handleCloseCrashDialogAdd = () => {
-        setOpenRepairAddDialog(false);
+        setOpenCrashAddDialog(false);
     };
 
-    const handleClickOpenStopTimeAddDialog = () => {
-        setOpenStopTimeAddDialog(true);
+    const handleClickOpenMassEventAddDialog = () => {
+        setOpenMassEventAddDialog(true);
     };
 
-    const handleCloseStopTimeAddDialog = () => {
-        setOpenStopTimeAddDialog(false);
-        handleUpdateMachine();
+    const handleCloseMassEventAddDialog = () => {
+        setOpenMassEventAddDialog(false);
+        // handleUpdateMachine();
     };
 
     return (
@@ -91,12 +92,12 @@ export default function SpeedDialogs(props) {
                                 <Fab style={{color: "white", backgroundColor: "#ff9800"}} variant="extended"
                                      onClick={handleClickOpenRepairAddDialog}>
                                     <BuildIcon className={classes.extendedIcon}/>
-                                    Весы не исправны
+                                    Весы неисправны
                                 </Fab>
                             </Grid>
                             <Grid item>
                                 <Fab style={{color: "white", backgroundColor: "#d500f9"}} variant="extended"
-                                     onClick={handleClickOpenStopTimeAddDialog}>
+                                     onClick={handleClickOpenMassEventAddDialog}>
                                     <NetworkCheckIcon className={classes.extendedIcon}/>
                                     Взвесить груз
                                 </Fab>
@@ -112,6 +113,12 @@ export default function SpeedDialogs(props) {
                         </Grid>
                     </div>
                 </Backdrop>
+                <EventAddDialog
+                    idMachine={idMachine}
+                    nameMachine={nameMachine}
+                    openCrashDialogAdd={openMassEventAddDialog}
+                    handleClose={handleCloseMassEventAddDialog}
+                />
                 {/*<StopTimeDialogDetails*/}
                 {/*    idMachine={idMachine}*/}
                 {/*    nameMachine={nameMachine}*/}

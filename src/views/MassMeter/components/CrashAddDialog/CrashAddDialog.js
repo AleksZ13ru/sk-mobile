@@ -16,22 +16,33 @@ import MachineSelect from "../MachineSelect";
 import ServicesSelect from "../ServicesSelect"
 import ServicesText from "../ServicesText"
 import MultilineTextFields from "../MultilineTextFields"
-import DateTimeSelect from "./components/DateTimeSelect";
-import ButtonGroupDialog from "../../../../components/ButtonGroupDialog"
+import ButtonGroupDialog from "../ButtonGroupDialog";
 import {loader} from "graphql.macro";
-import {useMutation} from "@apollo/react-hooks";
-import LinearProgress from "@material-ui/core/LinearProgress";
-import DateTimeString from "./components/DateTimeString";
+import {useMutation} from '@apollo/react-hooks';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
-const ADD_STOP_TIME = loader('../../Graphql/STOP_TIME_ADD.graphql');
+const CRASH_ADD = loader('../../Graphql/CRASH_ADD.graphql');
 
 const useStyles = makeStyles(theme => ({
+    rootProgress: {
+        width: '100%',
+        '& > * + *': {
+            marginTop: theme.spacing(2),
+        },
+    },
     appBar: {
         position: 'relative',
     },
     title: {
         marginLeft: theme.spacing(2),
         flex: 1,
+    },
+    actionsContainer: {
+        marginBottom: theme.spacing(2),
+    },
+    button: {
+        marginTop: theme.spacing(1),
+        marginRight: theme.spacing(1),
     },
     resetContainer: {
         padding: theme.spacing(2),
@@ -42,12 +53,9 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function DateIsValid(Date) {
-    return (Date !== null && !isNaN(Date.getTime()))
-}
-
-export default function StopTimeDialogAdd(props) {
-    const {openRepairAddDialog, handleClose, idMachine, nameMachine} = props;
+export default function CrashAddDialog(props) {
+    const classes = useStyles();
+    const {openCrashDialogAdd, handleClose, idMachine, nameMachine} = props;
 
     function onCompleted() {
         setMachine(initMachine);
@@ -57,30 +65,24 @@ export default function StopTimeDialogAdd(props) {
         handleClose();
     }
 
-    const [addStopTime,
+    const [crashAdd,
         {loading: mutationLoading, error: mutationError},
 
-    ] = useMutation(ADD_STOP_TIME, {onCompleted});
+    ] = useMutation(CRASH_ADD, {onCompleted});
     const [activeStep, setActiveStep] = React.useState(1);
-    const classes = useStyles();
-    // const formatDT = "dd MMMM yyyy г. HH:mm";
+
     // const [steps, setSteps] = React.useState({
     //     step1: 'Оборудование: ',
     //     step2: 'Службы: ',
-    //     step3: 'Начало простоя: ',
-    //     step4: 'Окончание простоя: ',
-    //     step5: 'Описание неисправности: ',
-    //     step6: 'Проверка и добавление: '
-    //
+    //     step3: 'Описание неисправности: ',
+    //     step4: 'Проверка и отправка'
     // });
 
     const steps = {
         step1: 'Оборудование: ',
         step2: 'Службы: ',
-        step3: 'Начало простоя: ',
-        step4: 'Окончание простоя: ',
-        step5: 'Описание неисправности: ',
-        step6: 'Проверка и отправка: '
+        step3: 'Описание неисправности: ',
+        step4: 'Проверка и отправка: '
     };
 
     const initServices = {
@@ -108,7 +110,6 @@ export default function StopTimeDialogAdd(props) {
             }
         ]
     };
-
     const initMachine = {
         idMachine: idMachine,
         nameMachine: nameMachine,
@@ -116,13 +117,11 @@ export default function StopTimeDialogAdd(props) {
 
     const [machine, setMachine] = React.useState(initMachine);
     const [services, setServices] = React.useState(initServices);
-    const [selectedDateStart, handleDateChangeStart] = React.useState(new Date());
-    const [selectedTimeStart, handleTimeChangeStart] = React.useState(new Date());
-    const [selectedDateStop, handleDateChangeStop] = React.useState(new Date());
-    const [selectedTimeStop, handleTimeChangeStop] = React.useState(new Date());
     const [text, setText] = React.useState([]);
 
     const handleServiceSelect = (event) => {
+        // console.log(event.target.checked);
+        // console.log(event.target.name);
         setServices(prevState => ({
             ...services, array: services.array.map(
                 el => el.key === event.target.name ? {...el, checked: event.target.checked} : el
@@ -145,31 +144,40 @@ export default function StopTimeDialogAdd(props) {
 
     const handleFinish = () => {
         const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
-        addStopTime({
+        crashAdd({
             variables: {
                 machineId: idMachine,
                 // dtStart: "2020-05-29T00:00:00Z",
-                // dtStop: "2020-05-29T00:00:00Z",
-                dtStart: selectedDateStart,
-                dtStop: selectedDateStop,
                 servicesID: array_service,
                 text: text
             },
 
-        }).then(r => {
-        });
+        }).then(r => {});
     };
 
+    // const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
+
+    // const handleClickOpen = () => {
+    //     setOpenRepairAddDialog(true);
+    // };
+
+    // const handleClose = () => {
+    //     setOpenRepairAddDialog(false);
+    // };
+
     return (
-        <Dialog fullScreen open={openRepairAddDialog} onClose={handleClose} TransitionComponent={Transition}>
+        <Dialog fullScreen open={openCrashDialogAdd} onClose={handleClose} TransitionComponent={Transition}>
             <AppBar className={classes.appBar}>
-                <Toolbar style={{color: "white", backgroundColor: "#3f51b5"}}>
+                <Toolbar style={{color: "white", backgroundColor: "#ff9800"}}>
                     <IconButton edge="start" color="inherit" onClick={handleClose} aria-label="close">
                         <CloseIcon/>
                     </IconButton>
                     <Typography variant="h6" className={classes.title}>
-                        Добавление простоя
+                        Вызов персонала
                     </Typography>
+                    {/*<Button autoFocus color="inherit" onClick={handleClose}>*/}
+                    {/*    Х*/}
+                    {/*</Button>*/}
                 </Toolbar>
             </AppBar>
             <Stepper activeStep={activeStep} orientation="vertical">
@@ -200,52 +208,7 @@ export default function StopTimeDialogAdd(props) {
                     </StepContent>
                 </Step>
                 <Step key='step3'>
-                    <StepLabel>{steps.step3}
-                        {/*{(activeStep > 1 && DateIsValid(selectedDateStart) && DateIsValid(selectedTimeStart)) &&*/}
-                        {activeStep > 1 &&
-                        <DateTimeString date={selectedDateStart} time={selectedTimeStart}/>
-                            // <p><b>{format(selectedDateStart, formatDT, {locale: ruLocale})}</b></p>
-                        }
-                    </StepLabel>
-                    <StepContent>
-                        <DateTimeSelect selectedDate={selectedDateStart}
-                                        selectedTime={selectedTimeStart}
-                                        handleDateChange={handleDateChangeStart}
-                                        handleTimeChange={handleTimeChangeStart}
-                        />
-                        <ButtonGroupDialog
-                            disableNext={!DateIsValid(selectedDateStart) && !DateIsValid(selectedTimeStart)}
-                            handleBack={handleBack}
-                            handleNext={handleNext}
-                        />
-                    </StepContent>
-                </Step>
-                <Step key='step4'>
-                    <StepLabel>{steps.step4}
-                        {/*{(activeStep > 2 && DateIsValid(selectedDateStop) && DateIsValid(selectedTimeStop)) &&*/}
-                        {/*<p><b>{format(selectedDateStop, formatDT, {locale: ruLocale})}</b></p>*/}
-                        {/*}*/}
-                        {activeStep > 2 &&
-                        <DateTimeString date={selectedDateStop} time={selectedTimeStop}/>
-                            // <p><b>{format(selectedDateStart, formatDT, {locale: ruLocale})}</b></p>
-                        }
-                    </StepLabel>
-                    <StepContent>
-                        <DateTimeSelect
-                            selectedDate={selectedDateStop}
-                            selectedTime={selectedTimeStop}
-                            handleDateChange={handleDateChangeStop}
-                            handleTimeChange={handleTimeChangeStop}
-                        />
-                        <ButtonGroupDialog
-                            disableNext={!DateIsValid(selectedDateStop)}
-                            handleBack={handleBack}
-                            handleNext={handleNext}
-                        />
-                    </StepContent>
-                </Step>
-                <Step key='step5'>
-                    <StepLabel>{steps.step5} <b>{text}</b></StepLabel>
+                    <StepLabel>{steps.step3} <b>{text}</b></StepLabel>
                     <StepContent>
                         {/*<Typography>*/}
                         <MultilineTextFields text={text}
@@ -258,29 +221,37 @@ export default function StopTimeDialogAdd(props) {
                         />
                     </StepContent>
                 </Step>
-                <Step key='step6'>
-                    <StepLabel>{steps.step6}</StepLabel>
+                <Step key='step4'>
+                    <StepLabel>{steps.step4}</StepLabel>
                     <StepContent>
+                        {/*<Typography></Typography>*/}
                         {mutationLoading &&
                         <div className={classes.rootProgress}>
                             <LinearProgress/>
                         </div>}
-                        {mutationError && <p><b>Не удалось добавить простой</b></p>}
+                        {mutationError && <p><b>Не удалось отправить заявку</b></p>}
                         <ButtonGroupDialog
                             handleBack={handleBack}
                             handleNext={handleFinish}
-                            nextStepText='Добавить простой'
-                            // finishStepText='Добавить простой'
+                            nextStepText='Вызвать персонал'
                         />
                     </StepContent>
                 </Step>
             </Stepper>
+            {/*{activeStep === steps.length && (*/}
+            {/*    <Paper square elevation={0} className={classes.resetContainer}>*/}
+            {/*        <Typography>All steps completed - you&apos;re finished</Typography>*/}
+            {/*        <Button onClick={handleReset} className={classes.button}>*/}
+            {/*            Reset*/}
+            {/*        </Button>*/}
+            {/*    </Paper>*/}
+            {/*)}*/}
         </Dialog>
     )
 }
 
-StopTimeDialogAdd.propTypes = {
-    openRepairAddDialog: PropTypes.bool,
+CrashAddDialog.propTypes = {
+    openCrashDialogAdd: PropTypes.bool,
     handleClose: PropTypes.func,
     idMachine: PropTypes.string,
     nameMachine: PropTypes.string
