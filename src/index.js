@@ -22,9 +22,10 @@ import {InMemoryCache} from "apollo-cache-inmemory";
 
 
 const httpLink = createHttpLink({
+    uri: 'http://127.0.0.1:8000/graphql/'
     // uri: 'http://192.168.1.66:8000/graphql/'
     // uri: 'http://192.168.215.98:8000/graphql/'
-    uri: 'http://3.22.245.121:8000/graphql/'
+    // uri: 'http://3.22.245.121:8000/graphql/'
     // uri: 'http://192.168.137.1:8000/graphql/'
 });
 

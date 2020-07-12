@@ -86,7 +86,8 @@ export default function Topbar(props) {
                                 className={classes.menuButton}
                                 color="inherit"
                                 aria-label="menu"
-                                onClick={() => history.push('/dashboard')}
+                                // onClick={() => history.push('/dashboard')}
+                                onClick={() => history.goBack()}
                             >
                                 <ChevronLeftIcon/>
                             </IconButton>

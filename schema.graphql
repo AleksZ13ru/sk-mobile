@@ -40,6 +40,24 @@ type CrashListType {
     timeStop: Time
 }
 
+type CrashMutationAdd {
+    crash: CrashType
+}
+
+type CrashMutationEdit {
+    crash: CrashType
+}
+
+type CrashType {
+    comment: String!
+    dtStart: DateTime!
+    dtStop: DateTime
+    id: ID!
+    massMeter: MassMeterType
+    status: String!
+    text: String!
+}
+
 type CreateUser {
     user: UserType
 }
@@ -59,6 +77,29 @@ type DayType {
     totalStopTimeListInMachine(pk: Int): Float
     valuesInDay: [ValueType!]!
     valuesInMachine(pk: Int): [ValueType]
+}
+
+type DocumentType {
+    dateCreate: Date!
+    dateExpiration: Date!
+    id: ID!
+    massMeter: MassMeterType
+    number: String!
+    status: DocumentStatus!
+}
+
+type EventMutationAdd {
+    event: EventType
+}
+
+type EventType {
+    dtCreate: DateTime!
+    id: ID!
+    massIndication: Float!
+    massMeter: MassMeterType
+    massObject: Float!
+    object: String!
+    postedBy: UserType
 }
 
 type LocationType {
@@ -82,6 +123,23 @@ type MachineType {
     name: String!
 }
 
+type MassMeterType {
+    accident: [CrashType]
+    documentActual: DocumentType
+    events: [EventType]
+    execution: MassMeterExecution!
+    id: ID!
+    limit: Float!
+    massMeterCrash: [CrashType!]!
+    massMeterDocument: [DocumentType!]!
+    massMeterEvents: [EventType!]!
+    massMeterStatus: [StatusType!]!
+    measurementError: Float!
+    name: String!
+    sn: String!
+    statusActual: StatusType
+}
+
 type MessageType {
     code: MessageCode!
     crashList: CrashListType
@@ -97,6 +155,9 @@ type Mutation {
     crashElementAdd(machineId: Int, servicesId: [Int], text: String): CrashElementMutationAdd
     crashElementEdit(crashId: Int, doNotAgree: Boolean, finish: Boolean, rewrite: Boolean, text: String): CrashElementMutationEdit
     createUser(email: String!, password: String!, username: String!): CreateUser
+    massCrashAdd(massMeterId: Int, text: String): CrashMutationAdd
+    massCrashEdit(crashId: Int, finish: Boolean, rewrite: Boolean, text: String): CrashMutationEdit
+    massEventAdd(massIndication: Int, massMeterId: Int, massObject: Int, object: String): EventMutationAdd
     refreshToken(token: String): Refresh
     "Obtain JSON Web Token mutation"
     tokenAuth(password: String!, username: String!): ObtainJSONWebToken
@@ -114,10 +175,11 @@ type Query {
     category: [CategoryType]
     crashElement(pk: Int): CrashListType
     days: [DayType]
-    hello: String
     locations: [LocationType]
     machine(pk: Int): MachineType
     machines: [MachineType]
+    massMeter(pk: Int): MassMeterType
+    massMeters: [MassMeterType]
     me: UserType
     statistic(serviceId: Int): StatisticType
     stopTimeList(pk: Int): StopTimeListType
@@ -141,6 +203,13 @@ type ServiceNameType {
 
 type StatisticType {
     crashInWork: Int
+}
+
+type StatusType {
+    code: StatusCode!
+    dtCreate: DateTime!
+    id: ID!
+    massMeter: MassMeterType
 }
 
 type StopTimeListType {
@@ -173,6 +242,7 @@ type ToDoListType {
 type UserType {
     dateJoined: DateTime!
     email: String!
+    eventSet: [EventType!]!
     firstName: String!
     id: ID!
     "Отметьте, если пользователь должен считаться активным. Уберите эту отметку вместо удаления учётной записи."
@@ -205,6 +275,24 @@ type Verify {
 }
 
 "An enumeration."
+enum DocumentStatus {
+    "Действующее"
+    ACT
+    "Черновик"
+    DFL
+    "Архив"
+    HST
+}
+
+"An enumeration."
+enum MassMeterExecution {
+    "Крановые"
+    CRN
+    "Напольные"
+    FLR
+}
+
+"An enumeration."
 enum MessageCode {
     "Finish"
     FNS
@@ -212,6 +300,20 @@ enum MessageCode {
     MSG
     "Start"
     STR
+}
+
+"An enumeration."
+enum StatusCode {
+    "Не установлены"
+    DFL
+    "Не исправны"
+    FLS
+    "Превышен предел погрешности"
+    LUP
+    "Поверка просрочена"
+    TMF
+    "В рабочем состоянии"
+    WRK
 }
 
 
@@ -223,18 +325,18 @@ value as specified by
 scalar Date
 
 """
-The `Time` scalar type represents a Time value as
-specified by
-[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
-"""
-scalar Time
-
-"""
 The `DateTime` scalar type represents a DateTime
 value as specified by
 [iso8601](https://en.wikipedia.org/wiki/ISO_8601).
 """
 scalar DateTime
+
+"""
+The `Time` scalar type represents a Time value as
+specified by
+[iso8601](https://en.wikipedia.org/wiki/ISO_8601).
+"""
+scalar Time
 
 """
 The `GenericScalar` scalar type represents a generic

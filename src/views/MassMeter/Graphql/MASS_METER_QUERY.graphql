@@ -1,0 +1,24 @@
+query MassMeter($pk:Int!){
+    massMeter(pk: $pk){
+        id
+        name
+        sn
+        limit
+        documentActual{
+            number
+            dateExpiration
+        }
+        measurementError
+        massMeterStatus{
+            code
+            dtCreate
+        }
+        events{
+            id
+            postedBy{username}
+            object
+            massObject
+            massIndication
+        }
+    }
+}

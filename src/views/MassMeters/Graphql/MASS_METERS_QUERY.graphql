@@ -1,0 +1,20 @@
+query{
+    massMeters{
+        id
+        name
+        sn
+        massMeterDocument{
+            number
+        }
+        massMeterStatus{
+            code
+            dtCreate
+        }
+        events{
+            postedBy{username}
+            object
+            massObject
+            massIndication
+        }
+    }
+}
