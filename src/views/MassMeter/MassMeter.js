@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {gql, loader} from "graphql.macro";
 import {useQuery} from "react-apollo";
@@ -20,6 +20,7 @@ import Error from "../../components/Error";
 import SpeedDialogs from "./components/SpeedDialogs/SpeedDialogs";
 
 const MASS_METER_QUERY = loader('./Graphql/MASS_METER_QUERY.graphql');
+const GET_TITLE = gql`{title @client}`;
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -42,7 +43,7 @@ const useStyles = makeStyles(theme => ({
     }
 
 }));
-const GET_TITLE = gql`{title @client}`;
+
 
 function ItemMassMeter(props) {
     // const {id, name, category, kmv, crash, inCrash} = props;
@@ -151,6 +152,23 @@ export default function MassMeter(props) {
     // const [searchFilter, setSearchFilter] = React.useState(store.getState().searchMachine);
     const {id} = props.match.params;
     const classes = useStyles();
+
+    const [lastUpdate, setLastUpdate] = React.useState('');
+
+    const socket = React.useRef(new WebSocket("ws://127.0.0.1:8000/ws/subscribe/mass_meter/"));
+
+    useEffect(() => {
+        socket.current.onmessage = (msg) => {
+            // const incomingMessage = `Message from WebSocket: ${msg.data}`;
+            let data = JSON.parse(msg.data);
+            if (lastUpdate !== data.message.massMeterLastUpdate) {
+                setLastUpdate(data.message.massMeterLastUpdate);
+                refetch()
+            }
+        };
+    });
+
+    useEffect(() => () => socket.current.close(), [socket]);
     // useEffect(() => {
     //     // Обновляем заголовок документа, используя API браузера
     //     // store.dispatch({type:'SET_TITLE', text:'Сарансккабель2'})
@@ -158,7 +176,7 @@ export default function MassMeter(props) {
     // });
     const {client} = useQuery(GET_TITLE);
     // const {data: dataSearchMachine, client: clientSearchMachine} = useQuery(GET_SEARCH_MACHINE);
-    const {loading, error, data} = useQuery(MASS_METER_QUERY, {
+    const {loading, error, data, refetch} = useQuery(MASS_METER_QUERY, {
         variables: {"pk": id},
         onCompleted
     });
@@ -235,16 +253,16 @@ export default function MassMeter(props) {
                                     return 0;
                                 })
                                 .map(el => (
-                                <ItemEvent
-                                    key={el.id}
-                                    id={el.id}
-                                    object={el.object}
-                                    massObject={el.massObject}
-                                    massIndication={el.massIndication}
-                                    postedByName={el.postedBy.username}
-                                    measurementError={data.massMeter.measurementError}
-                                />
-                            ))}
+                                    <ItemEvent
+                                        key={el.id}
+                                        id={el.id}
+                                        object={el.object}
+                                        massObject={el.massObject}
+                                        massIndication={el.massIndication}
+                                        postedByName={el.postedBy.username}
+                                        measurementError={data.massMeter.measurementError}
+                                    />
+                                ))}
                         </List>
                     </CardContent>
                 </Card>

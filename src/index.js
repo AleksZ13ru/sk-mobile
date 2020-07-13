@@ -6,14 +6,13 @@ import * as serviceWorker from './serviceWorker';
 import { onError } from "apollo-link-error";
 import { Provider } from 'react-redux'
 import {store} from './store'
-
-// import {ApolloProvider} from 'react-apollo'
 import {ApolloProvider} from '@apollo/react-hooks';
 import ApolloClient from 'apollo-client';
 import {createHttpLink} from "apollo-link-http";
 import { setContext } from 'apollo-link-context'
 import {AUTH_TOKEN} from "./constants";
 import {InMemoryCache} from "apollo-cache-inmemory";
+// import {ApolloProvider} from 'react-apollo'
 // import {InMemoryCache} from 'apollo-cache-inmemory'
 // import {createHttpLink} from "apollo-link-http";
 // import {setContext} from 'apollo-link-context'
@@ -67,18 +66,14 @@ cache.writeData({
         // },
     },
 });
-// client
-// .query({
-//     query: gql`
-//         {
-//             machines {
-//                 id
-//                 name
-//             }
-//         }
-//     `
-// })
-// .then(result => console.log(result));
+
+// const socket = new WebSocket("ws://127.0.0.1:8000/ws/subscribe/mass_meter/");
+
+// // обработчик входящих сообщений
+// socket.onmessage = function(event) {
+//     let incomingMessage = event.data;
+//     console.log("ws: "+incomingMessage);
+// };
 
 const render = () => ReactDOM.render(
     <React.StrictMode>
@@ -92,6 +87,7 @@ const render = () => ReactDOM.render(
 );
 
 render();
+
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.
 // Learn more about service workers: https://bit.ly/CRA-PWA
