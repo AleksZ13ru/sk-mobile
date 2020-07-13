@@ -12,22 +12,22 @@ import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
 import StepContent from "@material-ui/core/StepContent";
-import MachineSelect from "../MachineSelect";
-import ServicesSelect from "../ServicesSelect"
-import ServicesText from "../ServicesText"
+// import MachineSelect from "../MachineSelect";
+// import ServicesSelect from "../ServicesSelect"
+// import ServicesText from "../ServicesText"
 import MultilineTextFields from "../MultilineTextFields"
-import DateTimeSelect from "./components/DateTimeSelect";
+// import DateTimeSelect from "./components/DateTimeSelect";
 import ButtonGroupDialog from "../../../../components/ButtonGroupDialog"
 import {loader} from "graphql.macro";
-import {useMutation} from "@apollo/react-hooks";
-import LinearProgress from "@material-ui/core/LinearProgress";
+// import {useMutation} from "@apollo/react-hooks";
+// import LinearProgress from "@material-ui/core/LinearProgress";
 import DateTimeString from "./components/DateTimeString";
 import {useQuery} from "react-apollo";
 import Loading from "../../../../components/Loading/Loading";
 import Error from "../../../../components/Error/Error";
 
 const STOP_TIME_QUERY = loader('../../Graphql/STOP_TIME_QUERY.graphql');
-const STOP_TIME_EDIT = loader('../../Graphql/STOP_TIME_EDIT.graphql');
+// const STOP_TIME_EDIT = loader('../../Graphql/STOP_TIME_EDIT.graphql');
 
 const useStyles = makeStyles(theme => ({
     appBar: {
@@ -46,22 +46,22 @@ const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
 
-function DateIsValid(Date) {
-    return (Date !== null && !isNaN(Date.getTime()))
-}
+// function DateIsValid(Date) {
+//     return (Date !== null && !isNaN(Date.getTime()))
+// }
 
 export default function StopTimeDialogDetails(props) {
     const {open, handleClose, stopId, handleUpdateMachine} = props;
     const initPollInterval = 5000;
     const [pollInterval, setPollInterval] = React.useState(initPollInterval);
 
-    function onCompleted() {
-        // setMachine(initMachine);
-        setServices(initServices);
-        setText([]);
-        setActiveStep(4);
-        handleClose();
-    }
+    // function onCompleted() {
+    //     // setMachine(initMachine);
+    //     setServices(initServices);
+    //     setText([]);
+    //     setActiveStep(4);
+    //     handleClose();
+    // }
 
     useEffect(() => {
         if (open) {
@@ -120,10 +120,10 @@ export default function StopTimeDialogDetails(props) {
 
     // const [machine, setMachine] = React.useState(initMachine);
     const [services, setServices] = React.useState(initServices);
-    const [selectedDateStart, handleDateChangeStart] = React.useState(new Date());
-    const [selectedTimeStart, handleTimeChangeStart] = React.useState(new Date());
-    const [selectedDateStop, handleDateChangeStop] = React.useState(new Date());
-    const [selectedTimeStop, handleTimeChangeStop] = React.useState(new Date());
+    // const [selectedDateStart, handleDateChangeStart] = React.useState(new Date());
+    // const [selectedTimeStart, handleTimeChangeStart] = React.useState(new Date());
+    // const [selectedDateStop, handleDateChangeStop] = React.useState(new Date());
+    // const [selectedTimeStop, handleTimeChangeStop] = React.useState(new Date());
     const [text, setText] = React.useState([]);
 
     const {loading, error, data} = useQuery(STOP_TIME_QUERY, {
@@ -134,13 +134,13 @@ export default function StopTimeDialogDetails(props) {
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);
 
-    const handleServiceSelect = (event) => {
-        setServices(prevState => ({
-            ...services, array: services.array.map(
-                el => el.key === event.target.name ? {...el, checked: event.target.checked} : el
-            )
-        }));
-    };
+    // const handleServiceSelect = (event) => {
+    //     setServices(prevState => ({
+    //         ...services, array: services.array.map(
+    //             el => el.key === event.target.name ? {...el, checked: event.target.checked} : el
+    //         )
+    //     }));
+    // };
 
     const handleTextChange = (event) => {
         setText(event.target.value);
@@ -155,22 +155,22 @@ export default function StopTimeDialogDetails(props) {
         setActiveStep((prevActiveStep) => prevActiveStep - 1);
     };
 
-    const handleFinish = () => {
-        const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
-        // addStopTime({
-        //     variables: {
-        //         machineId: idMachine,
-        //         // dtStart: "2020-05-29T00:00:00Z",
-        //         // dtStop: "2020-05-29T00:00:00Z",
-        //         dtStart: selectedDateStart,
-        //         dtStop: selectedDateStop,
-        //         servicesID: array_service,
-        //         text: text
-        //     },
-        //
-        // }).then(r => {
-        // });
-    };
+    // const handleFinish = () => {
+    //     const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
+    //     addStopTime({
+    //         variables: {
+    //             machineId: idMachine,
+    //             // dtStart: "2020-05-29T00:00:00Z",
+    //             // dtStop: "2020-05-29T00:00:00Z",
+    //             dtStart: selectedDateStart,
+    //             dtStop: selectedDateStop,
+    //             servicesID: array_service,
+    //             text: text
+    //         },
+    //
+    //     }).then(r => {
+    //     });
+    // };
 
     return (
         <Dialog fullScreen open={open} onClose={handleClose} TransitionComponent={Transition}>

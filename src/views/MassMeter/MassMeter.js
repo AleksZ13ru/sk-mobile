@@ -1,9 +1,8 @@
-import React, {Fragment} from 'react';
+import React from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {gql, loader} from "graphql.macro";
 import {useQuery} from "react-apollo";
-
-import SearchInput from "../../components/SearchInput";
+// import SearchInput from "../../components/SearchInput";
 import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import List from "@material-ui/core/List";
@@ -15,7 +14,7 @@ import Grid from "@material-ui/core/Grid";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import {Link} from "react-router-dom";
 import PropTypes from "prop-types";
-import {store} from "../../store";
+// import {store} from "../../store";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
 import SpeedDialogs from "./components/SpeedDialogs/SpeedDialogs";
@@ -39,6 +38,7 @@ const useStyles = makeStyles(theme => ({
     },
     list: {
         paddingLeft: theme.spacing(0),
+        paddingRight: theme.spacing(0),
     }
 
 }));
@@ -52,7 +52,7 @@ function ItemMassMeter(props) {
         day: "numeric",
         year: "numeric",
         // weekday: "long",
-        month: "long"
+        month: "numeric"
     });
     return (
         <ListItem key={id} button className={classes.list} component={Link}
@@ -70,7 +70,7 @@ function ItemMassMeter(props) {
                 {/*    }*/}
                 {/*</Grid>*/}
                 <Grid item xs={7}>
-                    <ListItemText primary={`${name} ${sn}`} secondary={'весы'}/>
+                    <ListItemText primary={`${name} №${sn}`} secondary={'весы'}/>
                 </Grid>
                 <Grid item xs={3}>
                     <ListItemText primary={`${limit} кг`} secondary={'предел'}/>
@@ -101,14 +101,14 @@ ItemMassMeter.propTypes = {
 };
 
 function ItemEvent(props) {
-    const {id, postedByName, object, massObject, massIndication, measurementError} = props;
+    const {id, object, massObject, massIndication, measurementError} = props;
     const classes = useStyles();
-    let formatter = new Intl.DateTimeFormat("ru", {
-        day: "numeric",
-        year: "numeric",
-        // weekday: "long",
-        month: "long"
-    });
+    // let formatter = new Intl.DateTimeFormat("ru", {
+    //     day: "numeric",
+    //     year: "numeric",
+    //     // weekday: "long",
+    //     month: "long"
+    // });
     return (
         <ListItem key={id} button className={classes.list} component={Link}
                   to={``}>
@@ -118,8 +118,6 @@ function ItemEvent(props) {
                   justify="flex-start"
                   alignItems="center">
                 <Grid item xs={1}>
-                    {console.log(Math.abs(100 - massIndication / massObject * 100))}
-                    {console.log(measurementError)}
                     {Math.abs(100 - massIndication / massObject * 100) > measurementError &&
                     <ListItemIcon>
                         <FiberManualRecordIcon fontSize="small" style={{color: "#ff9800"}}/>
@@ -130,10 +128,10 @@ function ItemEvent(props) {
                     <ListItemText primary={`${object}`} secondary={'предмет'}/>
                 </Grid>
                 <Grid item xs={3}>
-                    <ListItemText primary={`${massObject} кг`} secondary={'указанный'}/>
+                    {massObject !== null && <ListItemText primary={`${massObject} кг.`} secondary={'учтен.'}/>}
                 </Grid>
                 <Grid item xs={3}>
-                    <ListItemText primary={`${massIndication} кг`} secondary={'весы'}/>
+                    <ListItemText primary={`${massIndication} кг.`} secondary={'измер.'}/>
                 </Grid>
             </Grid>
         </ListItem>
@@ -230,8 +228,15 @@ export default function MassMeter(props) {
                             <ListSubheader component="div" id="nested-list-subheader">
                                 История взвешиваний
                             </ListSubheader>
-                            {data.massMeter.events.map(el => (
+                            {data.massMeter.events
+                                .sort((a, b) => {
+                                    if (a.dtCreate > b.dtCreate) return -1;
+                                    if (a.dtCreate < b.dtCreate) return 1;
+                                    return 0;
+                                })
+                                .map(el => (
                                 <ItemEvent
+                                    key={el.id}
                                     id={el.id}
                                     object={el.object}
                                     massObject={el.massObject}

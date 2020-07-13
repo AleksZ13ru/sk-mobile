@@ -42,7 +42,7 @@ const Routes = () => {
             {/*{authToken ? <Redirect exact from="/" to="/dashboard" /> : <Redirect to="/sign-in" />}*/}
             {/*<Redirect exact from="/" to="/dashboard"/>*/}
             <PrivateRoute path="/">
-                <Redirect exact from="/" to="/massmeter/1"/>
+                <Redirect exact from="/" to="/dashboard"/>
                 <RouteWithLayout exact path="/dashboard/" component={Dashboard} layout={Main} />
                 <RouteWithLayout exact path="/stoptimelists" component={StopTimeLists} layout={Main}/>
                 <RouteWithLayout exact path="/stoptimelist/:id" component={StopTimeList} layout={Main}/>

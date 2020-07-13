@@ -99,7 +99,7 @@ function ListMachines(props) {
         <Fragment>
             {machines
                 .filter((machine) => (machine.name.toLowerCase().includes(searchFilter.toLowerCase())) || machine.crash)
-                .filter((machine) => (machine.crash && inCrash || !inCrash))
+                .filter((machine) => ((machine.crash && inCrash) || !inCrash))
                 .sort((a, b) => {
                     if (a.name > b.name) return 1;
                     if (a.name < b.name) return -1;

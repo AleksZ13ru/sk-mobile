@@ -22,7 +22,7 @@ import {useMutation} from '@apollo/react-hooks';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import TextField from "@material-ui/core/TextField";
 
-// const CRASH_ADD = loader('../../Graphql/CRASH_ADD.graphql');
+const EVENT_ADD = loader('../../Graphql/EVENT_ADD.graphql');
 
 const useStyles = makeStyles(theme => ({
     rootProgress: {
@@ -63,24 +63,33 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function EventAddDialog(props) {
     const classes = useStyles();
     const {openCrashDialogAdd, handleClose, idMachine, nameMachine} = props;
+    const initMachine = {
+        idMachine: idMachine,
+        nameMachine: nameMachine,
+    };
     const initObj = '';
     const intMassObject = null;
     const initMassIndicator = null;
+    const [machine, setMachine] = React.useState(initMachine);
     const [obj, setObj] = React.useState(initObj);
     const [massObject, setMassObject] = React.useState(intMassObject);
     const [massIndication, setMassIndication] = React.useState(initMassIndicator);
 
     function onCompleted() {
         setMachine(initMachine);
-        setText([]);
+        // setText([]);
+        setObj(initObj);
+        setMassObject(intMassObject);
+        setMassIndication(setMassIndication);
         setActiveStep(1);
         handleClose();
     }
 
-    // const [crashAdd,
-    //     {loading: mutationLoading, error: mutationError},
-    //
-    // ] = useMutation(CRASH_ADD, {onCompleted});
+    const [eventAdd,
+        {loading: mutationLoading, error: mutationError},
+
+    ] = useMutation(EVENT_ADD, {onCompleted});
+
     const [activeStep, setActiveStep] = React.useState(1);
 
     // const [steps, setSteps] = React.useState({
@@ -97,17 +106,11 @@ export default function EventAddDialog(props) {
         step4: 'Проверка и отправка: '
     };
 
-    const initMachine = {
-        idMachine: idMachine,
-        nameMachine: nameMachine,
-    };
+    // const [text, setText] = React.useState([]);
 
-    const [machine, setMachine] = React.useState(initMachine);
-    const [text, setText] = React.useState([]);
-
-    const handleTextChange = (event) => {
-        setText(event.target.value);
-    };
+    // const handleTextChange = (event) => {
+    //     setText(event.target.value);
+    // };
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -120,15 +123,15 @@ export default function EventAddDialog(props) {
 
     const handleFinish = () => {
         // const array_service = services.array.filter((el) => (el.checked)).map(el => (el.id));
-        // crashAdd({
-        //     variables: {
-        //         machineId: idMachine,
-        //         // dtStart: "2020-05-29T00:00:00Z",
-        //         servicesID: array_service,
-        //         text: text
-        //     },
-        //
-        // }).then(r => {});
+        eventAdd({
+            variables: {
+                massMeterId:machine.idMachine,
+                object: obj,
+                massObject: massObject,
+                massIndication:massIndication
+            }
+
+        }).then(r => {});
     };
 
     // const [openRepairAddDialog, setOpenRepairAddDialog] = React.useState(false);
@@ -205,18 +208,19 @@ export default function EventAddDialog(props) {
                 <Step key='step4'>
                     <StepLabel>{steps.step4}</StepLabel>
                     <StepContent>
-                        {
-                            +massObject>0 && `Погрешность измерения: ${Math.abs(100-massIndication/massObject*100)} %`
 
-                        }
+                        <Typography>
+                            {
+                                +massObject>0 && `Погрешность измерения: ${Math.abs(100-massIndication/massObject*100).toFixed(1)} %`
 
+                            }
+                        </Typography>
 
-                        {/*<Typography></Typography>*/}
-                        {/*{mutationLoading &&*/}
-                        {/*<div className={classes.rootProgress}>*/}
-                        {/*    <LinearProgress/>*/}
-                        {/*</div>}*/}
-                        {/*{mutationError && <p><b>Не удалось отправить заявку</b></p>}*/}
+                        {mutationLoading &&
+                        <div className={classes.rootProgress}>
+                            <LinearProgress/>
+                        </div>}
+                        {mutationError && <p><b>Не удалось отправить результат взвешивания</b></p>}
 
                         <ButtonGroupDialog
                             handleBack={handleBack}

@@ -1,0 +1,8 @@
+# {"massMeterId":1, "object":"Груз тестовый 1", "massObject":100, "massIndication":130}
+mutation massEventAdd($massMeterId: Int!, $object:String, $massIndication:Int, $massObject:Int) {
+    massEventAdd(object:$object, massMeterId:$massMeterId, massIndication:$massIndication, massObject:$massObject){
+        event{
+            id
+        }
+    }
+}

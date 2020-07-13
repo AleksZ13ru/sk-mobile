@@ -19,6 +19,7 @@ query MassMeter($pk:Int!){
             object
             massObject
             massIndication
+            dtCreate
         }
     }
 }
