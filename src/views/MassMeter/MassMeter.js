@@ -18,6 +18,7 @@ import PropTypes from "prop-types";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
 import SpeedDialogs from "./components/SpeedDialogs/SpeedDialogs";
+import useWebSocket from 'react-use-websocket';
 
 const MASS_METER_QUERY = loader('./Graphql/MASS_METER_QUERY.graphql');
 const GET_TITLE = gql`{title @client}`;
@@ -155,20 +156,40 @@ export default function MassMeter(props) {
 
     const [lastUpdate, setLastUpdate] = React.useState('');
 
-    const socket = React.useRef(new WebSocket("ws://127.0.0.1:8000/ws/subscribe/mass_meter/"));
-
-    useEffect(() => {
-        socket.current.onmessage = (msg) => {
-            // const incomingMessage = `Message from WebSocket: ${msg.data}`;
-            let data = JSON.parse(msg.data);
-            if (lastUpdate !== data.message.massMeterLastUpdate) {
-                setLastUpdate(data.message.massMeterLastUpdate);
-                refetch()
-            }
-        };
+    // const socket = React.useRef(new WebSocket("ws://127.0.0.1:8000/ws/subscribe/mass_meter/"));
+    const socketUrl = 'ws://127.0.0.1:8000/ws/subscribe/mass_meter/';
+    const {
+        sendMessage,
+        sendJsonMessage,
+        lastMessage,
+        lastJsonMessage,
+        readyState,
+        getWebSocket
+    } = useWebSocket(socketUrl, {
+        onOpen: () => refetch(),
+        //Will attempt to reconnect on all close events, such as server shutting down
+        shouldReconnect: (closeEvent) => true,
     });
+    useEffect(() => () => {
+        console.log(lastJsonMessage);
+        if (lastJsonMessage !== null && lastUpdate !== lastJsonMessage.message.massMeterLastUpdate) {
+                        setLastUpdate(lastJsonMessage.message.massMeterLastUpdate);
+                        refetch()
+                    }
+    }, [lastJsonMessage]);
 
-    useEffect(() => () => socket.current.close(), [socket]);
+    // useEffect(() => {
+    //     socket.current.onmessage = (msg) => {
+    //         // const incomingMessage = `Message from WebSocket: ${msg.data}`;
+    //         let data = JSON.parse(msg.data);
+    //         if (lastUpdate !== data.message.massMeterLastUpdate) {
+    //             setLastUpdate(data.message.massMeterLastUpdate);
+    //             refetch()
+    //         }
+    //     };
+    // });
+    //
+    // useEffect(() => () => socket.current.close(), [socket]);
     // useEffect(() => {
     //     // Обновляем заголовок документа, используя API браузера
     //     // store.dispatch({type:'SET_TITLE', text:'Сарансккабель2'})
