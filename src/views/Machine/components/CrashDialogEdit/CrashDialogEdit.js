@@ -120,7 +120,7 @@ export default function CrashDialogEdit(props) {
     const [state, setState] = React.useState(initState);
     const {loading, error, data} = useQuery(CRASH_QUERY, {
         variables: {"pk": crashId},
-        pollInterval: 5000,
+        // pollInterval: 5000,
     });
 
     if (loading) return (<Loading/>);

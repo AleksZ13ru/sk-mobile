@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 import {makeStyles} from "@material-ui/core/styles";
 import {gql, loader} from "graphql.macro";
 import {useQuery} from "react-apollo";
@@ -18,6 +18,8 @@ import PropTypes from "prop-types";
 import {store} from "../../store";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
+import useWebSocket from "react-use-websocket";
+import {SOCKET_WS_URL} from "../../constants";
 
 const MACHINES_QUERY = loader('./Graphql/MACHINES_QUERY.graphql');
 
@@ -41,11 +43,7 @@ const useStyles = makeStyles(theme => ({
     }
 
 }));
-const GET_TITLE = gql`
-    {
-        title @client
-    }
-`;
+const GET_TITLE = gql`{title @client}`;
 
 // const GET_SEARCH_MACHINE = gql`
 //     {
@@ -151,6 +149,23 @@ export default function Dashboard(props) {
     // const [searchFilter, setSearchFilter] = React.useState('');
 
     const classes = useStyles();
+
+    const [lastUpdate, setLastUpdate] = React.useState('');
+    // const socketUrl = 'ws://127.0.0.1:8000/ws/subscribe/machine/';
+    const socketUrl = SOCKET_WS_URL+'machine/';
+    const {
+        lastJsonMessage
+    } = useWebSocket(socketUrl, {
+        onOpen: () => refetch(),
+        shouldReconnect: (closeEvent) => true,
+    });
+    useEffect(() => () => {
+        console.log(lastJsonMessage);
+        if (lastJsonMessage !== null && lastUpdate !== lastJsonMessage.message.machineLastUpdate) {
+            setLastUpdate(lastJsonMessage.message.machineLastUpdate);
+            refetch()
+        }
+    }, [lastJsonMessage]);
     // useEffect(() => {
     //     // Обновляем заголовок документа, используя API браузера
     //     // store.dispatch({type:'SET_TITLE', text:'Сарансккабель2'})
@@ -158,8 +173,8 @@ export default function Dashboard(props) {
     // });
     const {client} = useQuery(GET_TITLE);
     // const {data: dataSearchMachine, client: clientSearchMachine} = useQuery(GET_SEARCH_MACHINE);
-    const {loading, error, data} = useQuery(MACHINES_QUERY, {
-        pollInterval: 2000,
+    const {loading, error, data, refetch} = useQuery(MACHINES_QUERY, {
+        // pollInterval: 2000,
     });
     if (loading) return (<Loading/>);
     if (error) return (<Error/>);

@@ -1,4 +1,4 @@
-import React, {Fragment} from 'react';
+import React, {Fragment, useEffect} from 'react';
 // import SearchInput from "../../components/SearchInput";
 // import {Link} from "react-router-dom";
 // import Alert from "@material-ui/lab/Alert";
@@ -28,13 +28,13 @@ import Error from "../../components/Error";
 import CrashAlert from "./components/CrashAlert"
 import CrashDialogDetails from "./components/CrashDialogDetails";
 import StopTimeDialogDetails from "./components/StopTimeDialogDetails";
+import useWebSocket from "react-use-websocket";
+import {SOCKET_WS_URL} from "../../constants";
 
 const MACHINE_QUERY = loader('./Graphql/MACHINE_QUERY.graphql');
-const GET_TITLE = gql`
-    {
-        title @client
-    }
-`;
+const GET_TITLE = gql`{title @client}`;
+
+
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -381,6 +381,23 @@ function Machine(props) {
     const {id} = props.match.params;
     // const [name, setName] = React.useState('');
     const classes = useStyles();
+    const [lastUpdate, setLastUpdate] = React.useState('');
+    // const socketUrl = 'ws://127.0.0.1:8000/ws/subscribe/machine/';
+    const socketUrl = SOCKET_WS_URL+'machine/';
+    const {
+        lastJsonMessage
+    } = useWebSocket(socketUrl, {
+        onOpen: () => refetch(),
+        shouldReconnect: (closeEvent) => true,
+    });
+    useEffect(() => () => {
+        console.log(lastJsonMessage);
+        if (lastJsonMessage !== null && lastUpdate !== lastJsonMessage.message.machineLastUpdate) {
+            setLastUpdate(lastJsonMessage.message.machineLastUpdate);
+            refetch().then(r => {})
+        }
+    }, [lastJsonMessage]);
+
     const [openCrashDialogDetails, setOpenCrashDialogDetails] = React.useState(false);
     const [openStopTimeDialogDetails, setOpenStopTimeDialogDetails] = React.useState(false);
     const [crashIdDialog, setCrashIdDialog] = React.useState(null);
@@ -407,7 +424,7 @@ function Machine(props) {
     const {client} = useQuery(GET_TITLE);
     const {loading, error, data, refetch} = useQuery(MACHINE_QUERY, {
         variables: {"pk": id},
-        pollInterval: 10000,
+        // pollInterval: 10000,
         onCompleted
     });
     if (loading) return (<Loading/>);

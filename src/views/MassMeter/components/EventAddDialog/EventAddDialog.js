@@ -68,19 +68,19 @@ export default function EventAddDialog(props) {
         nameMachine: nameMachine,
     };
     const initObj = '';
-    const intMassObject = null;
+    const initMassObject = null;
     const initMassIndicator = null;
     const [machine, setMachine] = React.useState(initMachine);
     const [obj, setObj] = React.useState(initObj);
-    const [massObject, setMassObject] = React.useState(intMassObject);
+    const [massObject, setMassObject] = React.useState(initMassObject);
     const [massIndication, setMassIndication] = React.useState(initMassIndicator);
 
     function onCompleted() {
         setMachine(initMachine);
         // setText([]);
         setObj(initObj);
-        setMassObject(intMassObject);
-        setMassIndication(setMassIndication);
+        setMassObject(initMassObject);
+        setMassIndication(initMassIndicator);
         setActiveStep(1);
         handleClose();
     }
@@ -102,7 +102,7 @@ export default function EventAddDialog(props) {
     const steps = {
         step1: 'Весы: ',
         step2: 'Предмет взвешивания: ',
-        step3: 'Показания весов ',
+        step3: 'Показания весов: ',
         step4: 'Проверка и отправка: '
     };
 
@@ -179,7 +179,7 @@ export default function EventAddDialog(props) {
                         <div className={classes.rootTextField}>
                             <TextField id="obj" label="Наименование" variant="outlined" value={obj}
                                        onChange={(event) => setObj(event.target.value)}/>
-                            <TextField id="mass-object" label="Известный вес" variant="outlined" value={massObject} type="number"
+                            <TextField id="mass-object" label="Указанный вес" variant="outlined" value={massObject} type="number"
                                        onChange={(event) => setMassObject(event.target.value)}/>
                         </div>
 
@@ -195,7 +195,7 @@ export default function EventAddDialog(props) {
                     <StepLabel>{steps.step3} <b>{+massIndication>0 && massIndication} {+massIndication>0 && 'кг.'}</b></StepLabel>
                     <StepContent>
                         {/*<Typography>*/}
-                        <TextField id="mass-indication" label="Показания весов" variant="outlined" value={massIndication } type="number"
+                        <TextField id="mass-indication" label="Измеренный вес" variant="outlined" value={massIndication } type="number"
                                    onChange={(event) => setMassIndication(event.target.value)}/>
                         {/*</Typography>*/}
                         <ButtonGroupDialog

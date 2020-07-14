@@ -86,7 +86,7 @@ function Sidebar(props) {
     const classes = useStyles();
     const theme = useTheme();
     const [buildCounter, setBuildCounter] = React.useState(0);
-    const initPollInterval = 1000;
+    const initPollInterval = 10000;
     const [pollInterval, setPollInterval] = React.useState(initPollInterval);
 
     function onError() {
@@ -98,9 +98,9 @@ function Sidebar(props) {
     }
 
 
-    const {data} = useQuery(STATISTIC_QUERY, {
+    const {data, refetch} = useQuery(STATISTIC_QUERY, {
         variables: {},
-        pollInterval: {pollInterval},
+        // pollInterval: {pollInterval},
         onError,
         onCompleted
 
@@ -108,11 +108,8 @@ function Sidebar(props) {
 
     useEffect(() => {
         if (open) {
-            setPollInterval(initPollInterval)
-        }else{
-            setPollInterval(0)
+            refetch().then(r =>{})
         }
-
     },[open]);
 
     // if (loading) return (<Loading/>);
